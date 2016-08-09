@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ProcessList.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="NuLogger.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="LEDController.cpp">
+      <Filter>Libs</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageFilterMat.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="CUELegendKeys.cpp" />
+    <ClCompile Include="HotSpotGroup.cpp">
+      <Filter>HotSpots</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenHotSpot.cpp">
+      <Filter>HotSpots</Filter>
+    </ClCompile>
+    <ClCompile Include="convert.cpp">
+      <Filter>Libs</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMainWindow.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMainDialog.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIBase.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMessage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameProcessing.cpp">
+      <Filter>FrameProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="FPIdle.cpp">
+      <Filter>FrameProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="FPGameClient.cpp">
+      <Filter>FrameProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="FPScreenMirror.cpp">
+      <Filter>FrameProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="UISettingsDialog.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSelectClient.cpp">
+      <Filter>FrameProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="HotSpotLearn.cpp">
+      <Filter>HotSpots</Filter>
+    </ClCompile>
+    <ClCompile Include="HSBackport.cpp">
+      <Filter>HotSpots\HotSpots</Filter>
+    </ClCompile>
+    <ClCompile Include="HSBar.cpp">
+      <Filter>HotSpots\HotSpots</Filter>
+    </ClCompile>
+    <ClCompile Include="HSCastable.cpp">
+      <Filter>HotSpots\HotSpots</Filter>
+    </ClCompile>
+    <ClCompile Include="HSChamp.cpp">
+      <Filter>HotSpots\HotSpots</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ProcessList.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="NuLogger.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="LEDController.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageFilterMat.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="CUELegendKeys.h" />
+    <ClInclude Include="CUELegendKeysResources.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="HotSpotGroup.h">
+      <Filter>HotSpots</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenHotSpot.h">
+      <Filter>HotSpots</Filter>
+    </ClInclude>
+    <ClInclude Include="convert.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMainWindow.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMainDialog.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBase.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMessage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameProcessing.h">
+      <Filter>FrameProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="FPIdle.h">
+      <Filter>FrameProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="FPGameClient.h">
+      <Filter>FrameProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="FPScreenMirror.h">
+      <Filter>FrameProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="simpleini\SimpleIni.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="UISettingsDialog.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSelectClient.h">
+      <Filter>FrameProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="HotSpotLearn.h">
+      <Filter>HotSpots</Filter>
+    </ClInclude>
+    <ClInclude Include="HSBackport.h">
+      <Filter>HotSpots\HotSpots</Filter>
+    </ClInclude>
+    <ClInclude Include="HSBar.h">
+      <Filter>HotSpots\HotSpots</Filter>
+    </ClInclude>
+    <ClInclude Include="HSCastable.h">
+      <Filter>HotSpots\HotSpots</Filter>
+    </ClInclude>
+    <ClInclude Include="HSChamp.h">
+      <Filter>HotSpots\HotSpots</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{f0c0ff6b-d2fe-488b-8c21-a700760dade8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{cdf48dd3-7ff5-4765-8ddf-71d0a07a4866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs">
+      <UniqueIdentifier>{9ce29f6b-bc68-467f-b567-f76d2768a6d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HotSpots">
+      <UniqueIdentifier>{090beec0-2d1b-46d3-b0d1-1e2f96ae0055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{921c64a3-667e-4405-9c7f-ce84020d23d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameProcessing">
+      <UniqueIdentifier>{b95d2c7b-21d0-455b-87ee-021e1e931edf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HotSpots\HotSpots">
+      <UniqueIdentifier>{86ed7e48-2a28-4537-ac42-10329459b8e1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CUELegendKeysResources.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
