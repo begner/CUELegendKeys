@@ -57,9 +57,6 @@
     <ClCompile Include="FPSelectClient.cpp">
       <Filter>FrameProcessing</Filter>
     </ClCompile>
-    <ClCompile Include="HotSpotLearn.cpp">
-      <Filter>HotSpots</Filter>
-    </ClCompile>
     <ClCompile Include="HSBackport.cpp">
       <Filter>HotSpots\HotSpots</Filter>
     </ClCompile>
@@ -71,6 +68,21 @@
     </ClCompile>
     <ClCompile Include="HSChamp.cpp">
       <Filter>HotSpots\HotSpots</Filter>
+    </ClCompile>
+    <ClCompile Include="HSLBase.cpp">
+      <Filter>HotSpots\LearningModules</Filter>
+    </ClCompile>
+    <ClCompile Include="HSLItems.cpp">
+      <Filter>HotSpots\LearningModules</Filter>
+    </ClCompile>
+    <ClCompile Include="HSLResourceBar.cpp">
+      <Filter>HotSpots\LearningModules</Filter>
+    </ClCompile>
+    <ClCompile Include="HSLSkills.cpp">
+      <Filter>HotSpots\LearningModules</Filter>
+    </ClCompile>
+    <ClCompile Include="HotSpotLearn.cpp">
+      <Filter>HotSpots</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -144,9 +156,6 @@
     <ClInclude Include="FPSelectClient.h">
       <Filter>FrameProcessing</Filter>
     </ClInclude>
-    <ClInclude Include="HotSpotLearn.h">
-      <Filter>HotSpots</Filter>
-    </ClInclude>
     <ClInclude Include="HSBackport.h">
       <Filter>HotSpots\HotSpots</Filter>
     </ClInclude>
@@ -158,6 +167,21 @@
     </ClInclude>
     <ClInclude Include="HSChamp.h">
       <Filter>HotSpots\HotSpots</Filter>
+    </ClInclude>
+    <ClInclude Include="HSLBase.h">
+      <Filter>HotSpots\LearningModules</Filter>
+    </ClInclude>
+    <ClInclude Include="HSLItems.h">
+      <Filter>HotSpots\LearningModules</Filter>
+    </ClInclude>
+    <ClInclude Include="HSLResourceBar.h">
+      <Filter>HotSpots\LearningModules</Filter>
+    </ClInclude>
+    <ClInclude Include="HSLSkills.h">
+      <Filter>HotSpots\LearningModules</Filter>
+    </ClInclude>
+    <ClInclude Include="HotSpotLearn.h">
+      <Filter>HotSpots</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +205,9 @@
     </Filter>
     <Filter Include="HotSpots\HotSpots">
       <UniqueIdentifier>{86ed7e48-2a28-4537-ac42-10329459b8e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HotSpots\LearningModules">
+      <UniqueIdentifier>{3f270d92-9d75-4a83-a2a1-346207912405}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
