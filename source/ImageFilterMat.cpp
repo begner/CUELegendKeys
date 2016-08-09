@@ -617,3 +617,74 @@ int ImageFilterMat::getFirstBorder(Mat *hsvImage, int direction, int upperVThres
 	return 0;
 }
 
+
+void ImageFilterMat::cannyThreshold(Mat src, Mat* dest, int lowThreshold, int kernel_size, int ratio, int blur_size)
+{
+	Mat src_gray;
+
+	if (lowThreshold > 100) {
+		lowThreshold = 100;
+	}
+	if (lowThreshold < 0) {
+		lowThreshold = 0;
+	}
+
+	cvtColor(src, src_gray, CV_BGR2GRAY);
+
+	/// Reduce noise with a kernel 3x3
+	blur(src_gray, *dest, Size(blur_size, blur_size));
+
+	/// Canny detector
+	Canny(*dest, *dest, lowThreshold, lowThreshold*ratio, kernel_size);
+}
+
+
+boolean ImageFilterMat::getMatchingRect(int match_method, Mat* haystackImage, Mat* needleImage, cv::Rect* foundRect)
+{
+	Mat result;
+
+	/// Create the result matrix
+	int result_cols = haystackImage->cols - needleImage->cols + 1;
+	int result_rows = haystackImage->rows - needleImage->rows + 1;
+
+	result.create(result_rows, result_cols, CV_32FC1);
+
+	/// Do the Matching and Normalize
+	matchTemplate(*haystackImage, *needleImage, result, match_method);
+	normalize(result, result, 0, 1, NORM_MINMAX, -1, Mat());
+
+	/// Localizing the best match with minMaxLoc
+	double minVal; double maxVal;
+	cv::Point minLoc;
+	cv::Point maxLoc;
+	cv::Point matchLoc;
+
+	minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc, Mat());
+
+	/// For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
+	if (match_method == CV_TM_SQDIFF || match_method == CV_TM_SQDIFF_NORMED)
+	{
+		matchLoc = minLoc;
+	}
+	else
+	{
+		matchLoc = maxLoc;
+	}
+
+	/// Show me what you got
+	// rectangle(img_display, matchLoc, Point(matchLoc.x + templ.cols, matchLoc.y + templ.rows), Scalar::all(0), 2, 8, 0);
+	// rectangle(result, matchLoc, Point(matchLoc.x + templ.cols, matchLoc.y + templ.rows), Scalar::all(0), 2, 8, 0);
+
+	// imshow(image_window, img_display);
+	// imshow(result_window, result);
+
+	if (matchLoc.x > 0 && matchLoc.y > 0) {
+		foundRect->x = matchLoc.x;
+		foundRect->y = matchLoc.y;
+		foundRect->width = needleImage->cols;
+		foundRect->height = needleImage->rows;
+		return true;
+	}
+
+	return false;
+}

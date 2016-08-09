@@ -53,5 +53,7 @@ public:
 	static void deepCopyPixel(Mat *src, Mat4b *dest);
 	static void deepCopyPixel(Mat *src, Mat3b *dest);
 	static cv::Rect getCropRectBorder(Mat *src, int upperVThreshold = 70, int lowerSThreshold = 20);
+	static void cannyThreshold(Mat src, Mat* dest, int lowThreshold = 50, int kernel_size = 3, int ratio = 3, int blur_size = 3);
+	static boolean getMatchingRect(int match_method, Mat* haystackImage, Mat* needleImage, cv::Rect* foundRect);
 };
 
