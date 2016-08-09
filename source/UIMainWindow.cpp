@@ -171,7 +171,7 @@ void UIMainWindow::createMenuItems(HMENU hMenu) {
 		
 	InsertMenu(hMenu, position++, MF_MENUBARBREAK, 0, NULL);
 	
-	
+
 
 	InsertMenu(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_SHOW_ABOUT, (LPCWSTR)L"About");
 	InsertMenu(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_QUIT, (LPCWSTR)L"Quit");
