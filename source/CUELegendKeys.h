@@ -56,5 +56,6 @@ public:
 	bool getForceInGameClient();
 	void setForceInGameClient(bool state);
 	void learnHotSpots();
+	void quit();
 };
 

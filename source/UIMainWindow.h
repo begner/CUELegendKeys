@@ -23,9 +23,9 @@ private:
 	static const int MAX_TITLE = 48;
 	static const int MAX_MESSAGE = 255;
 
-	void onDestroy();
+	
 	void deleteTrayIcon();
-
+	void onDestroy();
 public:
 	static UIMainWindow * getInstance();
 	static void release();
@@ -37,6 +37,7 @@ public:
 	void notify(string message);
 	void notify(string title, string message, UINT IconType = 0);
 	void ShowTrayMenu();
+	void destroy();
 
 	static INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 };

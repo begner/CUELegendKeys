@@ -116,7 +116,10 @@ INT_PTR CALLBACK UIMainDialog::MessageHandler(HWND hDlg, UINT message, WPARAM wP
 				}
 
 				// passthru menu events to main window :)
-				return UIMainWindow::MessageHandler(UIMainWindow::getInstance()->getHandle(), message, wParam, lParam);
+				if (LOWORD(wParam) >= IDM_CONST_START_RANGE && LOWORD(wParam) <= IDM_CONST_END_RANGE) {
+					return (INT_PTR)UIMainWindow::MessageHandler(UIMainWindow::getInstance()->getHandle(), message, wParam, lParam);
+				}
+				
 			}
 			break;
 	}

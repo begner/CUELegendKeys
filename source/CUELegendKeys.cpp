@@ -187,3 +187,8 @@ void CUELegendKeys::learnHotSpots() {
 	HotSpotLearn hsl;
 	hsl.findAllHotSpots();
 }
+
+void CUELegendKeys::quit() {
+	UIMainWindow::getInstance()->destroy();
+	PostQuitMessage(0);
+}

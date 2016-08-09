@@ -200,6 +200,11 @@ void UIMainWindow::onDestroy() {
 	deleteTrayIcon();
 }
 
+void UIMainWindow::destroy() {
+	DestroyWindow(hwnd);
+	onDestroy();
+}
+
 void UIMainWindow::createWindow() {
 	HWND hwnd;
 
@@ -213,12 +218,14 @@ void UIMainWindow::createWindow() {
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TRAY_ICON));
+	wc.hIcon = (HICON)::LoadImage(hInstance, MAKEINTRESOURCE(IDI_TRAY_ICON), IMAGE_ICON, ::GetSystemMetrics(SM_CXICON), ::GetSystemMetrics(SM_CYICON), LR_DEFAULTCOLOR);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wc.lpszMenuName = MAKEINTRESOURCE(IDC_TRAYMENU);
 	wc.lpszClassName = windowClass;
-	// wc.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TRAY_ICON_SMALL));
+	wc.hIconSm = (HICON)::LoadImage(hInstance, MAKEINTRESOURCE(IDI_TRAY_ICON), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
+
+	
 
 	RegisterClassEx(&wc);
 
@@ -310,14 +317,13 @@ INT_PTR CALLBACK UIMainWindow::MessageHandler(HWND _hwnd, UINT message, WPARAM w
 					return (INT_PTR)TRUE;
 					break;
 				case IDM_QUIT:
-					DestroyWindow(_hwnd);
+					CUELegendKeys::getInstance()->quit();
 					return (INT_PTR)TRUE;
 					break;
 			}
 			break;
 		case WM_DESTROY:
-			UIMainWindow::getInstance()->onDestroy();
-			PostQuitMessage(0);
+			CUELegendKeys::getInstance()->quit();
 			return (INT_PTR)TRUE;
 			break;
 	}
