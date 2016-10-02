@@ -28,28 +28,46 @@ int HSPassive::getType() {
 }
 
 
-void HSPassive::filterMat() {
+int HSPassive::calcAnimationStep(int oldTarget, int newTarget) {
+	int newPos = 0;
 	
-	int diffL = (int)((float)targetDiffX/(float)remainingTicks);
-	if (diffL < 0) diffL = 0;
-	int diffT = (int)((float)targetDiffY/(float)remainingTicks);
-	if (diffT < 0) diffT = 0;
+	float myTick = (float)getCurrentTick();
+	float maxTicks = (float)getMaxTick();
+	
+	float step = (float)(newTarget - oldTarget) * myTick / maxTicks;
+	int diff = (int)step;
+	newPos = oldTarget + diff;
+	return newPos;
+}
 
-	remainingTicks--;
+void HSPassive::filterMat() {
 	reinitAnimation();
+	int diffX = calcAnimationStep(lastTargetDiffX, targetDiffX);
+	int diffY = calcAnimationStep(lastTargetDiffY, targetDiffY);
+	
+	// remainingTicks--;
+
+	
 
 	champImageColorTable = Mat(getCaptureWidth(true), getCaptureHeight(true), CV_8UC3);
 	getOriginalMatRespectBorders()->copyTo(champImageColorTable);
 
+	blur(champImageColorTable, champImageColorTable, cv::Size(5, 5), cv::Point(-1, -1));
+	resize(champImageColorTable, champImageColorTable, cv::Size(champKeyWidth + maxDiff, champKeyHeight + maxDiff), 0, 0, INTER_CUBIC);
 	// ImageFilterMat::saturation(champImageColorTable, 0, 255, 1);
 
-	cv::Rect curRect(maxDiff - diffL, maxDiff - diffT, champImageColorTable.cols - maxDiff, champImageColorTable.rows - maxDiff);
+	cv::Rect curRect(maxDiff - diffX, maxDiff - diffY, champImageColorTable.cols - maxDiff, champImageColorTable.rows - maxDiff);
 	champImageColorTable = Mat(champImageColorTable, curRect);
 	
-	resize(champImageColorTable, champImageColorTable, cv::Size(champKeyWidth, champKeyHeight), 0, 0, INTER_CUBIC);
 
 	Mat* filterd = getFilteredMat();
+
 	champImageColorTable.copyTo(*filterd);
+
+	for (vector<CorsairLedPosition>::iterator it = champKeys.begin(); it != champKeys.end(); ++it) {
+		Scalar colorBorder(0, 0, 0, 128);
+		cv::rectangle(*filterd, cv::Rect((int)it->left, (int)it->top, (int)it->width, (int)it->height), colorBorder, 1, 8, 0);
+	}
 
 
 
@@ -62,10 +80,11 @@ Vec4b HSPassive::getCurrentColor(int index) {
 }
 
 void HSPassive::reinitAnimation() {
-	if (remainingTicks < 1) {
+	int curTick = getCurrentTick();
+	if (curTick == 0) {
 		lastTargetDiffX = targetDiffX;
 		lastTargetDiffY = targetDiffY;
-		remainingTicks = (double)rand() / (RAND_MAX + 1) * 30;
+		remainingTicks = 10 + (int)((double)rand() / (RAND_MAX + 1) * 10);
 		targetDiffX = (double)rand() / (RAND_MAX + 1) * maxDiff;
 		targetDiffY = (double)rand() / (RAND_MAX + 1) * maxDiff;
 	}
@@ -81,10 +100,10 @@ int HSPassive::getMaxTick() {
 
 void HSPassive::updateKey() {
 
-	
 	for (vector<CorsairLedPosition>::iterator it = champKeys.begin(); it != champKeys.end(); ++it) {
 
 		cv::Rect testRect((int)it->left, (int)it->top, (int)it->width, (int)it->height);
+		
 		Mat4b testMat = Mat(champImageColorTable, testRect);
 		resize(testMat, testMat, cv::Size(1, 1), 0, 0, INTER_CUBIC);
 

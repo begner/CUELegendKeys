@@ -13,7 +13,7 @@ private:
 	int champKeyHeight = 0;
 	vector<CorsairLedPosition> champKeys;
 
-	int maxDiff = 6;
+	int maxDiff = 40;
 	int lastTargetDiffX = maxDiff / 2;
 	int lastTargetDiffY = maxDiff / 2;
 	int targetDiffX = 0;
@@ -21,6 +21,7 @@ private:
 	int remainingTicks = 0;
 	void reinitAnimation();
 
+	int calcAnimationStep(int oldTarget, int newTarget);
 
 	Mat champImageColorTable;
 	Mat* mask;
