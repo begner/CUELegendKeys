@@ -16,7 +16,7 @@ int HSCastable::getType() {
 }
 
 bool HSCastable::isCastable() {
-	bool isCastable = true;
+	bool isCastable;
 	
 	cv::Rect castDetectionRect(1, 1, 2, 2);
 	Mat4b myMat = getOriginalMat()->clone();

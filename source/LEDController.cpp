@@ -80,21 +80,19 @@ CorsairLedPosition LEDController::getKeyPositionById(CorsairLedId ledId) {
 
 std::vector<CorsairLedPosition> LEDController::getKeyPositions() {
 	if (cachedPositions.size() < 1) {
+		
 		auto positionVector = std::vector<CorsairLedPosition>();
+		
 		for (auto deviceIndex = 0; deviceIndex < CorsairGetDeviceCount(); deviceIndex++) {
 			if (auto deviceInfo = CorsairGetDeviceInfo(deviceIndex)) {
-				switch (deviceInfo->type) {
-					case CDT_Keyboard: 
-						{
-							auto ledPositions = CorsairGetLedPositions();
-							if (ledPositions) {
-								for (auto i = 0; i < ledPositions->numberOfLed; i++) {
-									auto ledId = ledPositions->pLedPosition[i].ledId;
-									positionVector.push_back(ledPositions->pLedPosition[i]);
-								}
-							}
-						} 
-						break;
+				if (deviceInfo->type == CDT_Keyboard) {
+					auto ledPositions = CorsairGetLedPositions();
+					if (ledPositions) {
+						for (auto i = 0; i < ledPositions->numberOfLed; i++) {
+							auto ledId = ledPositions->pLedPosition[i].ledId;
+							positionVector.push_back(ledPositions->pLedPosition[i]);
+						}
+					}
 				}
 			}
 		}
@@ -105,37 +103,25 @@ std::vector<CorsairLedPosition> LEDController::getKeyPositions() {
 
 std::vector<CorsairLedColor> LEDController::getAvailableKeys()
 {
-	auto colorsVector = std::vector<CorsairLedColor>();
-	auto positionVector = std::vector<CorsairLedPosition>();
-	for (auto deviceIndex = 0; deviceIndex < CorsairGetDeviceCount(); deviceIndex++) {
-		if (auto deviceInfo = CorsairGetDeviceInfo(deviceIndex)) {
-			switch (deviceInfo->type) {
-			case CDT_Mouse: {
-				auto numberOfKeys = deviceInfo->physicalLayout - CPL_Zones1 + 1;
-				for (auto i = 0; i < numberOfKeys; i++) {
-					auto ledId = static_cast<CorsairLedId>(CLM_1 + i);
-					colorsVector.push_back(CorsairLedColor{ ledId, 0, 0, 0 });
-				}
-			} break;
-			case CDT_Keyboard: {
-				auto ledPositions = CorsairGetLedPositions();
-				if (ledPositions) {
-					for (auto i = 0; i < ledPositions->numberOfLed; i++) {
-						auto ledId = ledPositions->pLedPosition[i].ledId;
-						positionVector.push_back(ledPositions->pLedPosition[i]);
-						colorsVector.push_back(CorsairLedColor{ ledId, 0, 0, 0 });
+	if (cachedColors.size() < 1) {
+		auto colorsVector = std::vector<CorsairLedColor>();
+
+		for (auto deviceIndex = 0; deviceIndex < CorsairGetDeviceCount(); deviceIndex++) {
+			if (auto deviceInfo = CorsairGetDeviceInfo(deviceIndex)) {
+				if (deviceInfo->type == CDT_Keyboard) {
+					auto ledPositions = CorsairGetLedPositions();
+					if (ledPositions) {
+						for (auto i = 0; i < ledPositions->numberOfLed; i++) {
+							auto ledId = ledPositions->pLedPosition[i].ledId;
+							colorsVector.push_back(CorsairLedColor{ ledId, 0, 0, 0 });
+						}
 					}
 				}
-			} break;
-			case CDT_Headset: {
-				colorsVector.push_back(CorsairLedColor{ CLH_LeftLogo, 0, 0, 0 });
-				colorsVector.push_back(CorsairLedColor{ CLH_RightLogo, 0, 0, 0 });
-			} break;
 			}
 		}
+		cachedColors = colorsVector;
 	}
-
-	return colorsVector;
+	return cachedColors;
 }
 
 void LEDController::setKey(CorsairLedId ledId, int cR, int cG, int cB) {

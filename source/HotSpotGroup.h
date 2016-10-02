@@ -1,11 +1,6 @@
 #pragma once
 
-#include <stdio.h>
-#include <wchar.h>
-#include <iostream>     
-#include <fstream>      
 #include <vector>
-#include "NuLogger.h"
 #include "ScreenHotspot.h"
 
 
@@ -31,9 +26,6 @@ public:
 	void setReferenceX(int x);
 	void setReferenceY(int y);
 	void setLolUIScale(int scale);
-	int getReferenceX();
-	int getReferenceY();
-	int getLolUIScale();
 
 
 

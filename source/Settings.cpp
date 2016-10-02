@@ -63,6 +63,8 @@ boolean Settings::checkOrCreateEmptyFile() {
 		NuLogger::getInstance()->log("Cant update ini value");
 		return false;
 	}
+	removeValue("Main", "initCheck");
+	commit();
 
 	return true;
 }
@@ -113,6 +115,10 @@ void Settings::commit() {
 		ini.SaveFile(getFQFN().c_str(), true);
 		setAutoCommit(true);
 	}
+}
+
+void Settings::removeValue(string section, string keyName) {
+	ini.Delete(section.c_str(), keyName.c_str());
 }
 
 string Settings::getFQFN() {

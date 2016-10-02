@@ -26,13 +26,17 @@ void HSBar::filterMat() {
 }
 
 Vec4b HSBar::getCurrentColor(int index) {
+	int percent = determinePercentage();
+
+	Vec4b color(0, 0, 0, 255);
+
 	if (colorBarMat.cols >= index) {
-		return colorBarMat.at<Vec4b>(0, index);
+		if (index * (int)(100 / colorBarMat.cols) < percent) {
+			color = colorBarMat.at<Vec4b>(0, index);
+		}
 	}
-	else {
-		return Vec4b(0, 0, 0, 255);
-	}
-	
+
+	return color;
 }
 
 int HSBar::getMaxTick() {
@@ -54,12 +58,7 @@ void HSBar::updateKey() {
 	int index = 0;
 	for (vector<CorsairLedId>::iterator currentKey = allKeys->begin(); currentKey != allKeys->end(); ++currentKey, ++index) {
 		
-		Vec4b color(0, 0, 0);
-
-		if (index * (int)(100 / keyCount) < percent) {
-			color = colorBarMat.at<Vec4b>(0, index);
-		}
-		
+		Vec4b color = getCurrentColor(index);
 		LEDController::getInstance()->setKey((CorsairLedId)*currentKey, color[2], color[1], color[0]);
 		
 	}

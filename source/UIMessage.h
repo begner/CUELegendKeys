@@ -1,10 +1,10 @@
 #pragma once
 
-using namespace std;
-
 #include <string>
 #include <windows.h>
 #include "UIMainWindow.h"
+
+using namespace std;
 
 class UIMessage
 {

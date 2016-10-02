@@ -70,19 +70,22 @@
       <Filter>HotSpots\HotSpots</Filter>
     </ClCompile>
     <ClCompile Include="HSLBase.cpp">
-      <Filter>HotSpots\LearningModules</Filter>
-    </ClCompile>
-    <ClCompile Include="HSLItems.cpp">
-      <Filter>HotSpots\LearningModules</Filter>
-    </ClCompile>
-    <ClCompile Include="HSLResourceBar.cpp">
-      <Filter>HotSpots\LearningModules</Filter>
-    </ClCompile>
-    <ClCompile Include="HSLSkills.cpp">
-      <Filter>HotSpots\LearningModules</Filter>
+      <Filter>HotSpots\HotSpots\LearningModules</Filter>
     </ClCompile>
     <ClCompile Include="HotSpotLearn.cpp">
       <Filter>HotSpots</Filter>
+    </ClCompile>
+    <ClCompile Include="HSLBar.cpp">
+      <Filter>HotSpots\HotSpots\LearningModules</Filter>
+    </ClCompile>
+    <ClCompile Include="HSLSkill.cpp">
+      <Filter>HotSpots\HotSpots\LearningModules</Filter>
+    </ClCompile>
+    <ClCompile Include="HSLItem.cpp">
+      <Filter>HotSpots\HotSpots\LearningModules</Filter>
+    </ClCompile>
+    <ClCompile Include="HSPassive.cpp">
+      <Filter>HotSpots\HotSpots</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -147,9 +150,6 @@
     <ClInclude Include="Settings.h">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="simpleini\SimpleIni.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
     <ClInclude Include="UISettingsDialog.h">
       <Filter>UI</Filter>
     </ClInclude>
@@ -169,19 +169,25 @@
       <Filter>HotSpots\HotSpots</Filter>
     </ClInclude>
     <ClInclude Include="HSLBase.h">
-      <Filter>HotSpots\LearningModules</Filter>
-    </ClInclude>
-    <ClInclude Include="HSLItems.h">
-      <Filter>HotSpots\LearningModules</Filter>
-    </ClInclude>
-    <ClInclude Include="HSLResourceBar.h">
-      <Filter>HotSpots\LearningModules</Filter>
-    </ClInclude>
-    <ClInclude Include="HSLSkills.h">
-      <Filter>HotSpots\LearningModules</Filter>
+      <Filter>HotSpots\HotSpots\LearningModules</Filter>
     </ClInclude>
     <ClInclude Include="HotSpotLearn.h">
       <Filter>HotSpots</Filter>
+    </ClInclude>
+    <ClInclude Include="HSLBar.h">
+      <Filter>HotSpots\HotSpots\LearningModules</Filter>
+    </ClInclude>
+    <ClInclude Include="HSLSkill.h">
+      <Filter>HotSpots\HotSpots\LearningModules</Filter>
+    </ClInclude>
+    <ClInclude Include="HSLItem.h">
+      <Filter>HotSpots\HotSpots\LearningModules</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\SimpleIni.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="HSPassive.h">
+      <Filter>HotSpots\HotSpots</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -206,7 +212,7 @@
     <Filter Include="HotSpots\HotSpots">
       <UniqueIdentifier>{86ed7e48-2a28-4537-ac42-10329459b8e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HotSpots\LearningModules">
+    <Filter Include="HotSpots\HotSpots\LearningModules">
       <UniqueIdentifier>{3f270d92-9d75-4a83-a2a1-346207912405}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

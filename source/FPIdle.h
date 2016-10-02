@@ -2,6 +2,7 @@
 #include "Resource.h"
 #include "FrameProcessing.h"
 #include "FPScreenMirror.h"
+#include "Settings.h"
 
 class FPIdle :
 	public FPScreenMirror
@@ -15,16 +16,15 @@ private:
 	HWND desktopWindow;
 
 public:
-	FPIdle(HWND uiHWND);
+	explicit FPIdle(HWND uiHWND);
 	~FPIdle();
 
 	static CONST int FP_IDLE_MODE_OFF = 0;
 	static CONST int FP_IDLE_MODE_SCREEN_MIRROR = 1;
-
-
-	int getWindowBackgroundResource();
-	bool process();
+	
+	int getWindowBackgroundResource() override;
+	bool process() override;
 	void setMode(int setMode);
-	void setCaptureWindow(HWND currentProcess);
+	void setCaptureWindow(HWND currentProcess) override;
 };
 

@@ -1,6 +1,6 @@
 #pragma once
 
-using namespace std;
+// using namespace std;
 
 #include <iostream>
 #include <windows.h>
@@ -39,6 +39,8 @@ public:
 private:
 
 	std::vector<CorsairLedPosition> cachedPositions;
+	std::vector<CorsairLedColor> cachedColors;
+
 	std::vector<CorsairLedColor> allKeys;
 	
 	LEDController(void);

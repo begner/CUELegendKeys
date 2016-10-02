@@ -1,13 +1,13 @@
 #pragma once
 
-using namespace std;
-
 #include <stddef.h>
 #include <string>
 #include <Shlwapi.h>
 #include <fstream>
 #include "convert.h"
 #include <iostream>
+
+using namespace std;
 
 class NuLogger
 {

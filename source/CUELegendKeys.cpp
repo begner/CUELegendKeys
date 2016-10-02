@@ -19,6 +19,7 @@ void CUELegendKeys::release()
 
 CUELegendKeys::CUELegendKeys()
 {
+	procL = ProcessList::getInstance();
 }
 
 CUELegendKeys::~CUELegendKeys()
@@ -88,7 +89,10 @@ void CUELegendKeys::AppInit()
 	NuLogger::getInstance()->log("AppInit Done!");
 	
 	Settings::getInstance()->setValue("main", "appinit", "test");
-	Settings::getInstance()->commit();
+	Settings::getInstance()->removeValue("main", "appinit");
+	
+		
+	setScreenMirrorOnIdleMode(Settings::getInstance()->getValue("IdleMode", "screenMirror", (int)0) == 1);
 }
 
 void CUELegendKeys::AppStart() {
@@ -119,8 +123,7 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 		return;
 	}
 	
-	// Select Client
-	ProcessList* procL = ProcessList::getInstance();
+	
 
 	DWORD selectClientPID = procL->getPIDofProcess("LolClient.exe");
 	HWND selectClientHWND = NULL;
@@ -155,12 +158,15 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 	
 	// if game client
 	if (gameClientHWND != NULL && gameClientVisibility) {
+		fpGameClient->enableFpsLimit(limitFPS);
 		fpGameClient->setCaptureWindow(gameClientHWND);
 		drawStatus = fpGameClient->process();
 		if (drawStatus) showIdle = false;
 	}
+
 	// if selectClient
 	else if (selectClientHWND != NULL && selectClientVisibility) {
+		fpSelectClient->enableFpsLimit(limitFPS);
 		fpSelectClient->setCaptureWindow(selectClientHWND);
 		drawStatus = fpSelectClient->process();
 		if (drawStatus) showIdle = false;
@@ -168,10 +174,18 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 
 	// Idle
 	if (showIdle) {
-		fpIdle->setMode(FPIdle::FP_IDLE_MODE_SCREEN_MIRROR);
-		fpIdle->process();
+		if (screenMirrorOnIdleMode) {
+			fpIdle->enableFpsLimit(limitFPS);
+			fpIdle->setMode(FPIdle::FP_IDLE_MODE_SCREEN_MIRROR);
+		}
+		else {
+			fpIdle->setMode(FPIdle::FP_IDLE_MODE_OFF);
+		}
 		
+		fpIdle->process();
+	
 	}
+	
 
 }
 
@@ -180,12 +194,44 @@ bool CUELegendKeys::getForceInGameClient() {
 }
 
 void CUELegendKeys::setForceInGameClient(bool state) {
+	NuLogger::getInstance()->log("setForceInGameClient: %d", state);
 	forceInGameClient = state;
 }
 
+bool CUELegendKeys::getScreenMirrorOnIdleMode() {
+	return screenMirrorOnIdleMode;
+}
+
+void CUELegendKeys::setScreenMirrorOnIdleMode(bool state) {
+	NuLogger::getInstance()->log("setScreenMirrorOnIdleMode: %d", state);
+	Settings::getInstance()->setValue("IdleMode", "screenMirror", (int)state);
+	screenMirrorOnIdleMode = state;
+}
+
+bool CUELegendKeys::getLimitFPS() {
+	return limitFPS;
+}
+
+void CUELegendKeys::setLimitFPS(bool state) {
+	NuLogger::getInstance()->log("setLimitFPS: %d", state);
+	Settings::getInstance()->setValue("Main", "limitFPS", (int)state);
+	limitFPS = state;
+}
+
+
+void CUELegendKeys::setShowFilteredMat(bool state) {
+	fpGameClient->setShowFilteredMat(state);
+}
+
+bool CUELegendKeys::getShowFilteredMat() {
+	return fpGameClient->getShowFilteredMat();
+}
+
+
+
 void CUELegendKeys::learnHotSpots() {
 	HotSpotLearn hsl;
-	hsl.findAllHotSpots();
+	hsl.start();
 }
 
 void CUELegendKeys::quit() {

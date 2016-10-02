@@ -21,6 +21,7 @@ void HotSpotGroup::setLolUIScale(int scale) {
 	lolUIScale = scale;
 }
 
+
 /*int HotSpotGroup::translateCoords(x) {
 	int minSize = 650;
 

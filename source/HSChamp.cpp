@@ -8,6 +8,7 @@ void HSChamp::initialize() {
 	champKeyWidth = keyDim.right;
 	champKeyHeight = keyDim.bottom;
 
+	srand(time(NULL));
 
 	// Mask for UI
 	int cW = getCaptureWidth(true);
@@ -35,17 +36,25 @@ int HSChamp::getType() {
 
 void HSChamp::filterMat() {
 
+	int maxDiff = 2;
+
+	int diffL = (double)rand() / (RAND_MAX + 1) * maxDiff;
+	int diffT = (double)rand() / (RAND_MAX + 1) * maxDiff;
+
+
 	ImageFilterMat::addAlphaMask(getOriginalMatRespectBorders(), mask);
 
 	champImageColorTable = Mat4b(getCaptureWidth(true), getCaptureHeight(true), CV_8UC4);
 	getOriginalMatRespectBorders()->copyTo(champImageColorTable);
 
-	cv::Rect curRect(champRadius, champRadius, champImageColorTable.cols - champRadius * 2, champImageColorTable.rows - champRadius * 2);
+	cv::Rect curRect(champRadius + diffL, champRadius + diffT, champImageColorTable.cols - champRadius * 2 + diffL, champImageColorTable.rows - champRadius * 2 + diffT);
 	champImageColorTable = Mat4b(champImageColorTable, curRect);
 
 	ImageFilterMat::saturation(champImageColorTable, 0, 255, 1);
 	resize(champImageColorTable, champImageColorTable, cv::Size(champKeyWidth, champKeyHeight), 0, 0, INTER_CUBIC);
 	
+	
+
 	// ImageFilterMat::killGrayPixel(champImageColorTable, 25);
 }
 
@@ -56,8 +65,10 @@ Vec4b HSChamp::getCurrentColor(int index) {
 
 void HSChamp::updateKey() {
 
+	/*
 	for (vector<CorsairLedPosition>::iterator it = champKeys.begin(); it != champKeys.end(); ++it) {
-		
+	
+
 		cv::Rect testRect((int)it->left, (int)it->top, (int)it->width, (int)it->height);
 		Mat4b testMat = Mat(champImageColorTable, testRect);
 		resize(testMat, testMat, cv::Size(1, 1), 0, 0, INTER_CUBIC);
@@ -65,7 +76,7 @@ void HSChamp::updateKey() {
 		Vec4b color = testMat.at<Vec4b>(0, 0);
 		LEDController::getInstance()->setKey(it->ledId, color[2], color[1], color[0]);
 	}
-
+	*/
 
 }
 

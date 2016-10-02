@@ -1,34 +1,40 @@
 #pragma once
-#include "ScreenHotSpot.h"
+#include "HSCastable.h"
 #include <algorithm>
 
 #include <cstdlib> // for srand, rand
 #include <ctime>  
 
-class HSChamp :
-	public ScreenHotSpot
+class HSPassive :
+	public HSCastable
 {
 private:
 	int champKeyWidth = 0;
 	int champKeyHeight = 0;
 	vector<CorsairLedPosition> champKeys;
 
-	int champRadius = 35;
-	int champOffsetX = 0;
-	int champOffsetY = -2;
+	int maxDiff = 6;
+	int lastTargetDiffX = maxDiff / 2;
+	int lastTargetDiffY = maxDiff / 2;
+	int targetDiffX = 0;
+	int targetDiffY = 0;
+	int remainingTicks = 0;
+	void reinitAnimation();
 
-	Mat4b champImageColorTable;
+
+	Mat champImageColorTable;
 	Mat* mask;
 
 public:
-	HSChamp();
-	~HSChamp();
+	HSPassive();
+	~HSPassive();
 	int getType();
 	void filterMat();
 	Vec4b getCurrentColor(int index = 0);
-	int getMaxTick();
 	void updateKey();
-	int getUpdateFrame();
 	void initialize();
+	int getMaxTick();
+
 };
+
 

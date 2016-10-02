@@ -43,7 +43,6 @@ void FPScreenMirror::reinitialize() {
 	if (mask) {
 		delete mask;
 	}
-
 	mask = new Mat4b(targetHeight, targetWidth, CV_8UC4);
 	for (int i = 0; i < cB; i++) {
 		int c = (int)floor((float)i / (float)cB * (float)192);
@@ -57,7 +56,6 @@ void FPScreenMirror::reinitialize() {
 	if (keyboardFx) {
 		delete keyboardFx;
 	}
-
 	keyboardFx = new Mat4b(targetHeight, targetWidth, Vec4b(0, 0, 0, 0));
 	
 	vector<CorsairLedPosition>::iterator it;
@@ -76,7 +74,7 @@ void FPScreenMirror::reinitialize() {
 		}
 		++it;
 	}
-	
+
 	initialized = true;
 }
 
@@ -119,7 +117,7 @@ bool FPScreenMirror::process() {
 	PerformanceStart();
 
 	
-
+	
 	// get window bitmap as Mat screenshotMat
 	RECT targetRect;
 	GetWindowRect(currentProcessHWND, &targetRect);
@@ -129,6 +127,7 @@ bool FPScreenMirror::process() {
 
 	if ((targetRect.left < 0 && targetRect.top < 0 && targetRect.right < 0 && targetRect.bottom < 0) ||
 		clientWidth < 0 || clientHeight < 0) {
+		PerformanceStop();
 		return false;
 	}
 
@@ -136,19 +135,26 @@ bool FPScreenMirror::process() {
 
 	Mat* screenshotRaw = ImageFilterMat::hdc2mat(captureWindowHDC, 0, 0, clientWidth, clientHeight);
 	if (screenshotRaw == NULL) {
+		PerformanceStop();
+		delete screenshotRaw;
 		return false;
 	}
 
 	Mat4b screenshotMat = (Mat4b)*screenshotRaw;
 	resize(screenshotMat, screenshotMat, cv::Size(targetWidth, targetHeight));
+
 	ImageFilterMat::incSaturation(screenshotMat, 50, (float)0.7);
 
 
+	LEDController::getInstance()->initializeFrame();
+
+	
 	Mat4b keyboardMat = Mat4b(*keyboardFx);
 
-	LEDController::getInstance()->initializeFrame();
+	
 	
 	// draw Keyboard
+	
 	vector<CorsairLedPosition>::iterator it = allKeys.begin();
 	it = allKeys.begin();
 	for (; it != allKeys.end(); ) {
@@ -189,9 +195,9 @@ bool FPScreenMirror::process() {
 		}
 		++it;
 	}
-
+	
 	LEDController::getInstance()->updateFrame();
-
+	
 	// copy background to UI
 	windowBackground.copyTo(drawUI);
 	
@@ -199,9 +205,11 @@ bool FPScreenMirror::process() {
 	
 	
 	ImageFilterMat::overlayImage(&drawUI, &screenshotMat, cv::Point(targetX, targetY));
+	
 	resize(keyboardMat, keyboardMat, cv::Size(targetWidth, targetHeight));
 	ImageFilterMat::overlayImage(&drawUI, &keyboardMat, cv::Point(targetX, targetY));
 
+	
 	PerformanceDraw();
 
 	// draw the UI
@@ -212,7 +220,6 @@ bool FPScreenMirror::process() {
 
 	// throwing away pointer, so opencv releases memory
 	delete screenshotRaw;
-	
 
 	PerformanceStop();
 	return true;

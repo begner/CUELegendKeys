@@ -29,6 +29,7 @@ public:
 
 	void setAutoCommit(boolean state);
 	void commit();
+	void removeValue(string section, string keyName);
 private:
 	string settingsPath = "";
 	string settingsFile = "settings.ini";

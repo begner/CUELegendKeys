@@ -2,12 +2,13 @@
 #include "FrameProcessing.h"
 
 
+#include "Resource.h"
+#include "HotSpotGroup.h"
 #include "HSCastable.h"
 #include "HSBackport.h"
 #include "HSBar.h"
-#include "HSBackport.h"
 #include "HSChamp.h"
-
+#include "HSPassive.h"
 
 class FPGameClient :
 	public FrameProcessing
@@ -15,11 +16,12 @@ class FPGameClient :
 private:
 	Mat4b loadingDetectionTemplate;
 
-	HWND currentProcessHWND = NULL;
-	HDC gameClientHDC = NULL;
+	HWND currentProcessHWND = nullptr;
+	HDC gameClientHDC = nullptr;
 	int nScreenWidth = 0;
 	int nScreenHeight = 0;
 
+	bool showFilteredMat = false;
 
 	// LOL Stuff
 	HSCastable hsAbilityQ;
@@ -41,6 +43,7 @@ private:
 	HSBar hsHealBar;
 	HSBar hsManaBar;
 	HSChamp hsChamp;
+	HSPassive hsPassive;
 
 	HotSpotGroup *hotSpotGroup;
 
@@ -53,11 +56,12 @@ private:
 	bool processLoading(Mat4b screenShot);
 	bool processInGame(Mat4b screenShot);
 public:
-	FPGameClient(HWND uiHWND);
+	explicit FPGameClient(HWND uiHWND);
 	~FPGameClient();
-	bool process();
-	int getWindowBackgroundResource();
-	void setCaptureWindow(HWND currentProcess);
-
+	bool process() override;
+	int getWindowBackgroundResource() override;
+	void setCaptureWindow(HWND currentProcess) override;
+	void setShowFilteredMat(bool state);
+	bool getShowFilteredMat();
 };
 

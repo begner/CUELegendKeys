@@ -87,7 +87,7 @@ void HSBackport::doExclusiveEffect() {
 
 	// int nc = effectColorsMat->cols*effectColorsMat->channels();					// number of elements per line
 	// get the address of row 0
-	uchar* data = effectColorsMat.ptr<uchar>(0);
+	// uchar* data = effectColorsMat.ptr<uchar>(0);
 
 	int halfWidth = (int)floor(effectMat.cols / 2);
 	// int rowSize = effectColorsMat.cols * effectColorsMat.channels();

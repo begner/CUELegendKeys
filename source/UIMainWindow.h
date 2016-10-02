@@ -22,8 +22,8 @@ private:
 	static const int MAX_TIP = 127;
 	static const int MAX_TITLE = 48;
 	static const int MAX_MESSAGE = 255;
-
-	
+	void createMenuItem(HMENU hMenu, int position, UINT flags, UINT_PTR dlgIdent, string title);
+	void createMenuDivider(HMENU hMenu, int position);
 	void deleteTrayIcon();
 	void onDestroy();
 public:

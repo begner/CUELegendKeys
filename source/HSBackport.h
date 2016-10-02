@@ -12,7 +12,7 @@ private:
 
 	cv::Point bCenterPoint;
 	int iconRadius = 0;
-	int backPortDetectionX, backPortDetectionY, backPortDetectionW, backPortDetectionH = 0;
+	int backPortDetectionX = 0, backPortDetectionY = 0, backPortDetectionW = 0, backPortDetectionH = 0;
 	vector<CorsairLedPosition> allKeys;
 	Mat4b mask;
 	Mat4b effectColorsMat;

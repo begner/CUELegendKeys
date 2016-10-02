@@ -117,6 +117,7 @@ INT_PTR CALLBACK UIMainDialog::MessageHandler(HWND hDlg, UINT message, WPARAM wP
 
 				// passthru menu events to main window :)
 				if (LOWORD(wParam) >= IDM_CONST_START_RANGE && LOWORD(wParam) <= IDM_CONST_END_RANGE) {
+					NuLogger::getInstance()->log("passthru menu events to main window");
 					return (INT_PTR)UIMainWindow::MessageHandler(UIMainWindow::getInstance()->getHandle(), message, wParam, lParam);
 				}
 				

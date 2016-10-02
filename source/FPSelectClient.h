@@ -15,11 +15,12 @@ private:
 	HWND desktopWindow;
 
 public:
-	FPSelectClient(HWND uiHWND);
+	explicit FPSelectClient(HWND uiHWND); 
 	~FPSelectClient();
-
-	int getWindowBackgroundResource();
-	void setMode(int setMode);
-	void setCaptureWindow(HWND currentProcess);
+	
+	bool process();
+	int getWindowBackgroundResource() override;
+	// void setMode(int setMode);
+	void setCaptureWindow(HWND currentProcess) override;
 };
 

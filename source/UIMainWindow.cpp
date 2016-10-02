@@ -148,33 +148,79 @@ void UIMainWindow::deleteTrayIcon()
 	Shell_NotifyIconW(NIM_DELETE, &NotifyIconData);
 }
 
+void UIMainWindow::createMenuDivider(HMENU hMenu, int position) {
+	InsertMenu(hMenu, position, MF_MENUBARBREAK, 0, NULL);
+}
+
+void UIMainWindow::createMenuItem(HMENU hMenu, int position,  UINT flags, UINT_PTR dlgIdent, string title) {
+	wstring wTitle = s2ws(title).c_str();
+	InsertMenu(hMenu, position, flags, dlgIdent, wTitle.c_str());
+}
 
 void UIMainWindow::createMenuItems(HMENU hMenu) {
 	
 	int position = 0; // position of menuitem
+	string itemLabel = "";
 
 	// Open Close Main Dlg
 	if (!IsWindowVisible(UIMainDialog::getInstance()->getHandle()))
-		InsertMenu(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_SHOW_MAINDLG, (LPCWSTR)L"Open");
+		createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_SHOW_MAINDLG, "Open");
 	else
-		InsertMenu(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_HIDE_MAINDLG, (LPCWSTR)L"Hide to Tray");
+		createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_HIDE_MAINDLG, "Hide to Tray");
 	
-	InsertMenu(hMenu, position++, MF_MENUBARBREAK, 0, NULL);
+	// -----------------------------------------------------------------------
+	createMenuDivider(hMenu, position++);
 	
-	InsertMenu(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_MODE_LEARN, (LPCWSTR)L"Learn...");
+	// Learn
+	createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_MODE_LEARN, "Learn...");
+
+	// -----------------------------------------------------------------------
+	createMenuDivider(hMenu, position++);
+	
+	// Limit FPS
+	itemLabel = "Limit FPS";
+	if (!CUELegendKeys::getInstance()->getLimitFPS()) {
+		createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_LIMIT_FPS_ON, itemLabel);
+	}
+	else {
+		createMenuItem(hMenu, position++, MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_LIMIT_FPS_OFF, itemLabel);
+	}
+
+	// Idle Mode
+	itemLabel = "Use ScreenMirror on Idle";
+	if (!CUELegendKeys::getInstance()->getScreenMirrorOnIdleMode())
+		createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_MODE_IDLE_MIRROR, itemLabel);
+	else
+		createMenuItem(hMenu, position++, MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_MODE_IDLE_OFF, itemLabel);
+
+	// Show filtered Mat
+	itemLabel = "Show filtered HotSpots";
+	if (!CUELegendKeys::getInstance()->getShowFilteredMat())
+		createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_MODE_GAME_SHOW_FILTERED_MAT, itemLabel);
+	else
+		createMenuItem(hMenu, position++, MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_MODE_GAME_SHOW_FILTERED_MAT_OFF, itemLabel);
+
+	// -----------------------------------------------------------------------
+	createMenuDivider(hMenu, position++);
+
 
 	// Force Modes
+	itemLabel = "Force In-Game Mode";
 	if (!CUELegendKeys::getInstance()->getForceInGameClient())
-		InsertMenu(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_MODE_FORCE_INGAME, (LPCWSTR)L"Force In-Game Mode");
+		createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_MODE_FORCE_INGAME, itemLabel);
 	else
-		InsertMenu(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_MODE_NORMAL, (LPCWSTR)L"Switch to Normal Mode");
-		
-	InsertMenu(hMenu, position++, MF_MENUBARBREAK, 0, NULL);
+		createMenuItem(hMenu, position++, MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_MODE_NORMAL, itemLabel);
+
+	// -----------------------------------------------------------------------
+	createMenuDivider(hMenu, position++);
+
+	// About
+	createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_SHOW_ABOUT, "About");
+
+	// Quit
+	createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_QUIT, "Quit");
 	
-
-
-	InsertMenu(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_SHOW_ABOUT, (LPCWSTR)L"About");
-	InsertMenu(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_QUIT, (LPCWSTR)L"Quit");
+	
 }
 
 void UIMainWindow::ShowTrayMenu() {
@@ -304,10 +350,42 @@ INT_PTR CALLBACK UIMainWindow::MessageHandler(HWND _hwnd, UINT message, WPARAM w
 					// DialogBox(ghInst, MAKEINTRESOURCE(IDD_ABOUTBOX), ghWnd, About);
 					return (INT_PTR)TRUE;
 					break;
+					
+				case IDM_MODE_GAME_SHOW_FILTERED_MAT:
+					CUELegendKeys::getInstance()->setShowFilteredMat(true);
+					return (INT_PTR)TRUE;
+					break;
+
+				case IDM_MODE_GAME_SHOW_FILTERED_MAT_OFF:
+					CUELegendKeys::getInstance()->setShowFilteredMat(false);
+					return (INT_PTR)TRUE;
+					break;
+
+				case IDM_LIMIT_FPS_ON:
+					CUELegendKeys::getInstance()->setLimitFPS(true);
+					return (INT_PTR)TRUE;
+					break;
+
+				case IDM_LIMIT_FPS_OFF:
+					CUELegendKeys::getInstance()->setLimitFPS(false);
+					return (INT_PTR)TRUE;
+					break;
+
+				case IDM_MODE_IDLE_MIRROR:
+					CUELegendKeys::getInstance()->setScreenMirrorOnIdleMode(true);
+					return (INT_PTR)TRUE;
+					break;
+
+				case IDM_MODE_IDLE_OFF:
+					CUELegendKeys::getInstance()->setScreenMirrorOnIdleMode(false);
+					return (INT_PTR)TRUE;
+					break;
+
 				case IDM_MODE_LEARN:
 					CUELegendKeys::getInstance()->learnHotSpots();
 					return (INT_PTR)TRUE;
 					break;
+
 				case IDM_MODE_NORMAL:
 					CUELegendKeys::getInstance()->setForceInGameClient(false);
 					return (INT_PTR)TRUE;
@@ -316,6 +394,7 @@ INT_PTR CALLBACK UIMainWindow::MessageHandler(HWND _hwnd, UINT message, WPARAM w
 					CUELegendKeys::getInstance()->setForceInGameClient(true);
 					return (INT_PTR)TRUE;
 					break;
+
 				case IDM_QUIT:
 					CUELegendKeys::getInstance()->quit();
 					return (INT_PTR)TRUE;

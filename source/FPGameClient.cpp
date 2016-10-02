@@ -174,7 +174,7 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 	hsHealBar.addKey(CLK_F7);
 	hsHealBar.addKey(CLK_F8);
 	for (int i = 0; i < hsHealBar.getKeys()->size(); i++) {
-		hsHealBar.addPreviewColorCoordinates(barMinPosX + (int)floor((barMaxPosX - barMinPosX) / hsHealBar.getKeys()->size() * (i+0.5)), 418);
+		hsHealBar.addPreviewColorCoordinates(barMinPosX + static_cast<int>(floor((barMaxPosX - barMinPosX) / hsHealBar.getKeys()->size() * (i+0.5))), 418);
 	}
 	hotSpotGroup->addHotSpot(&hsHealBar);
 	
@@ -188,7 +188,7 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 	hsManaBar.addKey(CLK_ScrollLock);
 	hsManaBar.addKey(CLK_PauseBreak);
 	for (int i = 0; i < hsManaBar.getKeys()->size(); i++) {
-		hsManaBar.addPreviewColorCoordinates(barMinPosX + (int)floor((barMaxPosX - barMinPosX) / hsManaBar.getKeys()->size() * (i + 0.5)), 510);
+		hsManaBar.addPreviewColorCoordinates(barMinPosX + static_cast<int>(floor((barMaxPosX - barMinPosX) / hsManaBar.getKeys()->size() * (i + 0.5))), 510);
 	}
 	hotSpotGroup->addHotSpot(&hsManaBar);
 	
@@ -199,7 +199,17 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 	hsChamp.setUiCoordinates(8, 12);
 	hotSpotGroup->addHotSpot(&hsChamp);
 	
-	
+	// Passive
+	// ***********************************************************
+
+	hsPassive.addKey(CLK_Enter);
+	hsPassive.setCaptureCoordinates(146, 23, 44, 44);
+	hsPassive.setUiCoordinates(150, 12);
+	hsPassive.setBorder(4);
+	hsPassive.addPreviewColorCoordinates(150, 70);
+	hotSpotGroup->addHotSpot(&hsPassive);
+
+
 	loadingDetectionTemplate = ImageFilterMat::loadResourceAsMat(IDB_LOADING_DETECTION_TEMPLATE);
 
 }
@@ -218,7 +228,7 @@ int FPGameClient::getWindowBackgroundResource() {
 void FPGameClient::setCaptureWindow(HWND currentProcess) {
 	if (currentProcess != currentProcessHWND) {
 		currentProcessHWND = currentProcess;
-		if (gameClientHDC != NULL) {
+		if (gameClientHDC != nullptr) {
 			DeleteObject(gameClientHDC);
 		}
 		gameClientHDC = GetDC(currentProcessHWND);
@@ -236,7 +246,7 @@ bool FPGameClient::process() {
 		return false;
 	}
 
-
+	setFpsLimit(Settings::getInstance()->getValue("GameClientMode", "FPSLimit", (int)15));
 	PerformanceStart();
 
 	LEDController::getInstance()->initializeFrame();
@@ -248,7 +258,7 @@ bool FPGameClient::process() {
 	int clientHeight = targetRect.bottom - targetRect.top;
 
 	Mat* screenshotRaw = ImageFilterMat::hdc2mat(gameClientHDC, 0, 0, clientWidth, clientHeight);
-	if (screenshotRaw == NULL) {
+	if (screenshotRaw == nullptr) {
 		return false;
 	}
 	/*
@@ -257,7 +267,7 @@ bool FPGameClient::process() {
 		return false;
 	}
 	*/
-	Mat4b screenshotMat = (Mat4b)*screenshotRaw;
+	Mat4b screenshotMat = static_cast<Mat4b>(*screenshotRaw);
 	if (screenshotMat.cols < nScreenWidth && screenshotMat.rows < nScreenHeight) {
 		delete screenshotRaw;
 		return false;
@@ -295,6 +305,7 @@ bool FPGameClient::process() {
 }
 
 
+// ReSharper disable once CppMemberFunctionMayBeStatic
 bool FPGameClient::processLoading(Mat4b screenshotMat) {
 	
 	return true;
@@ -339,9 +350,14 @@ bool FPGameClient::processInGame(Mat4b screenshotMat) {
 
 			ScreenHotSpot* hs = (*it);
 
-
-			ImageFilterMat::overlayImage(&drawUI, hs->getOriginalMatRespectBorders(), cv::Point(hs->getUiX(), hs->getUiY()));
-			// ImageFilterMat::overlayImage(&drawUI, hs->getFilteredMat(), cv::Point(hs->getUiX(), hs->getUiY()));
+			if (showFilteredMat) {
+				ImageFilterMat::overlayImage(&drawUI, hs->getFilteredMat(), cv::Point(hs->getUiX(), hs->getUiY()));
+			}
+			else {
+				ImageFilterMat::overlayImage(&drawUI, hs->getOriginalMatRespectBorders(), cv::Point(hs->getUiX(), hs->getUiY()));
+			}
+			
+			
 
 			vector<cv::Rect>* previewColors = hs->getPreviewColors();
 			int index = 0;
@@ -362,4 +378,13 @@ bool FPGameClient::processInGame(Mat4b screenshotMat) {
 	LEDController::getInstance()->updateFrame();
 	return true;
 }
+
+void FPGameClient::setShowFilteredMat(bool state) {
+	showFilteredMat = state;
+}
+
+bool FPGameClient::getShowFilteredMat() {
+	return showFilteredMat;
+}
+
 

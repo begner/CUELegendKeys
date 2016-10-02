@@ -22,3 +22,8 @@ void FPSelectClient::setCaptureWindow(HWND currentProcess) {
 int FPSelectClient::getWindowBackgroundResource() {
 	return IDB_WINDOW_BACKGROUND_SELECT;
 }
+
+bool FPSelectClient::process() {
+	FPScreenMirror::setFpsLimit(Settings::getInstance()->getValue("SelectClientMode", "FPSLimit", (int)15));
+	return FPScreenMirror::process();
+}

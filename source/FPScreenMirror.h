@@ -2,7 +2,7 @@
 
 #include "Resource.h"
 #include "FrameProcessing.h"
-#include <algorithm>
+#include "LEDController.h"
 
 using namespace std;
 
@@ -36,18 +36,18 @@ private :
 	float uiZoom;
 	vector<CorsairLedPosition> allKeys;
 
-	HWND currentProcessHWND = NULL;
-	HDC captureWindowHDC = NULL;
+	HWND currentProcessHWND = nullptr;
+	HDC captureWindowHDC = nullptr;
 
 	Mat4b* mask;
 	Mat4b* keyboardFx;
 public:
 	FPScreenMirror(HWND uiHWND);
 	virtual ~FPScreenMirror();
-	int getWindowBackgroundResource();
+	int getWindowBackgroundResource() override;
 	void reinitialize();
-	bool process();
-	void setCaptureWindow(HWND currentProcess);
+	bool process() override;
+	void setCaptureWindow(HWND currentProcess) override;
 	void setOffset(RECT offset);
 	void setUIDimensions(int x, int y, int width, int height);
 	void setOffsetScale(float x, float y);

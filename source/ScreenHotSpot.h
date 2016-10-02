@@ -77,6 +77,7 @@ public:
 	static const int TYPE_BAR = 2;
 	static const int TYPE_BACKPORT = 3;
 	static const int TYPE_CHAMP = 4;
+	static const int TYPE_PASSIVE = 5;
 
 	virtual int getType();
 	void setCaptureCoordinates(int x, int y, int w, int h);
