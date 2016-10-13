@@ -193,13 +193,7 @@ void UIMainWindow::createMenuItems(HMENU hMenu) {
 	else
 		createMenuItem(hMenu, position++, MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_MODE_IDLE_OFF, itemLabel);
 
-	// Show filtered Mat
-	itemLabel = "Show filtered HotSpots";
-	if (!CUELegendKeys::getInstance()->getShowFilteredMat())
-		createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_MODE_GAME_SHOW_FILTERED_MAT, itemLabel);
-	else
-		createMenuItem(hMenu, position++, MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_MODE_GAME_SHOW_FILTERED_MAT_OFF, itemLabel);
-
+	
 	// -----------------------------------------------------------------------
 	createMenuDivider(hMenu, position++);
 
@@ -210,6 +204,19 @@ void UIMainWindow::createMenuItems(HMENU hMenu) {
 		createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_MODE_FORCE_INGAME, itemLabel);
 	else
 		createMenuItem(hMenu, position++, MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_MODE_NORMAL, itemLabel);
+
+	// Show filtered Mat
+	itemLabel = "Show filtered HotSpots";
+	if (!CUELegendKeys::getInstance()->getShowFilteredMat())
+		createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_MODE_GAME_SHOW_FILTERED_MAT, itemLabel);
+	else
+		createMenuItem(hMenu, position++, MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_MODE_GAME_SHOW_FILTERED_MAT_OFF, itemLabel);
+
+
+	// Map Window
+	itemLabel = "Show Map Sideview";
+	createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_SHOW_MAP_WINDOW, itemLabel);
+	
 
 	// -----------------------------------------------------------------------
 	createMenuDivider(hMenu, position++);
@@ -350,6 +357,10 @@ INT_PTR CALLBACK UIMainWindow::MessageHandler(HWND _hwnd, UINT message, WPARAM w
 					// DialogBox(ghInst, MAKEINTRESOURCE(IDD_ABOUTBOX), ghWnd, About);
 					return (INT_PTR)TRUE;
 					break;
+				case IDM_SHOW_MAP_WINDOW:
+					CUELegendKeys::getInstance()->openMapView();
+					return (INT_PTR)TRUE;
+					break;
 					
 				case IDM_MODE_GAME_SHOW_FILTERED_MAT:
 					CUELegendKeys::getInstance()->setShowFilteredMat(true);
@@ -382,7 +393,7 @@ INT_PTR CALLBACK UIMainWindow::MessageHandler(HWND _hwnd, UINT message, WPARAM w
 					break;
 
 				case IDM_MODE_LEARN:
-					CUELegendKeys::getInstance()->learnHotSpots();
+					UILearn::getInstance()->Show();
 					return (INT_PTR)TRUE;
 					break;
 

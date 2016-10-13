@@ -483,11 +483,13 @@ Mat4b ImageFilterMat::loadResourceAsMat(int RESOURCEID) {
 	BYTE* lpPixels = new BYTE[MyBMInfo.bmiHeader.biSizeImage];
 
 	MyBMInfo.bmiHeader.biSize = sizeof(MyBMInfo.bmiHeader);
+	
 	MyBMInfo.bmiHeader.biBitCount = 24;
 	MyBMInfo.bmiHeader.biCompression = BI_RGB;
 	MyBMInfo.bmiHeader.biHeight = (MyBMInfo.bmiHeader.biHeight < 0) ? (-MyBMInfo.bmiHeader.biHeight) : (MyBMInfo.bmiHeader.biHeight);
 
 
+	
 	// get the actual bitmap buffer
 	if (0 == GetDIBits(drawHDC, hBitmap, 0, MyBMInfo.bmiHeader.biHeight, (LPVOID)lpPixels, &MyBMInfo, DIB_RGB_COLORS))
 	{
@@ -502,6 +504,7 @@ Mat4b ImageFilterMat::loadResourceAsMat(int RESOURCEID) {
 	// create output 
 	Mat4b matBitmap(MyBMInfo.bmiHeader.biHeight, MyBMInfo.bmiHeader.biWidth, CV_8UC4);
 	deepCopyPixel(&referencedBitmap, &matBitmap);
+	
 
 
 	// release

@@ -31,7 +31,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
 
 	UIMainDialog::getInstance()->setHInstance(hInstance);
 	UIMainDialog::getInstance()->createWindow();
-	
+
+	UIMapView::getInstance()->setHInstance(hInstance);
+	UIMapView::getInstance()->createWindow();
+
+	UILearn::getInstance()->setHInstance(hInstance);
+	UILearn::getInstance()->createWindow();
+
 	CUELegendKeys::getInstance();
 	
 

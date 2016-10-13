@@ -10,45 +10,33 @@ HotSpotLearn::~HotSpotLearn()
 {
 }
 
-void HotSpotLearn::start() {
-	if (!takeScreenshot()) {
-		// todo: exception
-	}
-
-	findAllHotSpots();
-
-}
-
-boolean HotSpotLearn::takeScreenshot() {
+void HotSpotLearn::findSkill(int learnSkillIDB) {
+	// HSLSkill skill = HSLSkill();
 	/*
-	HWND desktop = GetDesktopWindow();
-	HDC desktopDC = GetDC(desktop);
-
-	RECT targetRect;
-	GetWindowRect(desktop, &targetRect);
-
-	clientWidth = targetRect.right - targetRect.left;
-	clientHeight = targetRect.bottom - targetRect.top;
-
-	Mat* screenshotRaw = ImageFilterMat::hdc2mat(desktopDC, 0, 0, clientWidth, clientHeight);
-	if (screenshotRaw == NULL) {
-		return false;
+	hsl.setNeedle(learnSkillIDB);
+	hsl.setHaystack(*screenshotRaw);
+	hsl.findHotSpot(learnSkillIDB);
+		
+	
 	}
 	*/
-	return true;
+
 	
 }
 
-void HotSpotLearn::findAllHotSpots() {
+// void HotSpotLearn::findHotSpot(int learnSkillIDB) {
+	
+	// HSLSkill mySkill = HSLSkill();
 	/*
+	skillQ.setTemplateResourceId(IDB_AUTO_LEARN_SKILL_Q);
+	skillQ.setHaystack(&haystackImage);
+	
 	// prepare Images
 	Mat originalImage = (Mat4b)*screenshotRaw;
 	
 	vector<HSLSkill> allSkills;
 
-	HSLSkill skillQ = HSLSkill();
-	skillQ.setTemplateResourceId(IDB_AUTO_LEARN_SKILL_Q);
-	skillQ.setHaystack(&haystackImage);
+	
 
 
 	allSkills.push_back(make_pair(IDB_AUTO_LEARN_SKILL_Q, HSRectSkillQ));
@@ -65,7 +53,7 @@ void HotSpotLearn::findAllHotSpots() {
 		findTemplate(ImageFilterMat::loadResourceAsMat(*it));
 	}
 	*/
-}
+// }
 
 
 /*

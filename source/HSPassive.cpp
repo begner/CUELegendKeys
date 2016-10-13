@@ -8,7 +8,7 @@ void HSPassive::initialize() {
 	champKeyWidth = keyDim.right;
 	champKeyHeight = keyDim.bottom;
 
-	srand(time(NULL));
+	srand(time(0));
 	reinitAnimation();
 
 }

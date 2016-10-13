@@ -24,15 +24,6 @@
     <ClCompile Include="convert.cpp">
       <Filter>Libs</Filter>
     </ClCompile>
-    <ClCompile Include="UIMainWindow.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UIMainDialog.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UIBase.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="UIMessage.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -51,9 +42,6 @@
     <ClCompile Include="Settings.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
-    <ClCompile Include="UISettingsDialog.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="FPSelectClient.cpp">
       <Filter>FrameProcessing</Filter>
     </ClCompile>
@@ -70,22 +58,58 @@
       <Filter>HotSpots\HotSpots</Filter>
     </ClCompile>
     <ClCompile Include="HSLBase.cpp">
-      <Filter>HotSpots\HotSpots\LearningModules</Filter>
-    </ClCompile>
-    <ClCompile Include="HotSpotLearn.cpp">
-      <Filter>HotSpots</Filter>
+      <Filter>Learn</Filter>
     </ClCompile>
     <ClCompile Include="HSLBar.cpp">
-      <Filter>HotSpots\HotSpots\LearningModules</Filter>
-    </ClCompile>
-    <ClCompile Include="HSLSkill.cpp">
-      <Filter>HotSpots\HotSpots\LearningModules</Filter>
+      <Filter>Learn</Filter>
     </ClCompile>
     <ClCompile Include="HSLItem.cpp">
-      <Filter>HotSpots\HotSpots\LearningModules</Filter>
+      <Filter>Learn</Filter>
     </ClCompile>
     <ClCompile Include="HSPassive.cpp">
       <Filter>HotSpots\HotSpots</Filter>
+    </ClCompile>
+    <ClCompile Include="FPPatchClient.cpp">
+      <Filter>FrameProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMainDialog.cpp">
+      <Filter>UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMainWindow.cpp">
+      <Filter>UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMapView.cpp">
+      <Filter>UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="UIButton.cpp">
+      <Filter>UI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="UIBaseElement.cpp">
+      <Filter>UI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="FPLearnMode.cpp">
+      <Filter>FrameProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="UILearn.cpp">
+      <Filter>UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="UIBaseWIndow.cpp">
+      <Filter>UI\Windows\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="UIBaseWindowGUIHost.cpp">
+      <Filter>UI\Windows\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="UIImage.cpp">
+      <Filter>UI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="LearnController.cpp">
+      <Filter>Learn</Filter>
+    </ClCompile>
+    <ClCompile Include="HSLSkill.cpp">
+      <Filter>Learn</Filter>
+    </ClCompile>
+    <ClCompile Include="UIText.cpp">
+      <Filter>UI\Elements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -123,15 +147,6 @@
     <ClInclude Include="Constants.h">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="UIMainWindow.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UIMainDialog.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UIBase.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="UIMessage.h">
       <Filter>UI</Filter>
     </ClInclude>
@@ -150,9 +165,6 @@
     <ClInclude Include="Settings.h">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="UISettingsDialog.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="FPSelectClient.h">
       <Filter>FrameProcessing</Filter>
     </ClInclude>
@@ -169,25 +181,61 @@
       <Filter>HotSpots\HotSpots</Filter>
     </ClInclude>
     <ClInclude Include="HSLBase.h">
-      <Filter>HotSpots\HotSpots\LearningModules</Filter>
-    </ClInclude>
-    <ClInclude Include="HotSpotLearn.h">
-      <Filter>HotSpots</Filter>
+      <Filter>Learn</Filter>
     </ClInclude>
     <ClInclude Include="HSLBar.h">
-      <Filter>HotSpots\HotSpots\LearningModules</Filter>
-    </ClInclude>
-    <ClInclude Include="HSLSkill.h">
-      <Filter>HotSpots\HotSpots\LearningModules</Filter>
+      <Filter>Learn</Filter>
     </ClInclude>
     <ClInclude Include="HSLItem.h">
-      <Filter>HotSpots\HotSpots\LearningModules</Filter>
+      <Filter>Learn</Filter>
     </ClInclude>
     <ClInclude Include="libs\SimpleIni.h">
       <Filter>Libs</Filter>
     </ClInclude>
     <ClInclude Include="HSPassive.h">
       <Filter>HotSpots\HotSpots</Filter>
+    </ClInclude>
+    <ClInclude Include="FPPatchClient.h">
+      <Filter>FrameProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMainDialog.h">
+      <Filter>UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMainWindow.h">
+      <Filter>UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMapView.h">
+      <Filter>UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="UIButton.h">
+      <Filter>UI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBaseElement.h">
+      <Filter>UI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="FPLearnMode.h">
+      <Filter>FrameProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="UILearn.h">
+      <Filter>UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBaseWindowGUIHost.h">
+      <Filter>UI\Windows\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBaseWindow.h">
+      <Filter>UI\Windows\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="UIImage.h">
+      <Filter>UI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="LearnController.h">
+      <Filter>Learn</Filter>
+    </ClInclude>
+    <ClInclude Include="HSLSkill.h">
+      <Filter>Learn</Filter>
+    </ClInclude>
+    <ClInclude Include="UIText.h">
+      <Filter>UI\Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -212,7 +260,16 @@
     <Filter Include="HotSpots\HotSpots">
       <UniqueIdentifier>{86ed7e48-2a28-4537-ac42-10329459b8e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HotSpots\HotSpots\LearningModules">
+    <Filter Include="UI\Windows">
+      <UniqueIdentifier>{539b6b78-19ff-4642-b4b8-8dbcc82f5426}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Elements">
+      <UniqueIdentifier>{67795aa0-24f6-4224-aa2d-02e0b6292515}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Windows\Base">
+      <UniqueIdentifier>{eb76426c-ebb6-4b35-bf95-123941c34c89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Learn">
       <UniqueIdentifier>{3f270d92-9d75-4a83-a2a1-346207912405}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

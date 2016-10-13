@@ -11,7 +11,7 @@ HSLSkill::~HSLSkill()
 {
 }
 
-boolean HSLSkill::findLocation() {
+boolean HSLSkill::findLocations() {
 
 	ImageFilterMat::cannyThreshold(*getHaystack(), getHaystack());
 
@@ -37,11 +37,9 @@ boolean HSLSkill::findLocation() {
 		// CV_TM_CCOEFF_NORMED = 5
 		if (ImageFilterMat::getMatchingRect(CV_TM_SQDIFF_NORMED, getHaystack(), &needleItteration, &foundRect)) {
 			foundArea = true;
-			cv::Rect* targetRect = getTargetRect();
-			targetRect = &foundRect;
-
+			addFoundLocation(foundRect);
 			NuLogger::getInstance()->log("Found at %i", i);
-			break;
+		//	break;
 		}
 	}
 

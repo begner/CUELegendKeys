@@ -39,16 +39,15 @@ BOOL CALLBACK ProcessList::EnumWindowsProcMy(HWND hwnd, LPARAM lParam)
 	DWORD lpdwProcessId;
 	GetWindowThreadProcessId(hwnd, &lpdwProcessId);
 	
-	/*
-	if (lpdwProcessId == lParam)
-	{
+	if (lpdwProcessId == lParam) {
+	
 		if (GetWindow(hwnd, GW_OWNER) == (HWND)0) {
 			CHAR szBuf[255];
 			GetWindowTextA(hwnd, szBuf, 255);
 			NuLogger::getInstance()->log("WindowName: \"%s\"", szBuf);
 		}
 	}
-	*/
+	
 	if (lpdwProcessId == lParam)
 	{
 		if (GetWindow(hwnd, GW_OWNER) == (HWND)0) {
@@ -87,7 +86,7 @@ HWND ProcessList::getProcessWindowHandle(DWORD processId, string windowName) {
 	
 	processHWND = NULL;
 	findWindowName = windowName;
-	// NuLogger::getInstance()->log("WindowList -------- %i", processId);
+	NuLogger::getInstance()->log("WindowList -------- %i", processId);
 
 	EnumWindows(ProcessList::EnumWindowsProcMy, processId);
 	return processHWND;

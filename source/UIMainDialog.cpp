@@ -35,8 +35,8 @@ void UIMainDialog::onHide() {
 void UIMainDialog::onShow() {
 	// cueLegendKeys.forceRefresh();
 
-	int x = Settings::getInstance()->getValue("main", "window.x", -1);
-	int y = Settings::getInstance()->getValue("main", "window.y", -1);
+	int x = Settings::getInstance()->getValue("Main", "mainWindowX", -1);
+	int y = Settings::getInstance()->getValue("Main", "mainWindowY", -1);
 
 	if (x > -1 && y > -1) {
 		SetWindowPos(hwnd, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
@@ -99,8 +99,8 @@ INT_PTR CALLBACK UIMainDialog::MessageHandler(HWND hDlg, UINT message, WPARAM wP
 				LPWINDOWPOS lpwp = (LPWINDOWPOS)lParam; // points to size and position data
 				if (!(lpwp->flags & SWP_NOMOVE)) {
 					Settings::getInstance()->setAutoCommit(false);
-					Settings::getInstance()->setValue("main", "window.x", lpwp->x);
-					Settings::getInstance()->setValue("main", "window.y", lpwp->y);
+					Settings::getInstance()->setValue("main", "mainWindowX", lpwp->x);
+					Settings::getInstance()->setValue("main", "mainWindowY", lpwp->y);
 					Settings::getInstance()->commit();
 				}
 

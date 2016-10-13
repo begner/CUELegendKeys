@@ -1,9 +1,10 @@
 #include "FPGameClient.h"
 
-
+#include "UIMapView.h"
 
 FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 {
+	
 
 	// ***********************************************************
 	// Creating HotSpotGroup... :)
@@ -210,6 +211,8 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 	hotSpotGroup->addHotSpot(&hsPassive);
 
 
+	
+
 	loadingDetectionTemplate = ImageFilterMat::loadResourceAsMat(IDB_LOADING_DETECTION_TEMPLATE);
 
 }
@@ -218,7 +221,6 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 FPGameClient::~FPGameClient()
 {
 }
-
 
 int FPGameClient::getWindowBackgroundResource() {
 	return IDB_WINDOW_BACKGROUND_INGAME;
@@ -273,6 +275,7 @@ bool FPGameClient::process() {
 		return false;
 	}
 
+	drawMapView(screenshotMat, clientWidth, clientHeight);
 	
 	// copy background to UI
 	windowBackground.copyTo(drawUI);
@@ -302,6 +305,13 @@ bool FPGameClient::process() {
 
 	PerformanceStop();
 	return success;
+}
+
+
+void FPGameClient::drawMapView(Mat4b screenshotMat, int clientWidth, int clientHeight) {
+	
+	UIMapView::getInstance()->drawMap(screenshotMat, clientWidth, clientHeight);
+	
 }
 
 

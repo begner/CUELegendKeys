@@ -10,11 +10,14 @@
 #include "HSChamp.h"
 #include "HSPassive.h"
 
+
+
 class FPGameClient :
 	public FrameProcessing
 {
 private:
 	Mat4b loadingDetectionTemplate;
+
 
 	HWND currentProcessHWND = nullptr;
 	HDC gameClientHDC = nullptr;
@@ -53,6 +56,7 @@ private:
 	int uiBarY = 0;
 
 
+	void drawMapView(Mat4b screenshotMat, int clientWidth, int clientHeight);
 	bool processLoading(Mat4b screenShot);
 	bool processInGame(Mat4b screenShot);
 public:

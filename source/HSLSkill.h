@@ -6,7 +6,7 @@ class HSLSkill:
 public:
 	HSLSkill();
 	~HSLSkill();
-	boolean findLocation();
+	boolean findLocations();
 
 };
 

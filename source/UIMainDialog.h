@@ -1,11 +1,11 @@
 #pragma once
 
-#include "UIBase.h"
+#include "UIBaseWindow.h"
 #include "UIMainWindow.h"
 #include "CUELegendKeys.h"
 
 class UIMainDialog :
-	public UIBase
+	public UIBaseWindow
 {
 private:
 	static UIMainDialog * theInstance;

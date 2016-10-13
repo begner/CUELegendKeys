@@ -198,9 +198,10 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClCompile Include="CUELegendKeys.cpp" />
     <ClCompile Include="FPGameClient.cpp" />
     <ClCompile Include="FPIdle.cpp" />
+    <ClCompile Include="FPLearnMode.cpp" />
+    <ClCompile Include="FPPatchClient.cpp" />
     <ClCompile Include="FPScreenMirror.cpp" />
     <ClCompile Include="FPSelectClient.cpp" />
-    <ClCompile Include="HotSpotLearn.cpp" />
     <ClCompile Include="HSBackport.cpp" />
     <ClCompile Include="HSBar.cpp" />
     <ClCompile Include="HSCastable.cpp" />
@@ -212,9 +213,15 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClCompile Include="HSPassive.cpp" />
     <ClCompile Include="ImageFilterMat.cpp" />
     <ClCompile Include="FrameProcessing.cpp" />
+    <ClCompile Include="LearnController.cpp" />
     <ClCompile Include="LEDController.cpp" />
     <ClCompile Include="Settings.cpp" />
-    <ClCompile Include="UIBase.cpp" />
+    <ClCompile Include="UIBaseWIndow.cpp" />
+    <ClCompile Include="UIBaseWindowGUIHost.cpp" />
+    <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="UIBaseElement.cpp" />
+    <ClCompile Include="UIImage.cpp" />
+    <ClCompile Include="UILearn.cpp" />
     <ClCompile Include="UIMainDialog.cpp" />
     <ClCompile Include="UIMainWindow.cpp" />
     <ClCompile Include="NuLogger.cpp" />
@@ -222,8 +229,9 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClCompile Include="ProcessList.cpp" />
     <ClCompile Include="HotSpotGroup.cpp" />
     <ClCompile Include="ScreenHotSpot.cpp" />
+    <ClCompile Include="UIMapView.cpp" />
     <ClCompile Include="UIMessage.cpp" />
-    <ClCompile Include="UISettingsDialog.cpp" />
+    <ClCompile Include="UIText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CUELegendKeysResources.rc" />
@@ -234,9 +242,10 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClInclude Include="CUELegendKeys.h" />
     <ClInclude Include="FPGameClient.h" />
     <ClInclude Include="FPIdle.h" />
+    <ClInclude Include="FPLearnMode.h" />
+    <ClInclude Include="FPPatchClient.h" />
     <ClInclude Include="FPScreenMirror.h" />
     <ClInclude Include="FPSelectClient.h" />
-    <ClInclude Include="HotSpotLearn.h" />
     <ClInclude Include="HSBackport.h" />
     <ClInclude Include="HSBar.h" />
     <ClInclude Include="HSCastable.h" />
@@ -249,10 +258,16 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClInclude Include="ImageFilterMat.h" />
     <ClInclude Include="CUELegendKeysResources.h" />
     <ClInclude Include="FrameProcessing.h" />
+    <ClInclude Include="LearnController.h" />
     <ClInclude Include="LEDController.h" />
     <ClInclude Include="libs\SimpleIni.h" />
     <ClInclude Include="Settings.h" />
-    <ClInclude Include="UIBase.h" />
+    <ClInclude Include="UIBaseWindow.h" />
+    <ClInclude Include="UIBaseWindowGUIHost.h" />
+    <ClInclude Include="UIButton.h" />
+    <ClInclude Include="UIBaseElement.h" />
+    <ClInclude Include="UIImage.h" />
+    <ClInclude Include="UILearn.h" />
     <ClInclude Include="UIMainDialog.h" />
     <ClInclude Include="UIMainWindow.h" />
     <ClInclude Include="NuLogger.h" />
@@ -261,8 +276,9 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClInclude Include="HotSpotGroup.h" />
     <ClInclude Include="ScreenHotSpot.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UIMapView.h" />
     <ClInclude Include="UIMessage.h" />
-    <ClInclude Include="UISettingsDialog.h" />
+    <ClInclude Include="UIText.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

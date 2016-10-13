@@ -29,6 +29,13 @@ private :
 	
 	int overscan = 7;
 
+	int cutTop = 0;
+	int cutLeft = 0;
+	int cutBottom = 0;
+	int cutRight = 0;
+
+
+
 	boolean initialized = false;
 
 
@@ -51,5 +58,6 @@ public:
 	void setOffset(RECT offset);
 	void setUIDimensions(int x, int y, int width, int height);
 	void setOffsetScale(float x, float y);
+	void setCutRect(int x, int y, int width, int height);
 };
 

@@ -3,13 +3,15 @@
 #include "Constants.h"
 #include <Windows.h>
 #include <windowsx.h>
-#include "UIBase.h"
+#include "UIBaseWindow.h"
 #include "UIMainDialog.h"
+#include "UIMapView.h"
+#include "UILearn.h"
 
 #include <string>
 
 class UIMainWindow :
-	public UIBase
+	public UIBaseWindow
 {
 private:
 	static UIMainWindow * theInstance;

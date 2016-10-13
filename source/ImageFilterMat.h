@@ -48,6 +48,7 @@ public:
 	static bool hasPixelBorder(Mat &image, int top, int right, int bot, int left, Vec3b allowedColor1, Vec3b allowedColor2);
 	static void overlayImage(Mat* src, Mat* overlay, const cv::Point& location);
 	static void addAlphaMask(Mat* src, Mat* mask);
+	
 	static Mat4b loadResourceAsMat(int RESOURCEID);
 	static Mat4b* MatToMat4b(Mat* inputMat);
 	static void deepCopyPixel(Mat *src, Mat4b *dest);

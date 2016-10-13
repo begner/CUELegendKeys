@@ -7,12 +7,13 @@
 #include "NuLogger.h"
 #include "ProcessList.h"
 #include "FPIdle.h"
+#include "FPLearnMode.h"
 #include "FPSelectClient.h"
+#include "FPPatchClient.h"
 #include "FPGameClient.h"
 #include "LEDController.h"
 #include "Settings.h"
 
-#include "HotSpotLearn.h"
 
 class CUELegendKeys
 {
@@ -23,9 +24,12 @@ private:
 	~CUELegendKeys();
 
 	FPIdle* fpIdle;
+	FPLearnMode* fpLearn;
 	FPSelectClient* fpSelectClient;
-	FPGameClient* fpGameClient;
+	FPPatchClient* fpPatchClient;
 
+	FPGameClient* fpGameClient;
+	
 	bool forceInGameClient = false;
 	bool screenMirrorOnIdleMode = false;
 	bool limitFPS = false;
@@ -70,7 +74,8 @@ public:
 	void setShowFilteredMat(bool state);
 	bool getShowFilteredMat();
 
-	void learnHotSpots();
+	void openMapView();
+
 	void quit();
 };
 

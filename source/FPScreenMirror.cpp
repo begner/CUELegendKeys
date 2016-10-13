@@ -141,9 +141,13 @@ bool FPScreenMirror::process() {
 	}
 
 	Mat4b screenshotMat = (Mat4b)*screenshotRaw;
-	resize(screenshotMat, screenshotMat, cv::Size(targetWidth, targetHeight));
+	
+	cv::Rect cropRect(cutLeft, cutTop, screenshotMat.cols - cutLeft - cutRight, screenshotMat.rows - cutTop - cutBottom);
+	screenshotMat = Mat(screenshotMat, cropRect);
+	
+	resize(screenshotMat, screenshotMat, cv::Size(targetWidth, targetHeight), 2, 2, INTER_CUBIC);
 
-	ImageFilterMat::incSaturation(screenshotMat, 50, (float)0.7);
+	// ImageFilterMat::incSaturation(screenshotMat, 50, (float)0.7);
 
 
 	LEDController::getInstance()->initializeFrame();
@@ -246,4 +250,11 @@ void FPScreenMirror::setOffsetScale(float x, float y) {
 	offsetScaleX = x;
 	offsetScaleY = y;
 	reinitialize();
+}
+
+void FPScreenMirror::setCutRect(int l, int t, int r, int b) {
+	cutTop = t;
+	cutLeft = l;
+	cutBottom = b;
+	cutRight = r;
 }
