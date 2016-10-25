@@ -38,7 +38,8 @@ BOOL CALLBACK ProcessList::EnumWindowsProcMy(HWND hwnd, LPARAM lParam)
 {
 	DWORD lpdwProcessId;
 	GetWindowThreadProcessId(hwnd, &lpdwProcessId);
-	
+	/*
+#ifdef _DEBUG	
 	if (lpdwProcessId == lParam) {
 	
 		if (GetWindow(hwnd, GW_OWNER) == (HWND)0) {
@@ -47,7 +48,8 @@ BOOL CALLBACK ProcessList::EnumWindowsProcMy(HWND hwnd, LPARAM lParam)
 			NuLogger::getInstance()->log("WindowName: \"%s\"", szBuf);
 		}
 	}
-	
+#endif 
+	*/
 	if (lpdwProcessId == lParam)
 	{
 		if (GetWindow(hwnd, GW_OWNER) == (HWND)0) {
@@ -86,7 +88,7 @@ HWND ProcessList::getProcessWindowHandle(DWORD processId, string windowName) {
 	
 	processHWND = NULL;
 	findWindowName = windowName;
-	NuLogger::getInstance()->log("WindowList -------- %i", processId);
+	// NuLogger::getInstance()->log("WindowList -------- %i", processId);
 
 	EnumWindows(ProcessList::EnumWindowsProcMy, processId);
 	return processHWND;

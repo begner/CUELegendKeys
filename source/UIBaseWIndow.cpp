@@ -28,6 +28,15 @@ HINSTANCE UIBaseWindow::getHInstance() {
 	return hInstance;
 }
 
+bool UIBaseWindow::isVisible() {
+	if (IsWindowVisible(getHandle())) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 void UIBaseWindow::createWindow()
 {
 	
@@ -64,3 +73,9 @@ void UIBaseWindow::Show(bool doRestore) {
 	// UpdateWindow(hwnd);
 }
 
+
+void UIBaseWindow::setAlwaysOnTop() {
+
+	SetWindowPos(getHandle(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+}

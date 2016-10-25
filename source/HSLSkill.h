@@ -4,9 +4,7 @@ class HSLSkill:
 	public HSLBase
 {
 public:
-	HSLSkill();
+	HSLSkill(string title, string saveId, int needleResource);
 	~HSLSkill();
-	boolean findLocations();
-
 };
 

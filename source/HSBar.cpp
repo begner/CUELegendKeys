@@ -21,6 +21,10 @@ void HSBar::filterMat() {
 	ImageFilterMat::saturation(*getFilteredMat(), 50, 255, 2);
 
 	cv::Rect colorDetectionRect(0, (int)floor(getOriginalMatRespectBorders()->rows / 2), (int)getKeys()->size(), 1);
+
+	if (!ImageFilterMat::isValidRect(getOriginalMatRespectBorders(), colorDetectionRect)) {
+		return;
+	}
 	colorBarMat = Mat4b(*getOriginalMatRespectBorders(), colorDetectionRect);
 	ImageFilterMat::saturation(colorBarMat, 0, 255, 1);
 }

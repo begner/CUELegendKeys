@@ -40,7 +40,7 @@ public:
 	void notify(string title, string message, UINT IconType = 0);
 	void ShowTrayMenu();
 	void destroy();
-
+	
 	static INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 };
 

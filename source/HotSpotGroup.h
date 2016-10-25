@@ -23,12 +23,6 @@ public:
 	ScreenHotSpot* getHotSpotAt(int index);
 	vector<ScreenHotSpot*> getHotSpots();
 
-	void setReferenceX(int x);
-	void setReferenceY(int y);
-	void setLolUIScale(int scale);
-
-
-
 
 };
 

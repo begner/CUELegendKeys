@@ -838,7 +838,7 @@ public:
         are in use!
 
         @param a_pSection       Name of the section to return
-        @return boolean         Was a section matching the supplied
+        @return bool         Was a section matching the supplied
                                 name found.
      */
     const TKeyVal * GetSection(
@@ -909,7 +909,7 @@ public:
         bool *          a_pHasMultiple = NULL
         ) const;
 
-    /** Retrieve a boolean value for a specific key. If multiple keys are enabled
+    /** Retrieve a bool value for a specific key. If multiple keys are enabled
         (see SetMultiKey) then only the first value associated with that key
         will be returned, see GetAllValues for getting all values with multikey.
 
@@ -1034,7 +1034,7 @@ public:
         bool            a_bForceReplace = false
         );
 
-    /** Add or update a boolean value. This will always insert
+    /** Add or update a bool value. This will always insert
         when multiple keys are enabled.
 
         @param a_pSection   Section to add or update

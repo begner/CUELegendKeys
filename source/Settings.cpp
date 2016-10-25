@@ -26,11 +26,11 @@ Settings::Settings(void) {
 Settings::~Settings(void) {
 }
 
-boolean Settings::checkSettings() {
+bool Settings::checkSettings() {
 	return checkOrCreateEmptyFile();
 }
 
-boolean Settings::checkOrCreateEmptyFile() {
+bool Settings::checkOrCreateEmptyFile() {
 	
 	string sPath = getSettingsPath();
 	if (sPath == "") {
@@ -141,6 +141,6 @@ string Settings::getSettingsPath() {
 	return settingsPath;
 }
 
-void Settings::setAutoCommit(boolean state) {
+void Settings::setAutoCommit(bool state) {
 	autoCommit = state;
 }

@@ -11,6 +11,11 @@ UIBaseElement::~UIBaseElement()
 {
 }
 
+
+bool UIBaseElement::isDisabled() {
+	return false;
+}
+
 void UIBaseElement::setOnClickId(int id) {
 	onClickId = id;
 }
@@ -24,13 +29,38 @@ void UIBaseElement::setPos(int x, int y) {
 	posY = y;
 }
 
+void UIBaseElement::setOffset(int x, int y) {
+	offsetX = x;
+	offsetY = y;
+}
+
+void UIBaseElement::show() {
+	setVisibility(true);
+}
+
+void UIBaseElement::hide() {
+	setVisibility(false);
+}
+
+void UIBaseElement::setVisibility(bool state) {
+	if (getVisibility() != state) {
+		visibility = state;
+		needsUpdate(true);
+	}
+}
+
+bool UIBaseElement::getVisibility() {
+	return visibility;
+}
+
 int UIBaseElement::getX() {
-	return posX;
+	return posX + offsetX;
 }
 
 int UIBaseElement::getY() {
-	return posY;
+	return posY + offsetY;
 }
+
 
 bool UIBaseElement::onMouseOn(int x, int y) {
 	return false;

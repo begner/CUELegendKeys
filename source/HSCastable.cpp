@@ -16,9 +16,13 @@ int HSCastable::getType() {
 }
 
 bool HSCastable::isCastable() {
+	if (!isCacheDirty()) {
+		return isCastableCache;
+	}
+	
 	bool isCastable;
 	
-	cv::Rect castDetectionRect(1, 1, 2, 2);
+	cv::Rect castDetectionRect(0, 0, getBorder(), getBorder());
 	Mat4b myMat = getOriginalMat()->clone();
 	Mat4b castDetectionMat(myMat, castDetectionRect);
 
@@ -26,15 +30,15 @@ bool HSCastable::isCastable() {
 	isCastable = ImageFilterMat::colorIsPresent(castDetectionMat, 96, 224, 224) ||
 				ImageFilterMat::colorIsPresent(castDetectionMat, 96, 160, 224);
 	castDetectionMat.release();
-
-
+	
+	isCastableCache = isCastable;
 	return isCastable;
 }
 
 void HSCastable::filterMat() {
 	// getFilteredMat();
-	ImageFilterMat::killDarkPixel(*getFilteredMat(), 127);
-	ImageFilterMat::killGrayPixel(*getFilteredMat(), 127);
+	ImageFilterMat::killDarkPixel(*getFilteredMat(), 60);
+	ImageFilterMat::killGrayPixel(*getFilteredMat(), 60);
 
 	// ImageFilterMat::colorReduce(*filteredMat, 64);
 	blur(*getFilteredMat(), *getFilteredMat(), cv::Size(5, 5), cv::Point(-1, -1));
@@ -42,6 +46,11 @@ void HSCastable::filterMat() {
 }
 
 Vec4b HSCastable::getCurrentColor(int index) {
+	if (!isCacheDirty()) {
+		return currentColorCache;
+	}
+		
+
 	Vec4b color(0, 0, 0, 255);
 	int brightnessTreshold = 50;
 	int r, g, b = 0;
@@ -64,6 +73,7 @@ Vec4b HSCastable::getCurrentColor(int index) {
 
 	}
 
+	currentColorCache = color;
 	return color;
 }
 
@@ -87,6 +97,7 @@ Vec4b HSCastable::getColorByTick(int offset) {
 	int x = (pos % fMat->cols);
 	int y = (int)floor(pos / (fMat->cols));
 
+	// TODO: if y , x is out of range...
 	Vec4b color = fMat->at<Vec4b>(y, x);
 	return color;
 }

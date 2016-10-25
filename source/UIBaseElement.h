@@ -7,17 +7,32 @@ class UIBaseElement
 private:
 	int posX = 0;
 	int posY = 0;
-
-	int onClickId;
+	int offsetX = 0;
+	int offsetY = 0;
+	int onClickId = -1;
 	bool needUpdate = false;
+	bool visibility = true;
+	bool disabled = false;
+
 public:
 	UIBaseElement();
 	~UIBaseElement();
 
 
+	void show();
+	void hide();
+	void setVisibility(bool state);
+
+	bool getVisibility();
+
+	virtual bool isDisabled();
+
 	virtual void setPos(int x, int y);
+	void setOffset(int x, int y);
+
 	virtual int getX();
 	virtual int getY();
+
 	void needsUpdate(bool state);
 
 	virtual void processUI(Mat4b* drawUI) = 0;

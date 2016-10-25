@@ -9,6 +9,56 @@ ImageFilterMat::~ImageFilterMat()
 {
 }
 
+cv::Rect ImageFilterMat::findBox(Mat &image, int threshold) {
+	Mat_<Vec<uchar, 1>> _I = image;
+
+	int minX = -1;
+	int minY = -1;
+	int maxX = -1;
+	int maxY = -1;
+
+	for (int y = 0; y < image.rows; ++y)
+	{
+		bool rowIsEmpty = true;
+		for (int x = 0; x < image.cols; ++x)
+		{
+			Vec<uchar, 1> currentColor(_I(y, x));
+			if (currentColor[0] > threshold) {
+				rowIsEmpty = false;
+			}
+		}
+		if (!rowIsEmpty && minY == -1) {
+			minY = y;
+		}
+		if (!rowIsEmpty) {
+			maxY = y;
+		}
+	}
+
+	for (int x = 0; x < image.cols; ++x)
+	{
+		bool colIsEmpty = true;
+		for (int y = 0; y < image.rows; ++y)
+		{
+			Vec<uchar, 1> currentColor(_I(y, x));
+			if (currentColor[0] > threshold) {
+				colIsEmpty = false;
+			}
+		}
+		if (!colIsEmpty && minX == -1) {
+			minX = x;
+		}
+		if (!colIsEmpty) {
+			maxX = x;
+		}
+	}
+
+	if (minX > -1 && maxX > -1 && minY > -1 && maxY > -1 && minX < maxX && minY < maxY) {
+		return cv::Rect(minX, minY, maxX - minX, maxY - minY);
+	}
+	return cv::Rect(0, 0, image.cols, image.rows);
+}
+
 bool ImageFilterMat::hasPixelBorder(Mat &image, int top, int right, int bot, int left, Vec3b allowedColor1, Vec3b allowedColor2) {
 
 	Mat_<Vec4b> _I = image;
@@ -65,6 +115,27 @@ void ImageFilterMat::colorReduce(Mat &image, int div, bool ignoreAlpha)
 		}
 	}
 	*/
+}
+
+/// Do the operation new_image(i,j) = alpha*image(i,j) + beta
+
+void ImageFilterMat::brightnessContrast(Mat srcImage, Mat* destImage, double contrast, double brightness) {
+
+	cv::cvtColor(srcImage, *destImage, CV_BGRA2BGR);
+
+	for (int y = 0; y < srcImage.rows; y++)
+	{
+		for (int x = 0; x < srcImage.cols; x++)
+		{
+			for (int c = 0; c < 3; c++)
+			{
+				destImage->at<Vec3b>(y, x)[c] =
+					saturate_cast<uchar>(contrast*(destImage->at<Vec3b>(y, x)[c]) + brightness);
+			}
+		}
+	}
+
+	cv::cvtColor(*destImage, *destImage, CV_BGR2BGRA);
 }
 
 int ImageFilterMat::getBarPercentage(Mat srcImage) {
@@ -412,30 +483,34 @@ Mat* ImageFilterMat::hdc2mat(HDC drawHDC, int x, int y, int width, int height) {
 	
 }
 
-void ImageFilterMat::overlayImage(Mat* src, Mat* overlay, const Point& location)
+void ImageFilterMat::overlayImage(Mat* src, Mat* layer, const Point& location)
 {
+	Mat overlay;
+	layer->copyTo(overlay);
+
 	for (int y = max(location.y, 0); y < src->rows; ++y)
 	{
 		int fY = y - location.y;
 
-		if (fY >= overlay->rows)
+		if (fY >= overlay.rows)
 			break;
 
 		for (int x = max(location.x, 0); x < src->cols; ++x)
 		{
 			int fX = x - location.x;
 
-			if (fX >= overlay->cols)
+			if (fX >= overlay.cols)
 				break;
 
-			double opacity = ((double)overlay->data[fY * overlay->step + fX * overlay->channels() + 3]) / 255;
+			double opacity = ((double)overlay.data[fY * overlay.step + fX * overlay.channels() + 3]) / 255;
 
 			// c<3 (dont copy alpha - only bgr channels)
 			for (int c = 0; opacity > 0 && c < 3; ++c)
 			{
-				unsigned char overlayPx = overlay->data[fY * overlay->step + fX * overlay->channels() + c];
+				unsigned char overlayPx = overlay.data[fY * overlay.step + fX * overlay.channels() + c];
 				unsigned char srcPx = src->data[y * src->step + x * src->channels() + c];
 				src->data[y * src->step + src->channels() * x + c] = (uchar)(srcPx * (1. - opacity) + overlayPx * opacity);
+
 			}
 		}
 	}
@@ -444,6 +519,11 @@ void ImageFilterMat::overlayImage(Mat* src, Mat* overlay, const Point& location)
 
 void ImageFilterMat::addAlphaMask(Mat* src, Mat* mask) {
 	
+	if (src->cols < mask->cols ||
+		src->rows < mask->rows) {
+		return;
+	}
+
 	Mat srcChannels[4];
 	cv::split(*src, srcChannels);
 
@@ -621,16 +701,10 @@ int ImageFilterMat::getFirstBorder(Mat *hsvImage, int direction, int upperVThres
 }
 
 
+
 void ImageFilterMat::cannyThreshold(Mat src, Mat* dest, int lowThreshold, int kernel_size, int ratio, int blur_size)
 {
 	Mat src_gray;
-
-	if (lowThreshold > 100) {
-		lowThreshold = 100;
-	}
-	if (lowThreshold < 0) {
-		lowThreshold = 0;
-	}
 
 	cvtColor(src, src_gray, CV_BGR2GRAY);
 
@@ -642,13 +716,16 @@ void ImageFilterMat::cannyThreshold(Mat src, Mat* dest, int lowThreshold, int ke
 }
 
 
-boolean ImageFilterMat::getMatchingRect(int match_method, Mat* haystackImage, Mat* needleImage, cv::Rect* foundRect)
+bool ImageFilterMat::getMatchingRect(int match_method, Mat* haystackImage, Mat* needleImage, cv::Rect* foundRect)
 {
 	Mat result;
 
 	/// Create the result matrix
 	int result_cols = haystackImage->cols - needleImage->cols + 1;
 	int result_rows = haystackImage->rows - needleImage->rows + 1;
+	if (result_rows < 0 || result_cols < 0) {
+		return false;
+	}
 
 	result.create(result_rows, result_cols, CV_32FC1);
 
@@ -690,4 +767,136 @@ boolean ImageFilterMat::getMatchingRect(int match_method, Mat* haystackImage, Ma
 	}
 
 	return false;
+}
+
+cv::Scalar ImageFilterMat::HSVtoRGBcvScalar(int H, int S, int V) {
+
+	int bH = H; // H component
+	int bS = S; // S component
+	int bV = V; // V component
+	double fH, fS, fV;
+	double fR, fG, fB;
+	const double double_TO_BYTE = 255.0f;
+	const double BYTE_TO_double = 1.0f / double_TO_BYTE;
+
+	// Convert from 8-bit integers to doubles
+	fH = (double)bH * BYTE_TO_double;
+	fS = (double)bS * BYTE_TO_double;
+	fV = (double)bV * BYTE_TO_double;
+
+	// Convert from HSV to RGB, using double ranges 0.0 to 1.0
+	int iI;
+	double fI, fF, p, q, t;
+
+	if (bS == 0) {
+		// achromatic (grey)
+		fR = fG = fB = fV;
+	}
+	else {
+		// If Hue == 1.0, then wrap it around the circle to 0.0
+		if (fH >= 1.0f)
+			fH = 0.0f;
+
+		fH *= 6.0; // sector 0 to 5
+		fI = floor(fH); // integer part of h (0,1,2,3,4,5 or 6)
+		iI = (int)fH; // " " " "
+		fF = fH - fI; // factorial part of h (0 to 1)
+
+		p = fV * (1.0f - fS);
+		q = fV * (1.0f - fS * fF);
+		t = fV * (1.0f - fS * (1.0f - fF));
+
+		switch (iI) {
+		case 0:
+			fR = fV;
+			fG = t;
+			fB = p;
+			break;
+		case 1:
+			fR = q;
+			fG = fV;
+			fB = p;
+			break;
+		case 2:
+			fR = p;
+			fG = fV;
+			fB = t;
+			break;
+		case 3:
+			fR = p;
+			fG = q;
+			fB = fV;
+			break;
+		case 4:
+			fR = t;
+			fG = p;
+			fB = fV;
+			break;
+		default: // case 5 (or 6):
+			fR = fV;
+			fG = p;
+			fB = q;
+			break;
+		}
+	}
+
+	// Convert from doubles to 8-bit integers
+	int bR = (int)(fR * double_TO_BYTE);
+	int bG = (int)(fG * double_TO_BYTE);
+	int bB = (int)(fB * double_TO_BYTE);
+
+	// Clip the values to make sure it fits within the 8bits.
+	if (bR > 255)
+		bR = 255;
+	if (bR < 0)
+		bR = 0;
+	if (bG >255)
+		bG = 255;
+	if (bG < 0)
+		bG = 0;
+	if (bB > 255)
+		bB = 255;
+	if (bB < 0)
+		bB = 0;
+
+	// Set the RGB cvScalar with G B R, you can use this values as you want too..
+	return cv::Scalar(bB, bG, bR); // R component
+}
+
+
+
+
+bool ImageFilterMat::isValidRect(cv::Rect checkRect) {
+
+	if (checkRect.x < 0) return false;
+	if (checkRect.y < 0) return false;
+	// if ((checkRect.width < checkRect.x) < 0) return false;
+	// if ((checkRect.height - checkRect.y) < 0) return false;
+
+	return true;
+}
+
+bool ImageFilterMat::isValidRect(RECT checkRect) {
+	return ImageFilterMat::isValidRect(cv::Rect(checkRect.left, checkRect.top, checkRect.right - checkRect.left, checkRect.bottom - checkRect.top));
+}
+
+bool ImageFilterMat::isValidRect(cv::Size imageSize, cv::Rect checkRect) {
+	if (!ImageFilterMat::isValidRect(checkRect)) return false;
+
+	if ((checkRect.x + checkRect.width) > imageSize.width) return false;
+	if ((checkRect.y + checkRect.height) > imageSize.height) return false;
+
+	return true;
+}
+
+bool ImageFilterMat::isValidRect(Mat* checkMat, cv::Rect checkRect) {
+	return ImageFilterMat::isValidRect(cv::Size(checkMat->cols, checkMat->rows), checkRect);
+}
+
+bool ImageFilterMat::isValidRect(Mat4b* checkMat, cv::Rect checkRect) {
+	return ImageFilterMat::isValidRect(cv::Size(checkMat->cols, checkMat->rows), checkRect);
+}
+
+bool ImageFilterMat::isValidRect(Mat3b* checkMat, cv::Rect checkRect) {
+	return ImageFilterMat::isValidRect(cv::Size(checkMat->cols, checkMat->rows), checkRect);
 }

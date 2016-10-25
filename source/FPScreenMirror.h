@@ -36,7 +36,7 @@ private :
 
 
 
-	boolean initialized = false;
+	bool initialized = false;
 
 
 	float keyboardZoomFactor;

@@ -7,20 +7,36 @@ UIImage::UIImage()
 
 }
 
+UIImage::UIImage(int resourceNormal, int resourceMask)
+{
+	Mat imageMask = ImageFilterMat::loadResourceAsMat(resourceMask);
+
+	Mat image = ImageFilterMat::loadResourceAsMat(resourceNormal);
+	ImageFilterMat::addAlphaMask(&image, &imageMask);
+	currentImage = image;
+}
+
 UIImage::~UIImage()
 {
 }
 
 void UIImage::processUI(Mat4b* drawUI) {
 	if (getWidth() > 0 && getHeight() > 0) {
-		ImageFilterMat::overlayImage(drawUI, &currentImage, cv::Point(getX(), getY()));
+		if (getX() + currentImage.cols > drawUI->cols ||
+			getY() + currentImage.rows > drawUI->rows) {
+			needsUpdate(true);
+		}
+		else {
+			ImageFilterMat::overlayImage(drawUI, &currentImage, cv::Point(getX(), getY()));
+		}
+
+		
 	}
 }
 
-void UIImage::setImage(Mat src) {
-	currentImage = src;
+void UIImage::setImage(Mat* src) {
+	src->copyTo(currentImage);
 	needsUpdate(true);
-
 }
 
 int UIImage::getWidth() {

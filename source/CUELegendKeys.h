@@ -7,7 +7,6 @@
 #include "NuLogger.h"
 #include "ProcessList.h"
 #include "FPIdle.h"
-#include "FPLearnMode.h"
 #include "FPSelectClient.h"
 #include "FPPatchClient.h"
 #include "FPGameClient.h"
@@ -24,7 +23,6 @@ private:
 	~CUELegendKeys();
 
 	FPIdle* fpIdle;
-	FPLearnMode* fpLearn;
 	FPSelectClient* fpSelectClient;
 	FPPatchClient* fpPatchClient;
 
@@ -45,6 +43,9 @@ private:
 	static const int CLIENT_TYPE_NONE = 0;
 	static const int CLIENT_TYPE_LOL_SELECT = 1;
 	static const int CLIENT_TYPE_LOL_INGAME = 2;
+	static const int CLIENT_TYPE_LOL_PATCH = 3;
+
+	int currentMode = CUELegendKeys::CLIENT_TYPE_NONE;
 
 	ProcessList* procL;
 
@@ -52,6 +53,9 @@ public:
 	static CUELegendKeys * getInstance();
 	static void release();
 	
+	
+	bool isIngameMode();
+
 	bool AppStartupCheck();
 
 	void AppInit();

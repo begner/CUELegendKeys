@@ -27,6 +27,264 @@ UILearn::~UILearn()
 {
 }
 
+LearnController* UILearn::getLearnController() {
+	return LearnController::getInstance();
+}
+
+
+
+
+void UILearn::createKeyButton(string label, int onClickId, int posX, int posY) {
+	UIButton* keyBarButton;
+	keyBarButton = new UIButton(IDB_UI_KEY_N, IDB_UI_KEY_O, IDB_UI_KEY_M);
+	keyBarButton->addState(UIButton::BUTTON_STATE_EXTRA, IDB_UI_KEY_D, IDB_UI_KEY_O, IDB_UI_KEY_M);
+	keyBarButton->addState(UIButton::BUTTON_STATE_ACTIVE, IDB_UI_KEY_A, IDB_UI_KEY_O, IDB_UI_KEY_AM);
+	keyBarButton->setLabel(label);
+	keyBarButton->setFontSize(0.35);
+	keyBarButton->setOnClickId(onClickId);
+	keyBarButton->setPos(posX, posY);
+	keyBar.push_back(keyBarButton);
+	addElement(keyBarButton);
+}
+
+
+void UILearn::createWindow() {
+	HWND hwnd;
+
+	hwnd = CreateDialog(getHInstance(), MAKEINTRESOURCE(IDD_LEARN), UIMainWindow::getInstance()->getHandle(), UILearn::MessageHandler);
+	setHandle(hwnd);
+	SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)LoadIcon(getHInstance(), MAKEINTRESOURCE(IDI_APP_ICON)));
+
+	// setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR);
+	initHost();
+
+	setAlwaysOnTop();
+
+	
+	// #############################
+	// References
+	// #############################
+	int keyBarY = 60;
+	int keyBarCurrentX = 50;
+	int keyBarXSpace = 30;
+	int keyBarXDivider = 10;
+
+	createKeyButton("p", IDE_CLICK_KEY_PASSIVE, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace + keyBarXDivider;
+	createKeyButton("Q", IDE_CLICK_KEY_Q, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("W", IDE_CLICK_KEY_W, keyBarCurrentX, keyBarY);	keyBarCurrentX += keyBarXSpace;
+	createKeyButton("E", IDE_CLICK_KEY_E, keyBarCurrentX, keyBarY);	keyBarCurrentX += keyBarXSpace;
+	createKeyButton("R", IDE_CLICK_KEY_R, keyBarCurrentX, keyBarY);	keyBarCurrentX += keyBarXSpace + keyBarXDivider;
+	createKeyButton("D", IDE_CLICK_KEY_D, keyBarCurrentX, keyBarY);	keyBarCurrentX += keyBarXSpace;
+	createKeyButton("F", IDE_CLICK_KEY_F, keyBarCurrentX, keyBarY);	keyBarCurrentX += keyBarXSpace + keyBarXDivider;
+	createKeyButton("B", IDE_CLICK_KEY_B, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace + keyBarXDivider;
+	createKeyButton("1", IDE_CLICK_KEY_1, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("2", IDE_CLICK_KEY_2, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("3", IDE_CLICK_KEY_3, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("4", IDE_CLICK_KEY_4, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("5", IDE_CLICK_KEY_5, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("6", IDE_CLICK_KEY_6, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("7", IDE_CLICK_KEY_7, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace + keyBarXDivider;
+	createKeyButton("h", IDE_CLICK_KEY_HEAL, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("m", IDE_CLICK_KEY_MANA, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+
+	// #############################
+	// SkillInfo
+	// #############################
+
+	needlePreviewUI = new UIImage();
+	needlePreviewUI->setPos(needleX, needleY);
+	addElement(needlePreviewUI);
+
+	skillNameText = new UIText("");  // current Skill name
+	skillNameText->setFontSize(0.5);
+	skillNameText->setFontColor(215, 196, 164);
+	skillNameText->setPos(10, 165);
+	addElement(skillNameText);
+
+	// #############################
+	// Learn & References
+	// #############################
+
+
+	eLearnButton = new UIButton(IDB_UI_BUTTON_TEXT_NORMAL, IDB_UI_BUTTON_TEXT_OVER, IDB_UI_BUTTON_TEXT_MASK);
+	eLearnButton->addState(UIButton::BUTTON_STATE_DISABLED, IDB_UI_BUTTON_TEXT_DISABLED, IDB_UI_BUTTON_TEXT_MASK);
+	eLearnButton->setWidth(100);
+	eLearnButton->set9ScaleSize(7);
+	eLearnButton->setPos(10, 190);
+	eLearnButton->setState(UIButton::BUTTON_STATE_DISABLED);
+	eLearnButton->setLabel("LEARN");
+	eLearnButton->setOnClickId(IDE_CLICK_LEARN);
+	addElement(eLearnButton);
+	
+	ePrevReference = new UIButton(IDB_UI_BUTTON_ARROW_L_NORMAL, IDB_UI_BUTTON_ARROW_L_OVER, IDB_UI_BUTTON_ARROW_L_MASK);
+	ePrevReference->setPos(150, 190);
+	ePrevReference->setOnClickId(IDE_CLICK_PREV_REFERENCE);
+	addElement(ePrevReference);
+	referenceControl.push_back(ePrevReference);
+
+	eNextReference = new UIButton(IDB_UI_BUTTON_ARROW_R_NORMAL, IDB_UI_BUTTON_ARROW_R_OVER, IDB_UI_BUTTON_ARROW_R_MASK);
+	eNextReference->setPos(230, 190);
+	eNextReference->setOnClickId(IDE_CLICK_NEXT_REFERENCE);
+	addElement(eNextReference);
+	referenceControl.push_back(eNextReference);
+	
+	referenceNumberText = new UIText(""); // x/y
+	referenceNumberText->setWidth(60);
+	referenceNumberText->alignCenter();
+	referenceNumberText->setFontSize(0.5);
+	referenceNumberText->setFontColor(215, 196, 164);
+	referenceNumberText->setPos(175, 190+7);
+	addElement(referenceNumberText);
+	referenceControl.push_back(referenceNumberText);
+
+	// #############################
+	// Size Controll
+	// ############ä################
+
+
+	int borderPosControlX = 10;
+	int borderPosControlY = 330;
+
+	UIImage* uiBackgroundBorderPos = new UIImage(IDB_UI_SIZE_POS_BACKGROUND, IDB_UI_SIZE_POS_BACKGROUND_MASK);
+	uiBackgroundBorderPos->setPos(borderPosControlX+23, borderPosControlY+23);
+	addElement(uiBackgroundBorderPos);
+	borderPosControl.push_back(uiBackgroundBorderPos);
+
+	// Top
+	UIButton* uiButton = new UIButton(IDB_UI_BUTTON_ARROW_T_NORMAL, IDB_UI_BUTTON_ARROW_T_OVER, IDB_UI_BUTTON_ARROW_T_MASK );
+	uiButton->setPos(borderPosControlX + 50, borderPosControlY);
+	uiButton->setOnClickId(IDE_CLICK_BORDER_POS_T_DEC);
+	addElement(uiButton);
+	borderPosControl.push_back(uiButton);
+
+	uiButton = new UIButton(IDB_UI_BUTTON_ARROW_B_NORMAL, IDB_UI_BUTTON_ARROW_B_OVER, IDB_UI_BUTTON_ARROW_B_MASK);
+	uiButton->setPos(borderPosControlX + 50, borderPosControlY + 20);
+	uiButton->setOnClickId(IDE_CLICK_BORDER_POS_T_INC);
+	addElement(uiButton);
+	borderPosControl.push_back(uiButton);
+
+	// Right
+	uiButton = new UIButton(IDB_UI_BUTTON_ARROW_L_NORMAL, IDB_UI_BUTTON_ARROW_L_OVER, IDB_UI_BUTTON_ARROW_L_MASK);
+	uiButton->setPos(borderPosControlX + 80, borderPosControlY + 50);
+	uiButton->setOnClickId(IDE_CLICK_BORDER_POS_R_DEC);
+	addElement(uiButton);
+	borderPosControl.push_back(uiButton);
+
+	uiButton = new UIButton(IDB_UI_BUTTON_ARROW_R_NORMAL, IDB_UI_BUTTON_ARROW_R_OVER, IDB_UI_BUTTON_ARROW_R_MASK);
+	uiButton->setPos(borderPosControlX + 100, borderPosControlY + 50);
+	uiButton->setOnClickId(IDE_CLICK_BORDER_POS_R_INC);
+	addElement(uiButton);
+	borderPosControl.push_back(uiButton);
+
+	// Bottom
+	uiButton = new UIButton(IDB_UI_BUTTON_ARROW_T_NORMAL, IDB_UI_BUTTON_ARROW_T_OVER, IDB_UI_BUTTON_ARROW_T_MASK);
+	uiButton->setPos(borderPosControlX + 50, borderPosControlY + 80);
+	uiButton->setOnClickId(IDE_CLICK_BORDER_POS_B_DEC);
+	addElement(uiButton);
+	borderPosControl.push_back(uiButton);
+
+	uiButton = new UIButton(IDB_UI_BUTTON_ARROW_B_NORMAL, IDB_UI_BUTTON_ARROW_B_OVER, IDB_UI_BUTTON_ARROW_B_MASK);
+	uiButton->setPos(borderPosControlX + 50, borderPosControlY + 100);
+	uiButton->setOnClickId(IDE_CLICK_BORDER_POS_B_INC);
+	addElement(uiButton);
+	borderPosControl.push_back(uiButton);
+
+	// Left
+	uiButton = new UIButton(IDB_UI_BUTTON_ARROW_L_NORMAL, IDB_UI_BUTTON_ARROW_L_OVER, IDB_UI_BUTTON_ARROW_L_MASK);
+	uiButton->setPos(borderPosControlX, borderPosControlY + 50);
+	uiButton->setOnClickId(IDE_CLICK_BORDER_POS_L_DEC);
+	addElement(uiButton);
+	borderPosControl.push_back(uiButton);
+
+	uiButton = new UIButton(IDB_UI_BUTTON_ARROW_R_NORMAL, IDB_UI_BUTTON_ARROW_R_OVER, IDB_UI_BUTTON_ARROW_R_MASK);
+	uiButton->setPos(borderPosControlX + 20, borderPosControlY + 50);
+	uiButton->setOnClickId(IDE_CLICK_BORDER_POS_L_INC);
+	addElement(uiButton);
+	borderPosControl.push_back(uiButton);
+
+
+	// #############################
+	// Border
+	// #############################
+
+	int borderSizeControlX = 170;
+	int borderSizeControlY = 330;
+
+	UIImage* uiBackgroundBorderSize = new UIImage(IDB_UI_SIZE_BORDER_BACKGROUND, IDB_UI_SIZE_BORDER_BACKGROUND_MASK);
+	uiBackgroundBorderSize->setPos(borderSizeControlX + 23, borderSizeControlY + 23);
+	addElement(uiBackgroundBorderSize);
+	borderSizeControl.push_back(uiBackgroundBorderSize);
+
+	uiButton = new UIButton(IDB_UI_BUTTON_ARROW_L_NORMAL, IDB_UI_BUTTON_ARROW_L_OVER, IDB_UI_BUTTON_ARROW_L_MASK);
+	uiButton->setPos(borderSizeControlX, borderPosControlY + 50);
+	uiButton->setOnClickId(IDE_CLICK_BORDER_SIZE_DEC);
+	addElement(uiButton);
+	borderSizeControl.push_back(uiButton);
+
+	uiButton = new UIButton(IDB_UI_BUTTON_ARROW_R_NORMAL, IDB_UI_BUTTON_ARROW_R_OVER, IDB_UI_BUTTON_ARROW_R_MASK);
+	uiButton->setPos(borderSizeControlX+24, borderPosControlY + 50);
+	uiButton->setOnClickId(IDE_CLICK_BORDER_SIZE_INC);
+	addElement(uiButton);
+	borderSizeControl.push_back(uiButton);
+
+
+
+
+	zoomedPreviewUI = new UIImage();
+	zoomedPreviewUI->setPos(zpmX, zpmY);
+	addElement(zoomedPreviewUI);
+
+	referenceInfoText = new UIText("0x0 / 0x0");
+	referenceInfoText->setFontSize(0.3);
+	referenceInfoText->setFontColor(215, 196, 164);
+	referenceInfoText->setPos(390, 540);
+	addElement(referenceInfoText);
+
+
+	eSaveButton = new UIButton(IDB_UI_BUTTON_TEXT_NORMAL, IDB_UI_BUTTON_TEXT_OVER, IDB_UI_BUTTON_TEXT_MASK);
+	eSaveButton->addState(UIButton::BUTTON_STATE_DISABLED, IDB_UI_BUTTON_TEXT_DISABLED, IDB_UI_BUTTON_TEXT_MASK);
+	eSaveButton->setPos(10, 500);
+	eSaveButton->setLabel("SAVE");
+	eSaveButton->setState(UIButton::BUTTON_STATE_DISABLED);
+	eSaveButton->setOnClickId(IDE_CLICK_SAVE);
+	addElement(eSaveButton);
+
+
+	uiLearningProgressBlocker = new UIImage(IDB_UI_LEARNING_BLOCKER, IDB_UI_LEARNING_BLOCKER_MASK);
+	uiLearningProgressBlocker->setPos(20, 20);
+	uiLearningProgressBlocker->hide();
+	// Todo: Capture over's and links...
+	addElement(uiLearningProgressBlocker);
+
+}
+
+void UILearn::setGroupOffset(vector<UIBaseElement*> elementList, int offsetX, int offsetY) {
+	for (int idx = 0; idx < elementList.size(); idx++) {
+		elementList[idx]->setOffset(offsetX, offsetY);
+	}
+}
+
+void UILearn::setGroupVisibility(vector<UIBaseElement*> elementList, bool state) {
+	for (int idx = 0; idx < elementList.size(); idx++) {
+		if (state) {
+			elementList[idx]->show();
+		}
+		else {
+			elementList[idx]->hide();
+		}
+	}
+}
+
+void UILearn::setGroupVisibility(vector<UIButton*> elementList, bool state) {
+	for (int idx = 0; idx < elementList.size(); idx++) {
+		if (state) {
+			elementList[idx]->show();
+		}
+		else {
+			elementList[idx]->hide();
+		}
+	}
+}
 
 
 void UILearn::onShow() {
@@ -37,178 +295,203 @@ void UILearn::onShow() {
 	if (x > -1 && y > -1) {
 		SetWindowPos(hwnd, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
 	}
-	running = true;
+
+	updateLcUI();
+	UIBaseWindowGUIHost::processUI();
+
 }
 
 void UILearn::onHide() {
-	running = false;
+
 }
 
-void UILearn::createWindow() {
-	HWND hwnd;
-	hwnd = CreateDialog(getHInstance(), MAKEINTRESOURCE(IDD_LEARN), UIMainWindow::getInstance()->getHandle(), UILearn::MessageHandler);
-	setHandle(hwnd);
-	SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)LoadIcon(getHInstance(), MAKEINTRESOURCE(IDI_APP_ICON)));
-	
-	setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR);
-	initHost();
-	
-
-
-	UIButton* element;
-	element = new UIButton(IDB_UI_BUTTON_BIG_LEFT_NORMAL, IDB_UI_BUTTON_BIG_LEFT_OVER, IDB_UI_BUTTON_BIG_LEFT_MASK, 0.3);
-	element->setPos(50, 50);
-	element->setOnClickId(IDE_CLICK_PREV_REFERENCE);
-	addElement(element);
-
-	element = new UIButton(IDB_UI_BUTTON_BIG_RIGHT_NORMAL, IDB_UI_BUTTON_BIG_RIGHT_OVER, IDB_UI_BUTTON_BIG_RIGHT_MASK, 0.3);
-	element->setPos(100, 50);
-	element->setOnClickId(IDE_CLICK_NEXT_REFERENCE);
-	addElement(element);
-
-
-
-	element = new UIButton(IDB_UI_BUTTON_BIG_LEFT_NORMAL, IDB_UI_BUTTON_BIG_LEFT_OVER, IDB_UI_BUTTON_BIG_LEFT_MASK, 0.3);
-	element->setPos(50, 150);
-	element->setOnClickId(IDE_CLICK_BORDER_POS_T_INC);
-	addElement(element);
-
-	element = new UIButton(IDB_UI_BUTTON_BIG_RIGHT_NORMAL, IDB_UI_BUTTON_BIG_RIGHT_OVER, IDB_UI_BUTTON_BIG_RIGHT_MASK, 0.3);
-	element->setPos(80, 150);
-	element->setOnClickId(IDE_CLICK_BORDER_POS_T_DEC);
-	addElement(element);
-
-	element = new UIButton(IDB_UI_BUTTON_BIG_LEFT_NORMAL, IDB_UI_BUTTON_BIG_LEFT_OVER, IDB_UI_BUTTON_BIG_LEFT_MASK, 0.3);
-	element->setPos(120, 150);
-	element->setOnClickId(IDE_CLICK_BORDER_POS_R_INC);
-	addElement(element);
-
-	element = new UIButton(IDB_UI_BUTTON_BIG_RIGHT_NORMAL, IDB_UI_BUTTON_BIG_RIGHT_OVER, IDB_UI_BUTTON_BIG_RIGHT_MASK, 0.3);
-	element->setPos(150, 150);
-	element->setOnClickId(IDE_CLICK_BORDER_POS_R_DEC);
-	addElement(element);
-
-
-	element = new UIButton(IDB_UI_BUTTON_BIG_LEFT_NORMAL, IDB_UI_BUTTON_BIG_LEFT_OVER, IDB_UI_BUTTON_BIG_LEFT_MASK, 0.3);
-	element->setPos(50, 200);
-	element->setOnClickId(IDE_CLICK_BORDER_POS_B_INC);
-	addElement(element);
-
-	element = new UIButton(IDB_UI_BUTTON_BIG_RIGHT_NORMAL, IDB_UI_BUTTON_BIG_RIGHT_OVER, IDB_UI_BUTTON_BIG_RIGHT_MASK, 0.3);
-	element->setPos(80, 200);
-	element->setOnClickId(IDE_CLICK_BORDER_POS_B_DEC);
-	addElement(element);
-
-	element = new UIButton(IDB_UI_BUTTON_BIG_LEFT_NORMAL, IDB_UI_BUTTON_BIG_LEFT_OVER, IDB_UI_BUTTON_BIG_LEFT_MASK, 0.3);
-	element->setPos(120, 200);
-	element->setOnClickId(IDE_CLICK_BORDER_POS_L_INC);
-	addElement(element);
-
-	element = new UIButton(IDB_UI_BUTTON_BIG_RIGHT_NORMAL, IDB_UI_BUTTON_BIG_RIGHT_OVER, IDB_UI_BUTTON_BIG_RIGHT_MASK, 0.3);
-	element->setPos(150, 200);
-	element->setOnClickId(IDE_CLICK_BORDER_POS_L_DEC);
-	addElement(element);
-
-
-	element = new UIButton(IDB_UI_BUTTON_BIG_LEFT_NORMAL, IDB_UI_BUTTON_BIG_LEFT_OVER, IDB_UI_BUTTON_BIG_LEFT_MASK, 0.3);
-	element->setPos(50, 300);
-	element->setOnClickId(IDE_CLICK_BORDER_SIZE_INC);
-	addElement(element);
-
-	element = new UIButton(IDB_UI_BUTTON_BIG_RIGHT_NORMAL, IDB_UI_BUTTON_BIG_RIGHT_OVER, IDB_UI_BUTTON_BIG_RIGHT_MASK, 0.3);
-	element->setPos(80, 300);
-	element->setOnClickId(IDE_CLICK_BORDER_SIZE_DEC);
-	addElement(element);
-
-
-
-
-
-	zoomedPreviewUI = new UIImage();
-	zoomedPreviewUI->setImage(Mat(zpmHeight, zpmWidth, CV_8UC4, Scalar(255, 0, 0, 255)));
-	zoomedPreviewUI->setPos(220, 125);
-	addElement(zoomedPreviewUI);
-
-	
-
-	UIButton* eStartButton = new UIButton(IDB_UI_BUTTON_TEXT_NORMAL, IDB_UI_BUTTON_TEXT_OVER, IDB_UI_BUTTON_TEXT_MASK);
-	eStartButton->setPos(10, 10);
-	eStartButton->setLabel("START LEARNING");
-	eStartButton->setOnClickId(IDE_CLICK_START);
-	addElement(eStartButton);
-
-
-
-	
+void UILearn::processUI() {
+	if (isVisible()) {
+		if (getLearnController()->isLearningInProgress()) {
+			if (oldLearningState == false) {
+				oldLearningState = true;
+				
+				uiLearningProgressBlocker->show();
+			}
+		}
+		else {
+			if (oldLearningState == true) {
+				oldLearningState = false;
+				uiLearningProgressBlocker->hide();
+				oldLearningState = getLearnController()->isLearningInProgress();
+			}
+		}
+		updateLcUI();
+		UIBaseWindowGUIHost::processUI();
+	}
 }
+
 
 void UILearn::updateLcUI() {
+	
+	eSaveButton->setState(UIButton::BUTTON_STATE_DISABLED);
+	eLearnButton->setState(UIButton::BUTTON_STATE_DISABLED);
 
-	Mat* test = lc.getUIPreview(zpmHeight, zpmWidth);
- 	zoomedPreviewUI->setImage(*test);
+
+	bool inGameMode = CUELegendKeys::getInstance()->isIngameMode();
+
+	setGroupVisibility(keyBar, inGameMode);
+	eSaveButton->setVisibility(inGameMode);
+	eLearnButton->setVisibility(inGameMode);
+
+	if (!inGameMode) {
+
+		ePrevReference->hide();
+		eNextReference->hide();
+		referenceNumberText->hide();
+		referenceInfoText->hide();
+		skillNameText->hide();
+		needlePreviewUI->hide();
+		zoomedPreviewUI->hide();
+		setGroupVisibility(borderPosControl, false);
+		setGroupVisibility(borderSizeControl, false);
+
+		setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNMODE_NEEDS_GAME_CLIENT);
+		return;
+	}
+
+	// update keybar..
+	for (int keyIdx = 0; keyIdx < keyBar.size(); keyIdx++) {
+		if (getLearnController()->loadDataExists(getLearnController()->getHSLbyIndex(keyIdx)->getSaveId())) {
+			keyBar[keyIdx]->setState(UIButton::BUTTON_STATE_NORMAL);
+		}
+		else {
+			keyBar[keyIdx]->setState(UIButton::BUTTON_STATE_EXTRA);
+		}
+	}
+
+	
+	if (getLearnController()->getCurrentHSL() && !getLearnController()->isLearningInProgress()) {
+	
+		skillNameText->show();
+		needlePreviewUI->show();
+		zoomedPreviewUI->show();
+		setGroupVisibility(borderPosControl, true);
+		setGroupVisibility(borderSizeControl, getLearnController()->getCurrentHSL()->needsBorder());
+
+		keyBar[getLearnController()->getCurrentSkillIDX()]->setState(UIButton::BUTTON_STATE_ACTIVE);
+
+		eLearnButton->setState(UIButton::BUTTON_STATE_NORMAL);
+
+		if (getLearnController()->hasDataChanged()) {
+			eSaveButton->setState(UIButton::BUTTON_STATE_NORMAL);
+		}
+		else {
+			eSaveButton->setState(UIButton::BUTTON_STATE_DISABLED);
+		}
+
+
+
+		if (getLearnController()->getCurrentHSL()->isWide()) {
+			setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR_WIDE);
+			
+			zoomedPreviewUI->setImage(&(getLearnController()->getUIPreview(zpmWideWidth, zpmWideHeight, true)));
+			zoomedPreviewUI->setPos(zpmWideX, zpmWideY);
+			
+			needlePreviewUI->setImage(&(getLearnController()->getUINeedle(needleWideWidth, needleWideHeight)));
+			needlePreviewUI->setPos(needleWideX, needleWideY);
+
+			eSaveButton->setOffset(eSaveButtonWideOffsetX, eSaveButtonWideOffsetY);
+			eLearnButton->setOffset(eLearnButtonWideOffsetX, eLearnButtonWideOffsetY);
+			setGroupOffset(borderPosControl, borderPosControlWideOffsetX, borderPosControlWideOffsetY);
+			setGroupOffset(borderSizeControl, borderSizeControlWideOffsetX, borderSizeControlWideOffsetY);
+			setGroupOffset(referenceControl, referenceControlWideOffsetX, referenceControlWideOffsetY);
+			
+			// referenceInfoText
+		}
+		else {
+			setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR);
+			
+			zoomedPreviewUI->setImage(&(getLearnController()->getUIPreview(zpmWidth, zpmHeight)));
+			zoomedPreviewUI->setPos(zpmX, zpmY);
+
+			needlePreviewUI->setImage(&(getLearnController()->getUINeedle(needleWidth, needleHeight)));
+			needlePreviewUI->setPos(needleX, needleY);
+
+			eSaveButton->setOffset(eSaveButtonOffsetX, eSaveButtonOffsetY);
+			eLearnButton->setOffset(eLearnButtonOffsetX, eLearnButtonOffsetY);
+			setGroupOffset(borderPosControl, borderPosControlOffsetX, borderPosControlOffsetY);
+			setGroupOffset(borderSizeControl, borderSizeControlOffsetX, borderSizeControlOffsetY);
+			setGroupOffset(referenceControl, referenceControlOffsetX, referenceControlOffsetY);
+			
+		}
+
+
+		
+		skillNameText->setLabel(getLearnController()->getCurrentHSL()->getTitle());
+		
+	
+
+		
+		int availableItems = getLearnController()->getFoundSkillReferences();
+
+		if (availableItems > 0) {
+			ePrevReference->show();
+			eNextReference->show();
+			referenceNumberText->show();
+			referenceInfoText->show();
+			Rect foundLocation = getLearnController()->getCurrentHSL()->getLocationRectByLocationIndex(getLearnController()->getCurrentHSLfoundIDX());
+			int currentItem = getLearnController()->getCurrentHSLfoundIDX() + 1;
+
+			referenceNumberText->setLabel("%i/%i", currentItem, availableItems);
+			referenceInfoText->setLabel("%ix%i / %ix%i", foundLocation.x, foundLocation.y, foundLocation.width, foundLocation.height);
+		}
+	}
+	else {
+		setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR);
+	}
+	
 }
 
 void UILearn::handleClickEvents(int xPos, int yPos) {
+	bool doUpdateLcUI = true;
 	int eventId = onClick(xPos, yPos);
 	switch (eventId) {
-		case IDE_CLICK_PREV_REFERENCE:
-			lc.prev();
-			updateLcUI();
-			break;
-		case IDE_CLICK_NEXT_REFERENCE:
-			lc.next();
-			updateLcUI();
-			break;
-		case IDE_CLICK_START:
-			lc.start();
-			updateLcUI();
-			break;
-
-		case IDE_CLICK_BORDER_POS_T_INC:
-			lc.setBorderPosDelta(LearnController::BORDER_POS_T, 1);
-			updateLcUI();
-			break;
-		case IDE_CLICK_BORDER_POS_T_DEC:
-			lc.setBorderPosDelta(LearnController::BORDER_POS_T, -1);
-			updateLcUI();
-			break;
-		case IDE_CLICK_BORDER_POS_R_INC:
-			lc.setBorderPosDelta(LearnController::BORDER_POS_R, 1);
-			updateLcUI();
-			break;
-		case IDE_CLICK_BORDER_POS_R_DEC:
-			lc.setBorderPosDelta(LearnController::BORDER_POS_R, -1);
-			updateLcUI();
-			break;
-		case IDE_CLICK_BORDER_POS_B_INC:
-			lc.setBorderPosDelta(LearnController::BORDER_POS_B, 1);
-			updateLcUI();
-			break;
-		case IDE_CLICK_BORDER_POS_B_DEC:
-			lc.setBorderPosDelta(LearnController::BORDER_POS_B, -1);
-			updateLcUI();
-			break;
-		case IDE_CLICK_BORDER_POS_L_INC:
-			lc.setBorderPosDelta(LearnController::BORDER_POS_L, 1);
-			updateLcUI();
-			break;
-		case IDE_CLICK_BORDER_POS_L_DEC:
-			lc.setBorderPosDelta(LearnController::BORDER_POS_L, -1);
-			updateLcUI();
-			break;
-
-		case IDE_CLICK_BORDER_SIZE_INC:
-			lc.setBorderSizeDelta(1);
-			updateLcUI();
-			break;
-		case IDE_CLICK_BORDER_SIZE_DEC:
-			lc.setBorderSizeDelta(-1);
-			updateLcUI();
-			break;
-
-
+		case IDE_CLICK_PREV_REFERENCE:	 getLearnController()->prevReference();	break;
+		case IDE_CLICK_NEXT_REFERENCE:	 getLearnController()->nextReference();	break;
+		case IDE_CLICK_LEARN:			 getLearnController()->learn();	break;
+		case IDE_CLICK_SAVE:			 getLearnController()->save(); break;
+		case IDE_CLICK_BORDER_POS_T_INC:	 getLearnController()->setBorderPosDelta(LearnController::BORDER_POS_T, 1); break;
+		case IDE_CLICK_BORDER_POS_T_DEC:	 getLearnController()->setBorderPosDelta(LearnController::BORDER_POS_T, -1); break;
+		case IDE_CLICK_BORDER_POS_R_INC:	 getLearnController()->setBorderPosDelta(LearnController::BORDER_POS_R, 1);	break;
+		case IDE_CLICK_BORDER_POS_R_DEC:	 getLearnController()->setBorderPosDelta(LearnController::BORDER_POS_R, -1); break;
+		case IDE_CLICK_BORDER_POS_B_INC:	 getLearnController()->setBorderPosDelta(LearnController::BORDER_POS_B, 1); break;
+		case IDE_CLICK_BORDER_POS_B_DEC:	 getLearnController()->setBorderPosDelta(LearnController::BORDER_POS_B, -1); break;
+		case IDE_CLICK_BORDER_POS_L_INC:	 getLearnController()->setBorderPosDelta(LearnController::BORDER_POS_L, 1); break;
+		case IDE_CLICK_BORDER_POS_L_DEC:	 getLearnController()->setBorderPosDelta(LearnController::BORDER_POS_L, -1); break;
+		case IDE_CLICK_BORDER_SIZE_INC:		 getLearnController()->setBorderSizeDelta(1); break;
+		case IDE_CLICK_BORDER_SIZE_DEC:		 getLearnController()->setBorderSizeDelta(-1); break;
+		case IDE_CLICK_KEY_PASSIVE:			 getLearnController()->gotoSkill(0); break;
+		case IDE_CLICK_KEY_Q:				 getLearnController()->gotoSkill(1); break;
+		case IDE_CLICK_KEY_W:				 getLearnController()->gotoSkill(2); break;
+		case IDE_CLICK_KEY_E:				 getLearnController()->gotoSkill(3); break;
+		case IDE_CLICK_KEY_R:				 getLearnController()->gotoSkill(4); break;
+		case IDE_CLICK_KEY_D:				 getLearnController()->gotoSkill(5); break;
+		case IDE_CLICK_KEY_F:				 getLearnController()->gotoSkill(6); break;
+		case IDE_CLICK_KEY_B:				 getLearnController()->gotoSkill(7); break;
+		case IDE_CLICK_KEY_1:				 getLearnController()->gotoSkill(8); break;
+		case IDE_CLICK_KEY_2:				 getLearnController()->gotoSkill(9); break;
+		case IDE_CLICK_KEY_3:				 getLearnController()->gotoSkill(10); break;
+		case IDE_CLICK_KEY_4:				 getLearnController()->gotoSkill(11); break;
+		case IDE_CLICK_KEY_5:				 getLearnController()->gotoSkill(12); break;
+		case IDE_CLICK_KEY_6:				 getLearnController()->gotoSkill(13); break;
+		case IDE_CLICK_KEY_7:				 getLearnController()->gotoSkill(14); break;
+		case IDE_CLICK_KEY_HEAL:			 getLearnController()->gotoSkill(15); break;
+		case IDE_CLICK_KEY_MANA:			 getLearnController()->gotoSkill(16); break;
+		default: doUpdateLcUI = false; break;
 	}	
+
+	if (doUpdateLcUI) {
+		updateLcUI();
+		UIBaseWindowGUIHost::processUI(true);
+	}
 }
+
 
 
 INT_PTR CALLBACK UILearn::MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)

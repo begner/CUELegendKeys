@@ -18,7 +18,7 @@ private:
 	Mat4b effectColorsMat;
 	Mat4b effectMat;
 	Mat4b backPortMat, backPortMeasureMat;
-	
+	void createMask();
 public:
 	HSBackport();
 	~HSBackport();
@@ -32,5 +32,6 @@ public:
 	bool hasExclusiveEffect();
 	void doExclusiveEffect();
 	void setBackportDetectionCaptureCoordinates(int x, int y, int width, int height);
+	void resetResources();
 };
 

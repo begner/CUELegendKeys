@@ -13,16 +13,8 @@ HSBackport::~HSBackport()
 
 void HSBackport::initialize() {
 	
-	// create mask
-	
-	int cW = getCaptureWidth(true);
-	int cH = getCaptureHeight(true);
-	int radius = cW - iconRadius;
+	createMask();
 
-	mask = Mat4b(cW, cH, CV_8UC4);
-	cv::rectangle(mask, cv::Point(0, 0), cv::Point(cW, cH), Scalar(0, 0, 0, 255), CV_FILLED, 8, 0);
-	cv::circle(mask, cv::Point((int)floor(cW / 2), (int)floor(cH / 2)), (int)floor(radius / 2), Scalar(255, 255, 255, 255), CV_FILLED, CV_AA, 0);
-	
 	// create effect animation mat
 	int matW = 0;
 	int matH = 0;
@@ -45,6 +37,22 @@ void HSBackport::initialize() {
 		
 }
 
+void HSBackport::resetResources() {
+	createMask();
+}
+
+void HSBackport::createMask() {
+	// create mask
+
+	int cW = getCaptureWidth(true);
+	int cH = getCaptureHeight(true);
+	int radius = cW - iconRadius;
+
+	mask = Mat4b(cW, cH, CV_8UC4);
+	cv::rectangle(mask, cv::Point(0, 0), cv::Point(cW, cH), Scalar(0, 0, 0, 255), CV_FILLED, 8, 0);
+	cv::circle(mask, cv::Point((int)floor(cW / 2), (int)floor(cH / 2)), (int)floor(radius / 2), Scalar(255, 255, 255, 255), CV_FILLED, CV_AA, 0);
+}
+
 void HSBackport::setBackportDetectionCaptureCoordinates(int x, int y, int width, int height) {
 	backPortDetectionX = x;
 	backPortDetectionY = y;
@@ -62,6 +70,7 @@ bool HSBackport::isCastable() {
 
 
 void HSBackport::initializeFrame() {
+	createMask();
 	HSCastable::copyMats();
 	HSCastable::filterMat();
 	ImageFilterMat::addAlphaMask(getOriginalMatRespectBorders(), &mask);

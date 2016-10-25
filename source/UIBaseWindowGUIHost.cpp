@@ -31,7 +31,9 @@ int UIBaseWindowGUIHost::onClick(int mouseX, int mouseY) {
 
 		if (elementMinX <= mouseX && elementMaxX >= mouseX &&
 			elementMinY <= mouseY && elementMaxY >= mouseY) {
-			return element->getOnClickId();
+			if (element->getVisibility() && !element->isDisabled() && element->getOnClickId() != -1) {
+				return element->getOnClickId();
+			}
 		}
 	}
 	return -1;
@@ -46,7 +48,8 @@ void UIBaseWindowGUIHost::onMouseMove(int mouseX, int mouseY) {
 		int elementMinY = element->getY();
 		int elementMaxY = elementMinY + element->getHeight();
 
-		if (elementMinX <= mouseX && elementMaxX >= mouseX &&
+		if (element->getVisibility() && 
+			elementMinX <= mouseX && elementMaxX >= mouseX &&
 			elementMinY <= mouseY && elementMaxY >= mouseY) {
 			element->onMouseOn(mouseX - elementMinX, mouseY - elementMinY);
 		}
@@ -79,40 +82,58 @@ void UIBaseWindowGUIHost::initHost() {
 	SelectObject(drawHDC, drawHBitmap);
 }
 
-void UIBaseWindowGUIHost::setBackgroundResource(int resouce) {
-	windowBackground = ImageFilterMat::loadResourceAsMat(resouce);
-	doRedraw = true;
+int UIBaseWindowGUIHost::getCurrentBackgroundResource() {
+	return currentBackgroundRes;
+}
+
+bool UIBaseWindowGUIHost::setBackgroundResource(int resource) {
+	if (currentBackgroundRes != resource) {
+		if (windowBackgrounds.find(resource) == windowBackgrounds.end()) {
+			windowBackgrounds[resource] = ImageFilterMat::loadResourceAsMat(resource);
+		}
+		
+		currentBackgroundRes = resource;
+		doRedraw = true;
+		return true;
+	}
+	return false;
 }
 
 void UIBaseWindowGUIHost::forceRefresh() {
 	doRedraw = true;
 }
 
-void UIBaseWindowGUIHost::processUI() {
-
-	if (doRedraw || elementNeedsUpdate()) {
-		NuLogger::getInstance()->log("Redraw!");
+void UIBaseWindowGUIHost::processUI(bool forceDraw) {
+	if ((doRedraw || elementNeedsUpdate()) || forceDraw) {
+		doRedraw = false;
+		// NuLogger::getInstance()->log("Redraw!");
+		
 
 		Mat4b drawUI = Mat4b(uiHeight, uiWidth);
 
-		if (windowBackground.cols > 1 && windowBackground.rows > 1) {
-			windowBackground.copyTo(drawUI);
+		if (currentBackgroundRes > -1) {
+			if (windowBackgrounds[currentBackgroundRes].cols > 0 && windowBackgrounds[currentBackgroundRes].rows > 0) {
+				ImageFilterMat::overlayImage(&drawUI, &windowBackgrounds[currentBackgroundRes], cv::Point(0, 0));
+			}
 		}
 
 		for (vector<UIBaseElement*>::iterator it = uiElements.begin(); it != uiElements.end(); ++it) {
 			UIBaseElement* element = *it;
-			element->processUI(&drawUI);
+
+			if (element->getVisibility()) {
+				element->processUI(&drawUI);
+			}
 		}
 
 
 
 		// draw the UI
-		ImageFilterMat::DrawToHDC(drawHDC, drawUI, 0, 0, windowBackground.cols, windowBackground.rows);
+		ImageFilterMat::DrawToHDC(drawHDC, drawUI, 0, 0, windowBackgrounds[currentBackgroundRes].cols, windowBackgrounds[currentBackgroundRes].rows);
 
 		// double buffer write
 		BitBlt(windowHDC, 0, 0, uiWidth, uiHeight, drawHDC, 0, 0, SRCCOPY);
-
-		doRedraw = false;
+		
+		
 	}
 
 }

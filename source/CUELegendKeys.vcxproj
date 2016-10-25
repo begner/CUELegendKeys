@@ -196,9 +196,9 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
   <ItemGroup>
     <ClCompile Include="convert.cpp" />
     <ClCompile Include="CUELegendKeys.cpp" />
+    <ClCompile Include="DBScan.cpp" />
     <ClCompile Include="FPGameClient.cpp" />
     <ClCompile Include="FPIdle.cpp" />
-    <ClCompile Include="FPLearnMode.cpp" />
     <ClCompile Include="FPPatchClient.cpp" />
     <ClCompile Include="FPScreenMirror.cpp" />
     <ClCompile Include="FPSelectClient.cpp" />
@@ -209,6 +209,7 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClCompile Include="HSLBase.cpp" />
     <ClCompile Include="HSLItem.cpp" />
     <ClCompile Include="HSLBar.cpp" />
+    <ClCompile Include="HSLRelativeItem.cpp" />
     <ClCompile Include="HSLSkill.cpp" />
     <ClCompile Include="HSPassive.cpp" />
     <ClCompile Include="ImageFilterMat.cpp" />
@@ -240,9 +241,9 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="convert.h" />
     <ClInclude Include="CUELegendKeys.h" />
+    <ClInclude Include="DBScan.h" />
     <ClInclude Include="FPGameClient.h" />
     <ClInclude Include="FPIdle.h" />
-    <ClInclude Include="FPLearnMode.h" />
     <ClInclude Include="FPPatchClient.h" />
     <ClInclude Include="FPScreenMirror.h" />
     <ClInclude Include="FPSelectClient.h" />
@@ -253,6 +254,7 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClInclude Include="HSLBase.h" />
     <ClInclude Include="HSLItem.h" />
     <ClInclude Include="HSLBar.h" />
+    <ClInclude Include="HSLRelativeItem.h" />
     <ClInclude Include="HSLSkill.h" />
     <ClInclude Include="HSPassive.h" />
     <ClInclude Include="ImageFilterMat.h" />
@@ -262,6 +264,7 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClInclude Include="LEDController.h" />
     <ClInclude Include="libs\SimpleIni.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="stdafx.h" />
     <ClInclude Include="UIBaseWindow.h" />
     <ClInclude Include="UIBaseWindowGUIHost.h" />
     <ClInclude Include="UIButton.h" />

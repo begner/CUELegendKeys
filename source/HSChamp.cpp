@@ -8,7 +8,7 @@ void HSChamp::initialize() {
 	champKeyWidth = keyDim.right;
 	champKeyHeight = keyDim.bottom;
 
-	srand(time(NULL));
+	srand((int)time(0));
 
 	// Mask for UI
 	int cW = getCaptureWidth(true);
@@ -38,8 +38,8 @@ void HSChamp::filterMat() {
 
 	int maxDiff = 2;
 
-	int diffL = (double)rand() / (RAND_MAX + 1) * maxDiff;
-	int diffT = (double)rand() / (RAND_MAX + 1) * maxDiff;
+	int diffL = (int)((double)rand() / (RAND_MAX + 1) * maxDiff);
+	int diffT = (int)((double)rand() / (RAND_MAX + 1) * maxDiff);
 
 
 	ImageFilterMat::addAlphaMask(getOriginalMatRespectBorders(), mask);
@@ -48,6 +48,10 @@ void HSChamp::filterMat() {
 	getOriginalMatRespectBorders()->copyTo(champImageColorTable);
 
 	cv::Rect curRect(champRadius + diffL, champRadius + diffT, champImageColorTable.cols - champRadius * 2 + diffL, champImageColorTable.rows - champRadius * 2 + diffT);
+
+	if (!ImageFilterMat::isValidRect(&champImageColorTable, curRect)) {
+		return;
+	}
 	champImageColorTable = Mat4b(champImageColorTable, curRect);
 
 	ImageFilterMat::saturation(champImageColorTable, 0, 255, 1);

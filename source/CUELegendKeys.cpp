@@ -83,9 +83,6 @@ void CUELegendKeys::AppInit()
 	fpIdle = new FPIdle(UIMainDialog::getInstance()->getHandle());
 	fpIdle->loadResources();
 	
-	fpLearn = new FPLearnMode(UIMainDialog::getInstance()->getHandle());
-	fpLearn->loadResources();
-
 	fpSelectClient = new FPSelectClient(UIMainDialog::getInstance()->getHandle());
 	fpSelectClient->loadResources();
 	
@@ -135,15 +132,6 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 		return;
 	}
 
-	// Learn Mode comes first!
-	if (IsWindowVisible(UILearn::getInstance()->getHandle())) {
-		fpLearn->enableFpsLimit(0);
-		fpLearn->process();
-		UILearn::getInstance()->processUI();
-		return;
-	}
-
-	
 	// patchClient
 	DWORD patchClientPID = procL->getPIDofProcess("LoLPatcherUx.exe");
 	HWND patchClientHWND = NULL;
@@ -197,14 +185,16 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 	
 	// if game client
 	if (gameClientHWND != NULL && gameClientVisibility) {
+		currentMode = CLIENT_TYPE_LOL_INGAME;
 		fpGameClient->enableFpsLimit(limitFPS);
 		fpGameClient->setCaptureWindow(gameClientHWND);
 		drawStatus = fpGameClient->process();
-		if (drawStatus) showIdle = false;
+		showIdle = false;
 	}
 
 	// if selectClient
 	else if (selectClientHWND != NULL && selectClientVisibility) {
+		currentMode = CLIENT_TYPE_LOL_SELECT;
 		fpSelectClient->enableFpsLimit(limitFPS);
 		fpSelectClient->setCaptureWindow(selectClientHWND);
 		drawStatus = fpSelectClient->process();
@@ -212,6 +202,7 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 	}
 	// if patchClient
 	else if (patchClientHWND != NULL && patchClientVisibility) {
+		currentMode = CLIENT_TYPE_LOL_PATCH;
 		fpPatchClient->enableFpsLimit(limitFPS);
 		fpPatchClient->setCaptureWindow(patchClientHWND);
 		drawStatus = fpPatchClient->process();
@@ -219,6 +210,7 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 	}
 
 	if (showIdle) {
+		currentMode = CLIENT_TYPE_NONE;
 		if (screenMirrorOnIdleMode) {
 			fpIdle->enableFpsLimit(limitFPS);
 			fpIdle->setMode(FPIdle::FP_IDLE_MODE_SCREEN_MIRROR);
@@ -262,7 +254,6 @@ void CUELegendKeys::setLimitFPS(bool state) {
 	limitFPS = state;
 }
 
-
 bool CUELegendKeys::getShowFilteredMat() {
 	return fpGameClient->getShowFilteredMat();
 }
@@ -284,6 +275,8 @@ void CUELegendKeys::openMapView() {
 	UIMapView::getInstance()->Show();
 }
 
-
+bool CUELegendKeys::isIngameMode() {
+	return (currentMode == CLIENT_TYPE_LOL_INGAME || getForceInGameClient());
+}
 
 

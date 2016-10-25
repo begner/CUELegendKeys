@@ -22,12 +22,14 @@ public:
 	void setHandle(HWND h);
 	HWND getHandle();
 	
+	bool isVisible();
+
 	void Hide();
 	virtual void onHide();
 	
 	void Show(bool doRestore = false);
 	virtual void onShow();
-
+	void setAlwaysOnTop();
 
 
 };

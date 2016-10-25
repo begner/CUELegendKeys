@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CUELegendKeys", "source\CUELegendKeys.vcxproj", "{25C6D4EA-4722-433D-9180-151A900DB380}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CueLegendKeys", "source\CUELegendKeys.vcxproj", "{25C6D4EA-4722-433D-9180-151A900DB380}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "CLKSetup", "source\setup\CLKSetup\CLKSetup.vdproj", "{58341735-260A-456E-B6CF-E5EAFDCDBB37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{25C6D4EA-4722-433D-9180-151A900DB380}.Release|x64.Build.0 = Release|x64
 		{25C6D4EA-4722-433D-9180-151A900DB380}.Release|x86.ActiveCfg = Release|Win32
 		{25C6D4EA-4722-433D-9180-151A900DB380}.Release|x86.Build.0 = Release|Win32
+		{58341735-260A-456E-B6CF-E5EAFDCDBB37}.Debug|x64.ActiveCfg = Debug
+		{58341735-260A-456E-B6CF-E5EAFDCDBB37}.Debug|x86.ActiveCfg = Debug
+		{58341735-260A-456E-B6CF-E5EAFDCDBB37}.Release|x64.ActiveCfg = Release
+		{58341735-260A-456E-B6CF-E5EAFDCDBB37}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -21,6 +21,12 @@ void startWorker() {
 	}
 }
 
+void startLearnUI()  {
+	while (true) {
+		UILearn::getInstance()->processUI();
+	}
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int iCmdShow)
 {
 	// createSteathWindow(&hInstance);
@@ -39,12 +45,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
 	UILearn::getInstance()->createWindow();
 
 	CUELegendKeys::getInstance();
-	
-
 
 	// Boot
 	// *****************************************
 	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)startWorker, NULL, NULL, NULL);
+	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)startLearnUI, NULL, NULL, NULL);
+	
 	
 	
 	// Message Loop

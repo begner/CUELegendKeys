@@ -33,8 +33,10 @@ private:
 public:
 	ImageFilterMat();
 	~ImageFilterMat();
+	static cv::Rect findBox(Mat &image, int threshold);
 	static int getBarPercentage(Mat hotspotMat);
 	static void whiteToDarkPixel(Mat srcImage, int threshold);
+	static void brightnessContrast(Mat srcImage, Mat* destImage, double contrast = 1.0, double brightness = 0);
 	static void killDarkPixel(Mat srcImage, int threshold);
 	static void killGrayPixel(Mat srcImage, int threshold);
 	static void saturation(Mat srcImage, int trashhold, int satValue, float brightnessFactor);
@@ -54,7 +56,15 @@ public:
 	static void deepCopyPixel(Mat *src, Mat4b *dest);
 	static void deepCopyPixel(Mat *src, Mat3b *dest);
 	static cv::Rect getCropRectBorder(Mat *src, int upperVThreshold = 70, int lowerSThreshold = 20);
-	static void cannyThreshold(Mat src, Mat* dest, int lowThreshold = 50, int kernel_size = 3, int ratio = 3, int blur_size = 3);
-	static boolean getMatchingRect(int match_method, Mat* haystackImage, Mat* needleImage, cv::Rect* foundRect);
+	static void cannyThreshold(Mat src, Mat* dest, int lowThreshold = 50, int kernel_size = 3, int ratio = 4, int blur_size = 1);
+	static bool getMatchingRect(int match_method, Mat* haystackImage, Mat* needleImage, cv::Rect* foundRect);
+	static cv::Scalar HSVtoRGBcvScalar(int H, int S, int V);
+	
+	static bool isValidRect(RECT checkRect);
+	static bool isValidRect(cv::Rect checkRect);
+	static bool isValidRect(cv::Size imageSize, cv::Rect checkRect);
+	static bool isValidRect(Mat* checkMat, cv::Rect checkRect);
+	static bool isValidRect(Mat4b* checkMat, cv::Rect checkRect);
+	static bool isValidRect(Mat3b* checkMat, cv::Rect checkRect);
 };
 

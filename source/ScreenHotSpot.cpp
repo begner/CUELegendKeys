@@ -20,20 +20,35 @@ void ScreenHotSpot::setCaptureCoordinates(int x, int y, int w, int h) {
 	captureY = y;
 	captureW = w;
 	captureH = h;
+	resetResources();
 }
 
-int ScreenHotSpot::getCaptureX(bool borderCorrect)
+int ScreenHotSpot::getCaptureX(bool borderCorrect, bool rawMode)
 {
-	if (borderCorrect)
-		return captureX + border;
-	return captureX;
+	if (rawMode) {
+		if (borderCorrect)
+			return captureX + border;
+		return captureX;
+	}
+	else {
+		if (borderCorrect)
+			return (captureX - captureOffsetX) + border;
+		return (captureX - captureOffsetX);
+	}
 }
 
-int ScreenHotSpot::getCaptureY(bool borderCorrect)
+int ScreenHotSpot::getCaptureY(bool borderCorrect, bool rawMode)
 {
-	if (borderCorrect)
-		return captureY + border;
-	return captureY;
+	if (rawMode) {
+		if (borderCorrect)
+			return captureY + border;
+		return captureY;
+	}
+	else {
+		if (borderCorrect)
+			return (captureY - captureOffsetY) + border;
+		return (captureY - captureOffsetY);
+	}
 }
 
 int ScreenHotSpot::getCaptureWidth(bool borderCorrect)
@@ -50,9 +65,16 @@ int ScreenHotSpot::getCaptureHeight(bool borderCorrect)
 	return captureH;
 }
 
-void ScreenHotSpot::setUiCoordinates(int x, int y) {
+void  ScreenHotSpot::setUiMatOffset(int x, int y) {
+	captureOffsetX = x;
+	captureOffsetY = y;
+}
+
+void ScreenHotSpot::setUiCoordinates(int x, int y, int w, int h) {
 	uiX = x;
 	uiY = y;
+	uiW = w;
+	uiH = h;
 }
 
 void ScreenHotSpot::deleteFilteredMatRect(int x, int y, int width, int height) {
@@ -70,6 +92,16 @@ int ScreenHotSpot::getUiX()
 int ScreenHotSpot::getUiY()
 {
 	return uiY;
+}
+
+int ScreenHotSpot::getUiWidth()
+{
+	return uiW;
+}
+
+int ScreenHotSpot::getUiHeight()
+{
+	return uiH;
 }
 
 void ScreenHotSpot::setBorder(int b) {
@@ -105,18 +137,30 @@ vector<CorsairLedId>* ScreenHotSpot::getKeys() {
 
 void ScreenHotSpot::setUIMat(Mat4b* uiMat) {
 	uiMatP = uiMat;
+	setCacheDirtyState(true);
 }
 
 void ScreenHotSpot::copyMats() {
 
+	
+
 	Mat4b uiMatCopy1(getCaptureWidth(), getCaptureHeight(), CV_8UC4);
 	uiMatP->copyTo(uiMatCopy1);
 	cv::Rect captureRect(getCaptureX(), getCaptureY(), getCaptureWidth(), getCaptureHeight());
+
+	/* if (!ImageFilterMat::isValidRect(&uiMatCopy1, captureRect)) {
+		return;
+	} */
+
 	originalMat = Mat4b(uiMatCopy1, captureRect);
 
 	Mat4b uiMatCopy2(getCaptureWidth(), getCaptureHeight(), CV_8UC4);
 	uiMatP->copyTo(uiMatCopy2);
 	cv::Rect rect(getCaptureX(true), getCaptureY(true), getCaptureWidth(true), getCaptureHeight(true));
+
+	if (!ImageFilterMat::isValidRect(&uiMatCopy2, rect)) {
+		return;
+	}
 	originalMatRespectBorders = Mat4b(uiMatCopy2, rect);
 
 	originalMatRespectBorders.copyTo(filteredMat);
@@ -128,6 +172,7 @@ void ScreenHotSpot::copyMats() {
 
 void ScreenHotSpot::setScreenshotMat(Mat4b* screenshot) {
 	screenshotMat = screenshot;
+	setCacheDirtyState(true);
 }
 
 Mat4b* ScreenHotSpot::getScreenshotMat() {
@@ -199,8 +244,10 @@ void ScreenHotSpot::doExclusiveEffect() {
 void ScreenHotSpot::initializeFrame() {
 	copyMats();
 	filterMat();
+	setCacheDirtyState(true);
 }
 
+/*
 HANDLE ScreenHotSpot::initializeFrameInThread() {
 	HANDLE mtHandle = (HANDLE)_beginthreadex(0, 0, &ScreenHotSpot::doInitializeFrame, this, 0, 0);
 	// filterMat();
@@ -212,4 +259,16 @@ unsigned int __stdcall ScreenHotSpot::doInitializeFrame(void *p_this) {
 	mySelf->initializeFrame();
 	return 0;
 }
+*/
 
+void ScreenHotSpot::resetResources() {
+}
+
+
+bool ScreenHotSpot::isCacheDirty() {
+	return cacheIsDirty;
+}
+
+void ScreenHotSpot::setCacheDirtyState(bool state) {
+	cacheIsDirty = state;
+}

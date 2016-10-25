@@ -7,7 +7,8 @@ class HSCastable :
 {
 private:
 	Vec4b getColorByTick(int offset = 0);
-
+	Vec4b currentColorCache;
+	bool isCastableCache;
 public:
 	HSCastable();
 	~HSCastable();
