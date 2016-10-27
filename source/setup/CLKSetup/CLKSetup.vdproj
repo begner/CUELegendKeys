@@ -11,6 +11,7 @@
 "SccLocalPath" = "8:"
 "SccAuxPath" = "8:"
 "SccProvider" = "8:"
+"BackwardsCompatibleGUIDGeneration" = "8:TRUE"
     "Hierarchy"
     {
         "Entry"
@@ -267,7 +268,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CUELegendKeys"
         "ProductCode" = "8:{225789A6-C575-4B9C-8FE7-035DA9227C94}"
-        "PackageCode" = "8:{B013FA16-E059-4F72-A0F9-D3C54CBF4802}"
+        "PackageCode" = "8:{6E62F4D8-599C-437B-92FF-AA45B8095FF0}"
         "UpgradeCode" = "8:{8EC42709-F2EE-4CD2-961D-C6B8D8C4FB25}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

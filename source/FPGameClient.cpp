@@ -1,6 +1,5 @@
 #include "FPGameClient.h"
-
-#include "UIMapView.h"
+#include "UILearn.h"
 
 FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 {
@@ -29,33 +28,25 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 	
 
 	hsAbilityQ.addKey(CLK_Q);
-	hsAbilityQ.setCaptureCoordinates(195, 22, 60, 61);
 	hsAbilityQ.setUiCoordinates(18 + iconPositionX * xSpace, iconPositionY, 52, 53);
-	hsAbilityQ.setBorder(4);
 	hsAbilityQ.addPreviewColorCoordinates(46 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsAbilityQ);
 	
 	iconPositionX++;
 	hsAbilityW.addKey(CLK_W);
-	hsAbilityW.setCaptureCoordinates(262, 22, 60, 61);
 	hsAbilityW.setUiCoordinates(18 + iconPositionX * xSpace, iconPositionY, 52, 53);
-	hsAbilityW.setBorder(4);
 	hsAbilityW.addPreviewColorCoordinates(46 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsAbilityW);
 	
 	iconPositionX++;
 	hsAbilityE.addKey(CLK_E);
-	hsAbilityE.setCaptureCoordinates(328, 22, 60, 61);
 	hsAbilityE.setUiCoordinates(18 + iconPositionX * xSpace, iconPositionY, 52, 53);
-	hsAbilityE.setBorder(4);
 	hsAbilityE.addPreviewColorCoordinates(46 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsAbilityE);
 	
 	iconPositionX++;
 	hsAbilityR.addKey(CLK_R);
-	hsAbilityR.setCaptureCoordinates(395, 22, 60, 61);
 	hsAbilityR.setUiCoordinates(18 + iconPositionX * xSpace, iconPositionY, 52, 53);
-	hsAbilityR.setBorder(4);
 	hsAbilityR.addPreviewColorCoordinates(46 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsAbilityR);
 
@@ -68,27 +59,21 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 	cPreviewPositionY = 479;
 	
 	hsAbilityD.addKey(CLK_D);
-	hsAbilityD.setCaptureCoordinates(470, 22, 46, 46);
 	hsAbilityD.setUiCoordinates(24 + iconPositionX * xSpace, iconPositionY, 38, 38);
-	hsAbilityD.setBorder(4);
 	hsAbilityD.addPreviewColorCoordinates(46 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsAbilityD);
 
 	iconPositionX++;
 	hsAbilityF.addKey(CLK_F);
-	hsAbilityF.setCaptureCoordinates(520, 22, 46, 46);
 	hsAbilityF.setUiCoordinates(25 + iconPositionX * xSpace, iconPositionY, 38, 38);
-	hsAbilityF.setBorder(4);
 	hsAbilityF.addPreviewColorCoordinates(46 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsAbilityF);
 	
 	iconPositionX++;
 	hsAbilityB.addKey(CLK_B);
-	hsAbilityB.setCaptureCoordinates(745, 74, 37, 37);
 	hsAbilityB.setUiCoordinates(28 + iconPositionX * xSpace, 4+iconPositionY, 33, 33);
 	hsAbilityB.addPreviewColorCoordinates(46 + iconPositionX * xSpace, cPreviewPositionY);
 	hsAbilityB.setBackportDetectionCaptureCoordinates(1920 / 2 - 204 - 1, 1080 - 287, 419, 16);
-	hsAbilityB.setBorder(2);
 	hsAbilityB.deleteFilteredMatRect(0, 32, 5, 5);
 
 	hotSpotGroup->addHotSpot(&hsAbilityB);
@@ -102,57 +87,43 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 	cPreviewPositionY = 249;
 	
 	hsItem1.addKey(CLK_1);
-	hsItem1.setCaptureCoordinates(596, 21, 43, 43);
 	hsItem1.setUiCoordinates(368 + iconPositionX * xSpace, iconPositionY, 35, 35);
-	hsItem1.setBorder(4);
 	hsItem1.addPreviewColorCoordinates(384 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsItem1);
 	
 	iconPositionX++;
 	hsItem2.addKey(CLK_2);
-	hsItem2.setCaptureCoordinates(645, 21, 43, 43);
 	hsItem2.setUiCoordinates(368 + iconPositionX * xSpace, iconPositionY, 35, 35);
-	hsItem2.setBorder(4);
 	hsItem2.addPreviewColorCoordinates(384 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsItem2);
 	
 	iconPositionX++;
 	hsItem3.addKey(CLK_3);
-	hsItem3.setCaptureCoordinates(694, 21, 43, 43);
 	hsItem3.setUiCoordinates(368 + iconPositionX * xSpace, iconPositionY, 35, 35);
-	hsItem3.setBorder(4);
 	hsItem3.addPreviewColorCoordinates(384 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsItem3);
 	
 	iconPositionX++;
 	hsItem4.addKey(CLK_4);
-	hsItem4.setCaptureCoordinates(744, 25, 37, 37);
 	hsItem4.setUiCoordinates(371 + iconPositionX * xSpace, iconPositionY+6, 29, 29);
-	hsItem4.setBorder(4);
 	hsItem4.addPreviewColorCoordinates(384 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsItem4);
 
 	iconPositionX++;
 	hsItem5.addKey(CLK_5);
-	hsItem5.setCaptureCoordinates(595, 68, 43, 43);
 	hsItem5.setUiCoordinates(368 + iconPositionX * xSpace, iconPositionY, 35, 35);
-	hsItem5.setBorder(4);
 	hsItem5.addPreviewColorCoordinates(384 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsItem5);
 
 	iconPositionX++;
 	hsItem6.addKey(CLK_6);
-	hsItem6.setCaptureCoordinates(645, 68, 43, 43);
 	hsItem6.setUiCoordinates(368 + iconPositionX * xSpace, iconPositionY, 35, 35);
-	hsItem6.setBorder(4);
 	hsItem6.addPreviewColorCoordinates(384 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsItem6);
 
 	iconPositionX++;
 	hsItem7.addKey(CLK_7);
-	hsItem7.setCaptureCoordinates(693, 68, 43, 43);
 	hsItem7.setUiCoordinates(368 + iconPositionX * xSpace, iconPositionY, 35, 35);
-	hsItem7.setBorder(4);
 	hsItem7.addPreviewColorCoordinates(384 + iconPositionX * xSpace, cPreviewPositionY);
 	hotSpotGroup->addHotSpot(&hsItem7);
 	
@@ -161,7 +132,6 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 
 	int barMinPosX = 348;
 	int barMaxPosX = barMinPosX + 414;
-	hsHealBar.setCaptureCoordinates(535+148, 105+ 925, 414, 16);
 	hsHealBar.setUiCoordinates(348, 371, 414, 16);
 	hsHealBar.addKey(CLK_F1);
 	hsHealBar.addKey(CLK_F2);
@@ -176,7 +146,6 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 	}
 	hotSpotGroup->addHotSpot(&hsHealBar);
 	
-	hsManaBar.setCaptureCoordinates(535+148, 125+ 925, 414, 16);
 	hsManaBar.setUiCoordinates(348, 463, 414, 16);
 	hsManaBar.addKey(CLK_F9);
 	hsManaBar.addKey(CLK_F10);
@@ -193,7 +162,7 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 	// Champ
 	// ***********************************************************
 	
-	hsChamp.setCaptureCoordinates(535+0, 925+0, 123, 123);
+	// hsChamp.setCaptureCoordinates(535+0, 925+0, 123, 123);
 	hsChamp.setUiCoordinates(8, 12, 123, 123);
 	hotSpotGroup->addHotSpot(&hsChamp);
 	
@@ -201,11 +170,9 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 	// ***********************************************************
 
 	hsPassive.addKey(CLK_Enter);
-	hsPassive.setCaptureCoordinates(146, 23, 44, 44);
 	hsPassive.setUiCoordinates(150, 12, 44, 44);
-hsPassive.setBorder(4);
-hsPassive.addPreviewColorCoordinates(150, 70);
-hotSpotGroup->addHotSpot(&hsPassive);
+	hsPassive.addPreviewColorCoordinates(150, 70);
+	hotSpotGroup->addHotSpot(&hsPassive);
 
 
 
@@ -274,10 +241,8 @@ bool FPGameClient::process() {
 		return false;
 	}
 
-	drawMapView(screenshotMat, clientWidth, clientHeight);
-
 	// copy background to UI
-	windowBackground.copyTo(drawUI);
+	getBackgroundMat()->copyTo(drawUI);
 
 	PerformanceDraw();
 	bool isLoading = false;
@@ -293,7 +258,7 @@ bool FPGameClient::process() {
 
 
 	// draw the UI
-	ImageFilterMat::DrawToHDC(drawHDC, drawUI, 0, 0, windowBackground.cols, windowBackground.rows);
+	ImageFilterMat::DrawToHDC(drawHDC, drawUI, 0, 0, getBackgroundMat()->cols, getBackgroundMat()->rows);
 
 
 	// double buffer write
@@ -355,11 +320,6 @@ void FPGameClient::loadHSSettings() {
 	}
 }
 
-void FPGameClient::drawMapView(Mat4b screenshotMat, int clientWidth, int clientHeight) {
-	
-	UIMapView::getInstance()->drawMap(screenshotMat, clientWidth, clientHeight);
-	
-}
 
 
 // ReSharper disable once CppMemberFunctionMayBeStatic
@@ -445,10 +405,15 @@ bool FPGameClient::processInGame(Mat4b screenshotMat) {
 			}
 
 			cv::Size uiElementSize(hs->getUiWidth(), hs->getUiHeight());
-		
-			resize(displayMat, displayMat, uiElementSize, 0, 0, INTER_CUBIC);
-			ImageFilterMat::overlayImage(&drawUI, &displayMat, cv::Point(hs->getUiX(), hs->getUiY()));
 
+			if (displayMat.cols > 0 && displayMat.rows > 0) {
+				resize(displayMat, displayMat, uiElementSize, 0, 0, INTER_CUBIC);
+			}
+			else {
+				displayMat = Mat(hs->getUiWidth(), hs->getUiHeight(), CV_8UC3, Scalar(0, 128, 255));
+			}
+
+			ImageFilterMat::overlayImage(&drawUI, &displayMat, cv::Point(hs->getUiX(), hs->getUiY()));
 			
 
 			vector<cv::Rect>* previewColors = hs->getPreviewColors();

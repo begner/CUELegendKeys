@@ -13,6 +13,10 @@ public:
 	HSLRelativeItem(string title, string saveId, int needleResource, int searchItem);
 	~HSLRelativeItem();
 
+	string getLearningRequiredText();
+
+	bool isLearningPossible();
+
 	void setItem1(cv::Rect input);
 	void setItem2(cv::Rect input);
 	

@@ -27,8 +27,7 @@ protected:
 	void PerformanceDraw();
 	void PerformanceStop();
 	
-	Mat4b windowBackground;
-	
+	map<int, Mat4b> windowBackgrounds;
 	
 private:
 	// fps / performance
@@ -54,7 +53,7 @@ public:
 	double getElapsedTime();
 	void setFpsLimit(int fps);
 	void enableFpsLimit(bool state);
-	
+	Mat4b* getBackgroundMat();
 
 	void loadResources();
 };

@@ -33,6 +33,10 @@ Vec4b HSBar::getCurrentColor(int index) {
 	int percent = determinePercentage();
 
 	Vec4b color(0, 0, 0, 255);
+	if (colorBarMat.cols < 1) {
+		return color;
+	}
+
 
 	if (colorBarMat.cols >= index) {
 		if (index * (int)(100 / colorBarMat.cols) < percent) {

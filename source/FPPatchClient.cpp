@@ -1,12 +1,13 @@
 #include "FPPatchClient.h"
 
 
-FPPatchClient::FPPatchClient(HWND uiHWND) : FPScreenMirror(uiHWND)
+FPPatchClient::FPPatchClient(HWND uiHWND) : FPScreenMirror(uiHWND, CLK_Escape, CLK_PauseBreak)
 {
-	setOffset(RECT{ 0, 10, 10, 5 });
+	setOffset(RECT{ 10, 10, 10, 10 });
 	setOffsetScale(1, 1);
-	setUIDimensions(209, 287, 98*4, 7*4*5);
-	setCutRect(300, 0, 240, 730);
+	setUIDimensions(202, 328, 370, 20);
+	setCutRect(330, 45, 330, 750);
+	
 }
 
 FPPatchClient::~FPPatchClient()
@@ -27,4 +28,6 @@ int FPPatchClient::getWindowBackgroundResource() {
 bool FPPatchClient::process() {
 	FPScreenMirror::setFpsLimit(Settings::getInstance()->getValue("PatchClientMode", "FPSLimit", (int)15));
 	return FPScreenMirror::process();
+
+
 }

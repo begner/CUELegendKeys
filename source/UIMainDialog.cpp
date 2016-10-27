@@ -85,7 +85,15 @@ INT_PTR CALLBACK UIMainDialog::MessageHandler(HWND hDlg, UINT message, WPARAM wP
 			UIMainDialog::getInstance()->ShowIconMenu();
 			return (INT_PTR)TRUE;
 			break;
-			
+		case WM_ERASEBKGND:
+			{
+				RECT rc;
+				GetClientRect(hDlg, &rc);
+				SetBkColor((HDC)wParam, 0x001f1a06);
+				ExtTextOut((HDC)wParam, 0, 0, ETO_OPAQUE, &rc, 0, 0, 0);
+				return (INT_PTR)TRUE;
+			}
+			break;
 		case WM_PAINT:
 			{
 				PAINTSTRUCT ps;

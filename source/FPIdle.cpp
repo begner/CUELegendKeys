@@ -17,7 +17,14 @@ FPIdle::~FPIdle()
 }
 
 int FPIdle::getWindowBackgroundResource() {
-	return IDB_WINDOW_BACKGROUND_IDLE;
+	if (mode == FP_IDLE_MODE_OFF) {
+		return IDB_WINDOW_BACKGROUND_IDLE;
+	}
+	else {
+		return IDB_WINDOW_BACKGROUND_IDLE_MIRROR;
+	}
+	
+	
 }
 
 void FPIdle::setCaptureWindow(HWND currentProcess) {
@@ -35,12 +42,12 @@ bool FPIdle::process() {
 		PerformanceStart();
 
 		// copy background to UI
-		windowBackground.copyTo(drawUI);
+		getBackgroundMat()->copyTo(drawUI);
 		
 		PerformanceDraw();
 
 		// draw the UI
-		ImageFilterMat::DrawToHDC(drawHDC, drawUI, 0, 0, windowBackground.cols, windowBackground.rows);
+		ImageFilterMat::DrawToHDC(drawHDC, drawUI, 0, 0, getBackgroundMat()->cols, getBackgroundMat()->rows);
 	
 		
 		// double buffer write

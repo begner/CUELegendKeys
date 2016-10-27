@@ -17,6 +17,12 @@ void UIText::setFontSize(double size) {
 	needsUpdate(true);
 }
 
+void UIText::setFontFace(int face) {
+	fontFace = face;
+	needsUpdate(true);
+}
+
+
 void UIText::setFontColor(Scalar color) {
 	fontColor = color;
 	needsUpdate(true);
@@ -50,8 +56,63 @@ void UIText::processUI(Mat4b* drawUI) {
 				break;
 		}
 
-		putText(*drawUI, label, cv::Point(labelX + shadowOffset, labelY + shadowOffset), fontFace, fontSize, Scalar(0, 0, 0, 128), fontWeight, fontLineType);
-		putText(*drawUI, label, cv::Point(labelX, labelY), fontFace, fontSize, fontColor, fontWeight, fontLineType);
+		vector<string> lines = {};
+
+
+		if (getWidth() - mySize.width > 0) {
+			lines.push_back(label);
+		}
+		else {
+			// multiline!
+			stringstream ss(label);
+			istream_iterator<string> begin(ss);
+			istream_iterator<string> end;
+			vector<string> vstrings(begin, end);
+
+			string checkLine, line = "";
+			cv::Size lineSize;
+			bool lastWord = false;
+
+			for (vector<string>::iterator it = vstrings.begin(); it != vstrings.end(); ++it) {
+				
+				checkLine = line + *it;
+				lineSize = getTextSize(line, fontFace, fontSize, fontWeight, &baseLine);
+
+				if (next(it) == vstrings.end()) {
+					line = checkLine;
+					lastWord = true;
+				}
+
+				if (lineSize.width > getWidth() || lastWord) {
+					lines.push_back(line);
+					line = "";
+				}
+				else {
+					line = line + *it + " ";
+				}
+			}
+		}
+		
+		string currentLine = "";
+		int lineNr = 0;
+		int lineY = 0;
+		for (vector<string>::iterator it = lines.begin(); it != lines.end(); ++it) {
+			currentLine = *it;
+			lineNr = (int)(it - lines.begin());
+			lineY = (int)(labelY + (lineNr * (mySize.height + baseLine)));
+
+			putText(*drawUI, currentLine, cv::Point(labelX + shadowOffset, lineY + shadowOffset), fontFace, fontSize, Scalar(0, 0, 0, 128), fontWeight, fontLineType);
+			putText(*drawUI, currentLine, cv::Point(labelX, lineY), fontFace, fontSize, fontColor, fontWeight, fontLineType);
+		}
+		
+
+		/*
+
+		for (i, line in enumerate(text.split('\n')) :
+			y = y0 + i*dy
+			cv2.putText(img, line, (50, y), cv2.FONT_HERSHEY_SIMPLEX, 1, 2)
+			*/
+	
 
 		// rectangle(*drawUI, cv::Rect(getX(), getY(), getWidth(), getHeight()), Scalar(0, 0, 255));
 	}

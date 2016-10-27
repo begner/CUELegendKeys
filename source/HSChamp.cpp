@@ -15,9 +15,11 @@ void HSChamp::initialize() {
 	int cH = getCaptureHeight(true);
 	int radius = cW - champRadius;// min(cW, cH);
 
-	mask = new Mat(cW, cH, CV_8UC1);
-	cv::rectangle(*mask, cv::Point(0, 0), cv::Point(cW, cH), Scalar(0), CV_FILLED, 8, 0);
-	cv::circle(*mask, cv::Point((int)floor(cW / 2) + champOffsetX, (int)floor(cH / 2) + champOffsetY), (int)floor(radius / 2), Scalar(255), CV_FILLED, CV_AA, 0);
+	if (ImageFilterMat::isValidRect(cv::Rect(0, 0, cW, cH))) {
+		mask = new Mat(cW, cH, CV_8UC1);
+		cv::rectangle(*mask, cv::Point(0, 0), cv::Point(cW, cH), Scalar(0), CV_FILLED, 8, 0);
+		cv::circle(*mask, cv::Point((int)floor(cW / 2) + champOffsetX, (int)floor(cH / 2) + champOffsetY), (int)floor(radius / 2), Scalar(255), CV_FILLED, CV_AA, 0);
+	}
 }
 
 HSChamp::HSChamp()
@@ -41,6 +43,10 @@ void HSChamp::filterMat() {
 	int diffL = (int)((double)rand() / (RAND_MAX + 1) * maxDiff);
 	int diffT = (int)((double)rand() / (RAND_MAX + 1) * maxDiff);
 
+
+	if (mask == nullptr) {
+		return;
+	}
 
 	ImageFilterMat::addAlphaMask(getOriginalMatRespectBorders(), mask);
 

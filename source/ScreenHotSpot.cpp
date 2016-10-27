@@ -148,9 +148,10 @@ void ScreenHotSpot::copyMats() {
 	uiMatP->copyTo(uiMatCopy1);
 	cv::Rect captureRect(getCaptureX(), getCaptureY(), getCaptureWidth(), getCaptureHeight());
 
-	/* if (!ImageFilterMat::isValidRect(&uiMatCopy1, captureRect)) {
+	
+	if (!ImageFilterMat::isValidRect(&uiMatCopy1, captureRect)) {
 		return;
-	} */
+	}
 
 	originalMat = Mat4b(uiMatCopy1, captureRect);
 
@@ -262,6 +263,7 @@ unsigned int __stdcall ScreenHotSpot::doInitializeFrame(void *p_this) {
 */
 
 void ScreenHotSpot::resetResources() {
+	initialize();
 }
 
 

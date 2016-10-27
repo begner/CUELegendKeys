@@ -18,7 +18,7 @@ private:
 	int champOffsetY = -2;
 
 	Mat4b champImageColorTable;
-	Mat* mask;
+	Mat* mask = nullptr;
 
 public:
 	HSChamp();

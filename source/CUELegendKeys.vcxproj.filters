@@ -78,9 +78,6 @@
     <ClCompile Include="UIMainWindow.cpp">
       <Filter>UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="UIMapView.cpp">
-      <Filter>UI\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="UIButton.cpp">
       <Filter>UI\Elements</Filter>
     </ClCompile>
@@ -205,9 +202,6 @@
       <Filter>UI\Windows</Filter>
     </ClInclude>
     <ClInclude Include="UIMainWindow.h">
-      <Filter>UI\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="UIMapView.h">
       <Filter>UI\Windows</Filter>
     </ClInclude>
     <ClInclude Include="UIButton.h">

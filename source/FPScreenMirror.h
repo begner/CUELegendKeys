@@ -49,7 +49,7 @@ private :
 	Mat4b* mask;
 	Mat4b* keyboardFx;
 public:
-	FPScreenMirror(HWND uiHWND);
+	FPScreenMirror(HWND uiHWND, CorsairLedId keyTL = CLK_Escape, CorsairLedId keyBR = CLK_RightCtrl);
 	virtual ~FPScreenMirror();
 	int getWindowBackgroundResource() override;
 	void reinitialize();

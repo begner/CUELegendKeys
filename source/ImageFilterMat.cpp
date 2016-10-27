@@ -870,7 +870,8 @@ bool ImageFilterMat::isValidRect(cv::Rect checkRect) {
 
 	if (checkRect.x < 0) return false;
 	if (checkRect.y < 0) return false;
-	// if ((checkRect.width < checkRect.x) < 0) return false;
+	if (checkRect.width < 1) return false;
+	if (checkRect.height < 1) return false;
 	// if ((checkRect.height - checkRect.y) < 0) return false;
 
 	return true;

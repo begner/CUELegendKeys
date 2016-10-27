@@ -1,4 +1,5 @@
 #include "LearnController.h"
+#include "UILearn.h"
 
 LearnController* LearnController::theInstance = NULL;
 
@@ -86,6 +87,7 @@ void LearnController::save() {
 
 	thereAreSavedChanges = true;
 	dataChanged = false;
+
 }
 
 
@@ -115,6 +117,20 @@ void LearnController::load() {
 	
 	currentHsl = getHSLbyIndex(currentSkillIDX);
 	
+	HSLRelativeItem* currentHslDynamicItem = dynamic_cast<HSLRelativeItem*>(currentHsl);
+	if (currentHslDynamicItem) {
+		currentHslDynamicItem->setItem1(getSavedLocation("Item1"));
+		currentHslDynamicItem->setItem2(getSavedLocation("Item2"));
+	}
+
+	HSLBar* currentHslDynamicBar = dynamic_cast<HSLBar*>(currentHsl);
+	if (currentHslDynamicBar) {
+		currentHslDynamicBar->setPassive(getSavedLocation("Passive"));
+		currentHslDynamicBar->setAbilityQ(getSavedLocation("AbilityQ"));
+		currentHslDynamicBar->setAbilityF(getSavedLocation("SummonerF"));
+	}
+
+
 	if (loadDataExists(currentHsl->getSaveId())) {
 		Mat* screenShot = getScreenshot();
 		if (screenShot) {
@@ -139,11 +155,11 @@ void LearnController::load() {
 	else {
 		currentLocation = nullptr;
 	}
-	
-	
-
 }
 
+void LearnController::unloadCurrentHSL() {
+	currentHsl = nullptr;
+}
 
 void LearnController::nextSkill() {
 	currentSkillIDX++;
@@ -156,6 +172,9 @@ void LearnController::nextSkill() {
 void LearnController::gotoSkill(int idx) {
 	currentSkillIDX = idx;
 	load();
+
+	
+	
 }
 
 void LearnController::prevSkill() {
@@ -181,6 +200,10 @@ bool LearnController::threadLearn() {
 	}
 	
 	mySelf->jobInProgress = false;
+	UILearn::getInstance()->forceRefresh();
+	UILearn::getInstance()->processUI();
+
+
 	return true;
 }
 
@@ -201,20 +224,6 @@ void LearnController::learn() {
 		currentHsl = getHSLbyIndex(currentSkillIDX);
 		currentHsl->setOriginalImage(*screenShot);
 		currentHsl->setHaystack(*screenShot);
-
-		HSLRelativeItem* currentHslDynamicItem = dynamic_cast<HSLRelativeItem*>(currentHsl);
-		if (currentHslDynamicItem) {
-			currentHslDynamicItem->setItem1(getSavedLocation("Item1"));
-			currentHslDynamicItem->setItem2(getSavedLocation("Item2"));
-		}
-
-
-		HSLBar* currentHslDynamicBar = dynamic_cast<HSLBar*>(currentHsl);
-		if (currentHslDynamicBar) {
-			currentHslDynamicBar->setPassive(getSavedLocation("Passive"));
-			currentHslDynamicBar->setAbilityQ(getSavedLocation("AbilityQ"));
-			currentHslDynamicBar->setAbilityF(getSavedLocation("SummonerF"));
-		}
 
 		jobInProgress = true;
 		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)LearnController::threadLearn, NULL, NULL, NULL);
@@ -312,7 +321,6 @@ Mat LearnController::getUIPreview(int width, int height, bool wideMode) {
 	Mat uiPreview = Mat(cv::Size(width, height), CV_8UC4, Scalar(0, 0, 0, 255));
 
 	if (currentLocation && currentHsl) {
-
 		// Mat uiPreview(width, height, CV_8UC4, Scalar(0, 255, 128, 255));
 
 		Mat previewImage;
@@ -377,7 +385,7 @@ Mat LearnController::getUIPreview(int width, int height, bool wideMode) {
 
 
 		if (wideMode) {
-			
+
 			int halfWidth = (int)floor((double)width / (double)2);
 			if (previewImage.cols < halfWidth) {
 				return uiPreview;
@@ -390,24 +398,19 @@ Mat LearnController::getUIPreview(int width, int height, bool wideMode) {
 
 			previewImage = Mat(previewImage.rows, width, CV_8UC4, Scalar(0, 0, 0, 255));
 			leftSide.copyTo(previewImage(cv::Rect(0, 0, leftSide.cols, leftSide.rows)));
-			rightSide.copyTo(previewImage(cv::Rect(leftSide.cols-1, 0, rightSide.cols, rightSide.rows)));
-			
+			rightSide.copyTo(previewImage(cv::Rect(leftSide.cols - 1, 0, rightSide.cols, rightSide.rows)));
+
 		}
 
 		// center image in viewPort
 		int applyToX = (int)((uiPreview.cols - previewImage.cols) / 2);
 		int applyToY = (int)((uiPreview.rows - previewImage.rows) / 2);
 		ImageFilterMat::overlayImage(&uiPreview, &previewImage, cv::Point(applyToX, applyToY));
-		
-		if (wideMode) {
-			ImageFilterMat::addAlphaMask(&uiPreview, &wideMask(cv::Rect(0, 0, uiPreview.cols, uiPreview.rows)));
-		}
-	}
-	else {
-		currentLocation = nullptr;
 	}
 
-	
+	if (wideMode) {
+		ImageFilterMat::addAlphaMask(&uiPreview, &wideMask(cv::Rect(0, 0, uiPreview.cols, uiPreview.rows)));
+	}
 
 	return uiPreview;
 }

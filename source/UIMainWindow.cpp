@@ -212,12 +212,6 @@ void UIMainWindow::createMenuItems(HMENU hMenu) {
 	else
 		createMenuItem(hMenu, position++, MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_MODE_GAME_SHOW_FILTERED_MAT_OFF, itemLabel);
 
-
-	// Map Window
-	itemLabel = "Show Map Sideview";
-	createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_SHOW_MAP_WINDOW, itemLabel);
-	
-
 	// -----------------------------------------------------------------------
 	createMenuDivider(hMenu, position++);
 
@@ -355,10 +349,6 @@ INT_PTR CALLBACK UIMainWindow::MessageHandler(HWND _hwnd, UINT message, WPARAM w
 					break;
 				case IDM_SHOW_SETTINGS:
 					// DialogBox(ghInst, MAKEINTRESOURCE(IDD_ABOUTBOX), ghWnd, About);
-					return (INT_PTR)TRUE;
-					break;
-				case IDM_SHOW_MAP_WINDOW:
-					CUELegendKeys::getInstance()->openMapView();
 					return (INT_PTR)TRUE;
 					break;
 					

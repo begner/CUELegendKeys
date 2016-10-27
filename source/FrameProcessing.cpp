@@ -40,9 +40,16 @@ void FrameProcessing::PerformanceStart() {
 	QueryPerformanceCounter((LARGE_INTEGER*)&g_CurentCount);
 }
 
-void FrameProcessing::loadResources() {
+Mat4b* FrameProcessing::getBackgroundMat() {
 	int backgroundRes = this->getWindowBackgroundResource();
-	windowBackground = ImageFilterMat::loadResourceAsMat(backgroundRes);
+	if (windowBackgrounds.find(backgroundRes) == windowBackgrounds.end()) {
+		windowBackgrounds[backgroundRes] = ImageFilterMat::loadResourceAsMat(backgroundRes);
+	}
+	return &windowBackgrounds[backgroundRes];
+}
+
+void FrameProcessing::loadResources() {
+	
 }
 
 void FrameProcessing::PerformanceDraw() {
@@ -52,11 +59,11 @@ void FrameProcessing::PerformanceDraw() {
 
 	if (lastFrameRenderDuration > 0) {
 		sprintf_s(fpsShowBuffer, "FPS: %06.2f (%03i)", (lastFrameRenderDuration > 0 ? 1000 / lastFrameRenderDuration : 0), realFramesLastSecond);
-		putText(drawUI, fpsShowBuffer, cv::Point(windowBackground.cols - 130, 20), FONT_HERSHEY_PLAIN, 0.8, Scalar(164, 196, 215, 255));
+		putText(drawUI, fpsShowBuffer, cv::Point(getBackgroundMat()->cols - 130, 20), FONT_HERSHEY_PLAIN, 0.8, Scalar(164, 196, 215, 255));
 	}
 
 	sprintf_s(fpsShowBuffer, "FRAME: %06.2f ms", lastFrameRenderDuration);
-	putText(drawUI, fpsShowBuffer, cv::Point(windowBackground.cols - 130, 40), FONT_HERSHEY_PLAIN, 0.8, Scalar(164, 196, 215, 255));
+	putText(drawUI, fpsShowBuffer, cv::Point(getBackgroundMat()->cols - 130, 40), FONT_HERSHEY_PLAIN, 0.8, Scalar(164, 196, 215, 255));
 
 
 }

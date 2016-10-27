@@ -78,8 +78,6 @@ public:
 	void setShowFilteredMat(bool state);
 	bool getShowFilteredMat();
 
-	void openMapView();
-
 	void quit();
 };
 

@@ -1,6 +1,9 @@
 #pragma once
 
 #include "UIBaseElement.h"
+#include <istream>
+#include <iterator>
+
 
 class UIText :
 	public UIBaseElement
@@ -15,6 +18,7 @@ private:
 	string label = "";
 	int align;
 	int textWidth = -1; // -1 = auto
+	bool wrapText = false;
 public:
 	static CONST int ALIGN_LEFT = 0;
 	static CONST int ALIGN_CENTER = 1;
@@ -27,6 +31,7 @@ public:
 	void setWidth(int width);
 	void setFontSize(double size);
 	void setFontColor(Scalar color);
+	void setFontFace(int face);
 	void setFontColor(int r, int g, int b, int a = 255);
 	void setLabel(string text, ...);
 	void processUI(Mat4b* drawUI);

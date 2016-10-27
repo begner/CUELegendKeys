@@ -5,7 +5,6 @@
 #include <windowsx.h>
 #include "UIBaseWindow.h"
 #include "UIMainDialog.h"
-#include "UIMapView.h"
 #include "UILearn.h"
 
 #include <string>

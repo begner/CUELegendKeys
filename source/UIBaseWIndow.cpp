@@ -62,7 +62,12 @@ void UIBaseWindow::onShow() {
 
 }
 
+void UIBaseWindow::onBeforeShow() {
+
+}
+
 void UIBaseWindow::Show(bool doRestore) {
+	onBeforeShow();
 	if (doRestore) {
 		ShowWindow(hwnd, SW_RESTORE);
 	}

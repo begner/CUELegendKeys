@@ -24,6 +24,9 @@ bool HSCastable::isCastable() {
 	
 	cv::Rect castDetectionRect(0, 0, getBorder(), getBorder());
 	Mat4b myMat = getOriginalMat()->clone();
+	if (!ImageFilterMat::isValidRect(&myMat, castDetectionRect)) {
+		return false;
+	}
 	Mat4b castDetectionMat(myMat, castDetectionRect);
 
 	ImageFilterMat::colorReduce(castDetectionMat, 64);

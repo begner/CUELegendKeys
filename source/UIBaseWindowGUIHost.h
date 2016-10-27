@@ -29,12 +29,13 @@ public:
 	UIBaseWindowGUIHost();
 	~UIBaseWindowGUIHost();
 	void addElement(UIBaseElement* element);
-	void processUI(bool forceDraw = false);
+	bool processUI(bool forceDraw = false);
 	void initHost();
 	int getCurrentBackgroundResource();
 	bool setBackgroundResource(int resouce);
 	void forceRefresh();
 	void onMouseMove(int mouseX, int mouseY);
 	int onClick(int mouseX, int mouseY);
+	bool goingToDrawUpdate();
 };
 

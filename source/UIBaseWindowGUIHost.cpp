@@ -103,13 +103,17 @@ void UIBaseWindowGUIHost::forceRefresh() {
 	doRedraw = true;
 }
 
-void UIBaseWindowGUIHost::processUI(bool forceDraw) {
+bool UIBaseWindowGUIHost::goingToDrawUpdate() {
+	return doRedraw;
+}
+
+bool UIBaseWindowGUIHost::processUI(bool forceDraw) {
 	if ((doRedraw || elementNeedsUpdate()) || forceDraw) {
 		doRedraw = false;
 		// NuLogger::getInstance()->log("Redraw!");
 		
 
-		Mat4b drawUI = Mat4b(uiHeight, uiWidth);
+		Mat4b drawUI = Mat4b(uiHeight, uiWidth, Scalar(0, 0, 0, 255));
 
 		if (currentBackgroundRes > -1) {
 			if (windowBackgrounds[currentBackgroundRes].cols > 0 && windowBackgrounds[currentBackgroundRes].rows > 0) {
@@ -123,6 +127,7 @@ void UIBaseWindowGUIHost::processUI(bool forceDraw) {
 			if (element->getVisibility()) {
 				element->processUI(&drawUI);
 			}
+			element->needsUpdate(false);
 		}
 
 
@@ -133,8 +138,8 @@ void UIBaseWindowGUIHost::processUI(bool forceDraw) {
 		// double buffer write
 		BitBlt(windowHDC, 0, 0, uiWidth, uiHeight, drawHDC, 0, 0, SRCCOPY);
 		
-		
+		return true;
 	}
-
+	return false;
 }
 

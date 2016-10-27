@@ -6,10 +6,17 @@ HSLRelativeItem::HSLRelativeItem(string title, string saveId, int needleResource
 	searchItem = sItem;
 }
 
-
 HSLRelativeItem::~HSLRelativeItem()
 {
 
+}
+
+string HSLRelativeItem::getLearningRequiredText() {
+	return "The Item 1 and Item 2 needs to be saved to autodetect this Element";
+}
+
+bool HSLRelativeItem::isLearningPossible() {
+	return (ImageFilterMat::isValidRect(item1) && ImageFilterMat::isValidRect(item2));
 }
 
 void HSLRelativeItem::setItem1(cv::Rect input) {

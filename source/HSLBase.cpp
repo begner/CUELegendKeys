@@ -56,7 +56,13 @@ cv::Rect HSLBase::getLocationRectByLocationIndex(int idx) {
 	return foundLocations[idx];
 }
 
+bool HSLBase::isLearningPossible() {
+	return true;
+}
 
+string HSLBase::getLearningRequiredText() {
+	return "";
+}
 
 string HSLBase::getTitle() {
 	return title;

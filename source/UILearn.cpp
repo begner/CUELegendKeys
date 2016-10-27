@@ -21,6 +21,8 @@ void UILearn::release()
 
 UILearn::UILearn()
 {
+	NuLogger::getInstance()->log("here");
+
 }
 
 UILearn::~UILearn()
@@ -115,7 +117,15 @@ void UILearn::createWindow() {
 	eLearnButton->setLabel("LEARN");
 	eLearnButton->setOnClickId(IDE_CLICK_LEARN);
 	addElement(eLearnButton);
-	
+
+	eLearnButtonRequireText = new UIText("");
+	eLearnButtonRequireText->setFontSize(0.35);
+	eLearnButtonRequireText->setFontColor(215, 196, 164);
+	eLearnButtonRequireText->setPos(12, 240);
+	eLearnButtonRequireText->setWidth(200);
+	eLearnButtonRequireText->setFontFace(CV_FONT_HERSHEY_SIMPLEX);
+	addElement(eLearnButtonRequireText);
+
 	ePrevReference = new UIButton(IDB_UI_BUTTON_ARROW_L_NORMAL, IDB_UI_BUTTON_ARROW_L_OVER, IDB_UI_BUTTON_ARROW_L_MASK);
 	ePrevReference->setPos(150, 190);
 	ePrevReference->setOnClickId(IDE_CLICK_PREV_REFERENCE);
@@ -256,6 +266,11 @@ void UILearn::createWindow() {
 	// Todo: Capture over's and links...
 	addElement(uiLearningProgressBlocker);
 
+	// Preload Backgrounds
+	setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR_NEEDS_GAME_CLIENT);
+	setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR_SQUARE);
+	setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR_WIDE);
+	setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR);
 }
 
 void UILearn::setGroupOffset(vector<UIBaseElement*> elementList, int offsetX, int offsetY) {
@@ -286,9 +301,9 @@ void UILearn::setGroupVisibility(vector<UIButton*> elementList, bool state) {
 	}
 }
 
+void UILearn::onBeforeShow() {
+	
 
-void UILearn::onShow() {
-	// cueLegendKeys.forceRefresh();
 
 	int x = Settings::getInstance()->getValue("Main", "LearnWindowX", -1);
 	int y = Settings::getInstance()->getValue("Main", "LearnWindowY", -1);
@@ -296,13 +311,23 @@ void UILearn::onShow() {
 		SetWindowPos(hwnd, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
 	}
 
+
+	getLearnController()->unloadCurrentHSL();
+	forceRefresh();
 	updateLcUI();
 	UIBaseWindowGUIHost::processUI();
+}
 
+void UILearn::onShow() {
+	forceRefresh();
+	
+
+	
+	
 }
 
 void UILearn::onHide() {
-
+	
 }
 
 void UILearn::processUI() {
@@ -321,7 +346,9 @@ void UILearn::processUI() {
 				oldLearningState = getLearnController()->isLearningInProgress();
 			}
 		}
-		updateLcUI();
+		if (goingToDrawUpdate()) {
+			updateLcUI();
+		}
 		UIBaseWindowGUIHost::processUI();
 	}
 }
@@ -329,18 +356,16 @@ void UILearn::processUI() {
 
 void UILearn::updateLcUI() {
 	
-	eSaveButton->setState(UIButton::BUTTON_STATE_DISABLED);
-	eLearnButton->setState(UIButton::BUTTON_STATE_DISABLED);
-
 
 	bool inGameMode = CUELegendKeys::getInstance()->isIngameMode();
+	HSLBase* cHSL = getLearnController()->getCurrentHSL();
 
-	setGroupVisibility(keyBar, inGameMode);
-	eSaveButton->setVisibility(inGameMode);
-	eLearnButton->setVisibility(inGameMode);
-
-	if (!inGameMode) {
-
+	
+	// if no item selected or not gamemode - hide almost everything!
+	if (!inGameMode || cHSL == nullptr) {
+		eSaveButton->hide();
+		eLearnButton->hide();
+		eLearnButtonRequireText->hide();
 		ePrevReference->hide();
 		eNextReference->hide();
 		referenceNumberText->hide();
@@ -350,12 +375,17 @@ void UILearn::updateLcUI() {
 		zoomedPreviewUI->hide();
 		setGroupVisibility(borderPosControl, false);
 		setGroupVisibility(borderSizeControl, false);
+	}
 
-		setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNMODE_NEEDS_GAME_CLIENT);
+	// in not gamemode - keybar is also hidden
+	if (!inGameMode) {
+		setGroupVisibility(keyBar, false);
+		setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR_NEEDS_GAME_CLIENT);
 		return;
 	}
 
-	// update keybar..
+	// from here - keybar is visible
+	setGroupVisibility(keyBar, true);
 	for (int keyIdx = 0; keyIdx < keyBar.size(); keyIdx++) {
 		if (getLearnController()->loadDataExists(getLearnController()->getHSLbyIndex(keyIdx)->getSaveId())) {
 			keyBar[keyIdx]->setState(UIButton::BUTTON_STATE_NORMAL);
@@ -366,18 +396,39 @@ void UILearn::updateLcUI() {
 	}
 
 	
-	if (getLearnController()->getCurrentHSL() && !getLearnController()->isLearningInProgress()) {
+	// if there is NO item selected
+	if (cHSL == nullptr) {
+		setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR);
+ 	}
+	else {
+
 	
+		// eSaveButton->setState(UIButton::BUTTON_STATE_DISABLED);
+		// eLearnButton->setState(UIButton::BUTTON_STATE_DISABLED);
+
+
 		skillNameText->show();
 		needlePreviewUI->show();
+
 		zoomedPreviewUI->show();
+
 		setGroupVisibility(borderPosControl, true);
-		setGroupVisibility(borderSizeControl, getLearnController()->getCurrentHSL()->needsBorder());
+		setGroupVisibility(borderSizeControl, cHSL->needsBorder());
 
 		keyBar[getLearnController()->getCurrentSkillIDX()]->setState(UIButton::BUTTON_STATE_ACTIVE);
 
-		eLearnButton->setState(UIButton::BUTTON_STATE_NORMAL);
-
+		eLearnButton->show();
+		if (cHSL->isLearningPossible()) {
+			eLearnButton->setState(UIButton::BUTTON_STATE_NORMAL);
+			eLearnButtonRequireText->hide();
+		}
+		else {
+			eLearnButton->setState(UIButton::BUTTON_STATE_DISABLED);
+			eLearnButtonRequireText->setLabel(cHSL->getLearningRequiredText());
+			eLearnButtonRequireText->show();
+		}
+		
+		eSaveButton->show();
 		if (getLearnController()->hasDataChanged()) {
 			eSaveButton->setState(UIButton::BUTTON_STATE_NORMAL);
 		}
@@ -387,7 +438,7 @@ void UILearn::updateLcUI() {
 
 
 
-		if (getLearnController()->getCurrentHSL()->isWide()) {
+		if (cHSL->isWide()) {
 			setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR_WIDE);
 			
 			zoomedPreviewUI->setImage(&(getLearnController()->getUIPreview(zpmWideWidth, zpmWideHeight, true)));
@@ -405,7 +456,7 @@ void UILearn::updateLcUI() {
 			// referenceInfoText
 		}
 		else {
-			setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR);
+			setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR_SQUARE);
 			
 			zoomedPreviewUI->setImage(&(getLearnController()->getUIPreview(zpmWidth, zpmHeight)));
 			zoomedPreviewUI->setPos(zpmX, zpmY);
@@ -423,7 +474,7 @@ void UILearn::updateLcUI() {
 
 
 		
-		skillNameText->setLabel(getLearnController()->getCurrentHSL()->getTitle());
+		skillNameText->setLabel(cHSL->getTitle());
 		
 	
 
@@ -435,16 +486,14 @@ void UILearn::updateLcUI() {
 			eNextReference->show();
 			referenceNumberText->show();
 			referenceInfoText->show();
-			Rect foundLocation = getLearnController()->getCurrentHSL()->getLocationRectByLocationIndex(getLearnController()->getCurrentHSLfoundIDX());
+			Rect foundLocation = cHSL->getLocationRectByLocationIndex(getLearnController()->getCurrentHSLfoundIDX());
 			int currentItem = getLearnController()->getCurrentHSLfoundIDX() + 1;
 
 			referenceNumberText->setLabel("%i/%i", currentItem, availableItems);
 			referenceInfoText->setLabel("%ix%i / %ix%i", foundLocation.x, foundLocation.y, foundLocation.width, foundLocation.height);
 		}
 	}
-	else {
-		setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR);
-	}
+	
 	
 }
 
@@ -455,7 +504,7 @@ void UILearn::handleClickEvents(int xPos, int yPos) {
 		case IDE_CLICK_PREV_REFERENCE:	 getLearnController()->prevReference();	break;
 		case IDE_CLICK_NEXT_REFERENCE:	 getLearnController()->nextReference();	break;
 		case IDE_CLICK_LEARN:			 getLearnController()->learn();	break;
-		case IDE_CLICK_SAVE:			 getLearnController()->save(); break;
+		case IDE_CLICK_SAVE:			 getLearnController()->save(); getLearnController()->load();  break;
 		case IDE_CLICK_BORDER_POS_T_INC:	 getLearnController()->setBorderPosDelta(LearnController::BORDER_POS_T, 1); break;
 		case IDE_CLICK_BORDER_POS_T_DEC:	 getLearnController()->setBorderPosDelta(LearnController::BORDER_POS_T, -1); break;
 		case IDE_CLICK_BORDER_POS_R_INC:	 getLearnController()->setBorderPosDelta(LearnController::BORDER_POS_R, 1);	break;
@@ -488,7 +537,6 @@ void UILearn::handleClickEvents(int xPos, int yPos) {
 
 	if (doUpdateLcUI) {
 		updateLcUI();
-		UIBaseWindowGUIHost::processUI(true);
 	}
 }
 
@@ -499,11 +547,19 @@ INT_PTR CALLBACK UILearn::MessageHandler(HWND hDlg, UINT message, WPARAM wParam,
 	// UNREFERENCED_PARAMETER(lParam);
 	switch (message)
 	{
+		case WM_ERASEBKGND:
+			{
+				RECT rc;
+				GetClientRect(hDlg, &rc);
+				SetBkColor((HDC)wParam, 0x001f1a06); 
+				ExtTextOut((HDC)wParam, 0, 0, ETO_OPAQUE, &rc, 0, 0, 0);
+				return 1;
+			}
+			break;
 		case WM_PAINT:
 			{
 				PAINTSTRUCT ps;
 				BeginPaint(hDlg, &ps);
-				UILearn::getInstance()->forceRefresh();
 				EndPaint(hDlg, &ps);
 				return (INT_PTR)TRUE;
 			}

@@ -271,10 +271,6 @@ void CUELegendKeys::quit() {
 }
 
 
-void CUELegendKeys::openMapView() {
-	UIMapView::getInstance()->Show();
-}
-
 bool CUELegendKeys::isIngameMode() {
 	return (currentMode == CLIENT_TYPE_LOL_INGAME || getForceInGameClient());
 }

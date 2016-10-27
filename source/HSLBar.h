@@ -18,6 +18,10 @@ public:
 	void setAbilityQ(cv::Rect input);
 	void setAbilityF(cv::Rect input);
 
+	string getLearningRequiredText();
+
+	bool isLearningPossible();
+
 	bool findLocations(Mat* haystack, Mat* needle, int offsetX, int offsetY);
 	bool isWide();
 	bool needsBorder();

@@ -2,13 +2,10 @@
 
 
 
-FPScreenMirror::FPScreenMirror(HWND uiHWND) : FrameProcessing(uiHWND)
+FPScreenMirror::FPScreenMirror(HWND uiHWND, CorsairLedId keyTL, CorsairLedId keyBR) : FrameProcessing(uiHWND)
 {
 	// get keyboard keys
-	allKeys = LEDController::getInstance()->getAllKeysByRect(CLK_Escape, CLK_RightCtrl);
-	// setOffset(RECT{ 100, 200, 100, 0 });
-	// setOffset(RECT {10, 100, 10, 10});
-	// setOffsetScale(1, 1.2);
+	allKeys = LEDController::getInstance()->getAllKeysByRect(keyTL, keyBR);
 	reinitialize();
 }
 
@@ -203,7 +200,7 @@ bool FPScreenMirror::process() {
 	LEDController::getInstance()->updateFrame();
 	
 	// copy background to UI
-	windowBackground.copyTo(drawUI);
+	getBackgroundMat()->copyTo(drawUI);
 	
 	// ImageFilterMat::addAlphaMask(&screenshotMat, mask);
 	
@@ -217,7 +214,7 @@ bool FPScreenMirror::process() {
 	PerformanceDraw();
 
 	// draw the UI
-	ImageFilterMat::DrawToHDC(drawHDC, drawUI, 0, 0, windowBackground.cols, windowBackground.rows);
+	ImageFilterMat::DrawToHDC(drawHDC, drawUI, 0, 0, getBackgroundMat()->cols, getBackgroundMat()->rows);
 
 	// double buffer write
 	BitBlt(windowHDC, 0, 0, uiWidth, uiHeight, drawHDC, 0, 0, SRCCOPY);

@@ -66,6 +66,7 @@ public:
 	void nextSkill();
 	void prevSkill();
 	void gotoSkill(int idx);
+	void unloadCurrentHSL();
 	void save();
 	
 	void load();

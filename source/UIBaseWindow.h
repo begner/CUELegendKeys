@@ -28,6 +28,7 @@ public:
 	virtual void onHide();
 	
 	void Show(bool doRestore = false);
+	virtual void onBeforeShow();
 	virtual void onShow();
 	void setAlwaysOnTop();
 

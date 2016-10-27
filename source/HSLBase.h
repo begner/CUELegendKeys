@@ -28,6 +28,7 @@ public:
 
 	string getSaveId();
 	void setSaveId(string t);
+	
 
 	virtual void setHaystack(Mat hs);
 	virtual void setOriginalImage(Mat hs);
@@ -41,6 +42,9 @@ public:
 	virtual bool findLocations(Mat* hayStack, Mat* needle, int offsetX = 0, int offsetY = 0);
 	void orderLocations();
 	cv::Rect getLocationRectByLocationIndex(int idx);
+
+	virtual bool isLearningPossible();
+	virtual string getLearningRequiredText();
 
 
 	void addFoundLocation(cv::Rect foundRect);

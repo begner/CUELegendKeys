@@ -64,6 +64,12 @@ private:
 	int eSaveButtonOffsetY = 0;
 	int eSaveButtonWideOffsetX = 10;
 	int eSaveButtonWideOffsetY = 40;
+
+	UIText* eLearnButtonRequireText;
+	int eLearnButtonRequireTextOffsetX = 0;
+	int eLearnButtonRequireTextOffsetY = 0;
+	int eLearnButtonRequireTextWideOffsetX = 10;
+	int eLearnButtonRequireTextWideOffsetY = 40;
 		
 	UIText* skillNameText;
 	
@@ -138,6 +144,7 @@ public:
 	void createWindow(); 
 	void onHide();
 	void onShow();
+	void onBeforeShow();
 	static INT_PTR CALLBACK MessageHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 	void handleClickEvents(int xPos, int yPos);

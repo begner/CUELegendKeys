@@ -24,11 +24,17 @@ void HSLBar::setAbilityF(cv::Rect input) {
 	abilityFRect = input;
 }
 
+string HSLBar::getLearningRequiredText() {
+	return "The passive, Ability Q and Ability F needs to be saved to autodetect this Element";
+}
+
+bool HSLBar::isLearningPossible() {
+	return (ImageFilterMat::isValidRect(passiveRect) && ImageFilterMat::isValidRect(abilityQRect) && ImageFilterMat::isValidRect(abilityFRect));
+}
+
 bool HSLBar::findLocations(Mat* haystack, Mat* needle, int offsetX, int offsetY) {
-	if (passiveRect.x < 1 || passiveRect.y < 1 || passiveRect.width < 1 || passiveRect.height < 1 ||
-		abilityQRect.x < 1 || abilityQRect.y < 1 || abilityQRect.width < 1 || abilityQRect.height < 1 ||
-		abilityFRect.x < 1 || abilityFRect.y < 1 || abilityFRect.width < 1 || abilityFRect.height < 1) {
-		NuLogger::getInstance()->log("Cant learn Relative item - i1 & i2 not saved!");
+	if (!isLearningPossible()) {
+		NuLogger::getInstance()->log("Learning canceled: "+getLearningRequiredText());
 		return false;
 	}
 

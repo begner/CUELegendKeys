@@ -73,7 +73,10 @@ void HSBackport::initializeFrame() {
 	createMask();
 	HSCastable::copyMats();
 	HSCastable::filterMat();
-	ImageFilterMat::addAlphaMask(getOriginalMatRespectBorders(), &mask);
+	if (ImageFilterMat::isValidRect(cv::Rect(0, 0, mask.cols, mask.rows))) {
+		ImageFilterMat::addAlphaMask(getOriginalMatRespectBorders(), &mask);
+	}
+	
 }
 
 
