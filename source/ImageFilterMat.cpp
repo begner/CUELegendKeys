@@ -551,7 +551,11 @@ Mat4b ImageFilterMat::loadResourceAsMat(int RESOURCEID) {
 	
 	std::vector<char> data(pMyBinaryData, pMyBinaryData + myResourceSize);
 	
-	Mat3b matBitmap = imdecode(Mat(data, CV_8UC3), CV_LOAD_IMAGE_COLOR);
+	Mat matBitmap = imdecode(Mat(data), IMREAD_UNCHANGED);
+	if (matBitmap.channels() == 4) {
+		return Mat4b(matBitmap);
+	}
+	
 	Mat4b matBitmap4;
 	cvtColor(matBitmap, matBitmap4, CV_BGR2BGRA);
 	return matBitmap4;

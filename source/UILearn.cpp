@@ -36,17 +36,19 @@ LearnController* UILearn::getLearnController() {
 
 
 
-void UILearn::createKeyButton(string label, int onClickId, int posX, int posY) {
+UIButton* UILearn::createKeyButton(string label, int onClickId, int posX, int posY) {
 	UIButton* keyBarButton;
-	keyBarButton = new UIButton(IDB_UI_KEY_N, IDB_UI_KEY_O, IDB_UI_KEY_M);
-	keyBarButton->addState(UIButton::BUTTON_STATE_EXTRA, IDB_UI_KEY_D, IDB_UI_KEY_O, IDB_UI_KEY_M);
-	keyBarButton->addState(UIButton::BUTTON_STATE_ACTIVE, IDB_UI_KEY_A, IDB_UI_KEY_O, IDB_UI_KEY_AM);
+	keyBarButton = new UIButton(IDB_UI_KEY_N, IDB_UI_KEY_NH);
+	keyBarButton->addState(UIButton::BUTTON_STATE_EXTRA, IDB_UI_KEY_E, IDB_UI_KEY_EH);
+	keyBarButton->addState(UIButton::BUTTON_STATE_DISABLED, IDB_UI_KEY_D, IDB_UI_KEY_D);
+	keyBarButton->addState(UIButton::BUTTON_STATE_ACTIVE, IDB_UI_KEY_A, IDB_UI_KEY_AH);
 	keyBarButton->setLabel(label);
 	keyBarButton->setFontSize(0.35);
 	keyBarButton->setOnClickId(onClickId);
 	keyBarButton->setPos(posX, posY);
 	keyBar.push_back(keyBarButton);
 	addElement(keyBarButton);
+	return keyBarButton;
 }
 
 
@@ -71,7 +73,11 @@ void UILearn::createWindow() {
 	int keyBarXSpace = 30;
 	int keyBarXDivider = 10;
 
-	createKeyButton("p", IDE_CLICK_KEY_PASSIVE, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace + keyBarXDivider;
+
+	UIButton* passiveKey = createKeyButton("", IDE_CLICK_KEY_PASSIVE, keyBarCurrentX, keyBarY); 
+	// passiveKey->addIcon()
+	keyBarCurrentX += keyBarXSpace + keyBarXDivider;
+
 	createKeyButton("Q", IDE_CLICK_KEY_Q, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
 	createKeyButton("W", IDE_CLICK_KEY_W, keyBarCurrentX, keyBarY);	keyBarCurrentX += keyBarXSpace;
 	createKeyButton("E", IDE_CLICK_KEY_E, keyBarCurrentX, keyBarY);	keyBarCurrentX += keyBarXSpace;
@@ -86,8 +92,12 @@ void UILearn::createWindow() {
 	createKeyButton("5", IDE_CLICK_KEY_5, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
 	createKeyButton("6", IDE_CLICK_KEY_6, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
 	createKeyButton("7", IDE_CLICK_KEY_7, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace + keyBarXDivider;
-	createKeyButton("h", IDE_CLICK_KEY_HEAL, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
-	createKeyButton("m", IDE_CLICK_KEY_MANA, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("", IDE_CLICK_KEY_HEAL, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("", IDE_CLICK_KEY_MANA, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+
+	
+
+
 
 	// #############################
 	// SkillInfo
@@ -271,6 +281,8 @@ void UILearn::createWindow() {
 	setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR_SQUARE);
 	setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR_WIDE);
 	setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR);
+
+	
 }
 
 void UILearn::setGroupOffset(vector<UIBaseElement*> elementList, int offsetX, int offsetY) {

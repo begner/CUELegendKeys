@@ -211,14 +211,14 @@ bool FPScreenMirror::process() {
 	resize(keyboardMat, keyboardMat, cv::Size(targetWidth, targetHeight));
 	ImageFilterMat::overlayImage(&drawUI, &keyboardMat, cv::Point(targetX, targetY));
 
-	
+
 	PerformanceDraw(getBackgroundMat()->cols - 130, 20);
 	drawToWindow(&drawUI);
 
 	// throwing away pointer, so opencv releases memory
 	delete screenshotRaw;
-
 	PerformanceStop();
+	
 	return true;
 }
 

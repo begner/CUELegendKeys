@@ -46,12 +46,15 @@ public:
 	
 
 	bool isDisabled();
+	UIButton(int resourceNormal, int resourceOver);
 	UIButton(int resourceNormal, int resourceOver, int resourceMask);
 	~UIButton();
 	void set9ScaleSize(int size);
 	void setWidth(int width);
-	void addState(int buttonState, int resourceNormal, int resourceHover, int resourceMask);
-	void addState(int buttonState, int resourceNormal, int resourceMask);
+	void addStateMask(int buttonState, int resourceNormal, int resourceHover, int resourceMask);
+	void addStateMask(int buttonState, int resourceNormal, int resourceMask);
+	void addState(int buttonState, int resourceNormal, int resourceHover);
+	void addState(int buttonState, int resourceNormal);
 	void processUI(Mat4b* drawUI);
 	void setFontSize(double size);
 	bool onMouseOut();

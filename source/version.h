@@ -8,7 +8,7 @@
 
 #define VERSION_MAJOR               0
 #define VERSION_MINOR               4
-#define VERSION_REVISION            1
+#define VERSION_REVISION            2
 #define VERSION_BUILD               0
 
 #define VER_FILE_DESCRIPTION_STR    "Description"
@@ -16,14 +16,14 @@
 #define VER_FILE_VERSION_STR        STRINGIZE(VERSION_MAJOR)        \
                                     "." STRINGIZE(VERSION_MINOR)    \
                                     "." STRINGIZE(VERSION_REVISION) \
-                                    "." STRINGIZE(VERSION_BUILD)    \
+//                                    "." STRINGIZE(VERSION_BUILD)    \
 
-#define VER_PRODUCTNAME_STR         "c_version_binary"
+#define VER_PRODUCTNAME_STR         "cue_legend_keys"
 #define VER_PRODUCT_VERSION         VER_FILE_VERSION
 #define VER_PRODUCT_VERSION_STR     VER_FILE_VERSION_STR
 #define VER_ORIGINAL_FILENAME_STR   VER_PRODUCTNAME_STR ".exe"
 #define VER_INTERNAL_NAME_STR       VER_ORIGINAL_FILENAME_STR
-#define VER_COPYRIGHT_STR           "Copyright (C) 2011"
+#define VER_COPYRIGHT_STR           "Copyright (C) 2016"
 
 #ifdef _DEBUG
 	#define VER_VER_DEBUG             VS_FF_DEBUG

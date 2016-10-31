@@ -19,11 +19,12 @@ private:
 
 	bool oldLearningState = false;
 	bool oldInGameState = false;
-	void createKeyButton(string label, int onClickId, int posX, int posY);
+	UIButton* createKeyButton(string label, int onClickId, int posX, int posY);
 	void setGroupVisibility(vector<UIBaseElement*> elementList, bool state);
 	void setGroupVisibility(vector<UIButton*> elementList, bool state);
 	void setGroupOffset(vector<UIBaseElement*> elementList, int offsetX, int offsetY);
 	
+	UIText* hoverText;
 
 	vector<UIButton*> keyBar;
 

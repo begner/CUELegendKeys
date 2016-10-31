@@ -1,10 +1,15 @@
 #include "UIButton.h"
 
 
+UIButton::UIButton(int resourceNormal, int resourceHover)
+{
+	addState(BUTTON_STATE_NORMAL, resourceNormal, resourceHover);
+	currentImage = BUTTON_STATE_NORMAL;
+}
 
 UIButton::UIButton(int resourceNormal, int resourceHover, int resourceMask) // int resourceNormal, int resourceOver, int resourceMask, double scaleFactor)
 {
-	addState(BUTTON_STATE_NORMAL, resourceNormal, resourceHover, resourceMask);
+	addStateMask(BUTTON_STATE_NORMAL, resourceNormal, resourceHover, resourceMask);
 	currentImage = BUTTON_STATE_NORMAL;
 }
 
@@ -13,11 +18,23 @@ UIButton::~UIButton()
 }
 
 
-void UIButton::addState(int buttonState, int resourceNormal, int resourceMask) {
-	addState(buttonState, resourceNormal, resourceNormal, resourceMask);
+void UIButton::addState(int buttonState, int resourceNormal) {
+	addState(buttonState, resourceNormal, resourceNormal);
 }
 
-void UIButton::addState(int buttonState, int resourceNormal, int resourceHover, int resourceMask) {
+void UIButton::addState(int buttonState, int resourceNormal, int resourceHover) {
+	imageResources[buttonState][IMAGE_STATE_NORMAL] = resourceNormal;
+	imageResources[buttonState][IMAGE_STATE_MOUSE_OVER] = resourceHover;
+	imageResources[buttonState][IMAGE_STATE_MASK] = 0;
+	createImage(buttonState);
+}
+
+
+void UIButton::addStateMask(int buttonState, int resourceNormal, int resourceMask) {
+	addStateMask(buttonState, resourceNormal, resourceNormal, resourceMask);
+}
+
+void UIButton::addStateMask(int buttonState, int resourceNormal, int resourceHover, int resourceMask) {
 	imageResources[buttonState][IMAGE_STATE_NORMAL] = resourceNormal;
 	imageResources[buttonState][IMAGE_STATE_MOUSE_OVER] = resourceHover;
 	imageResources[buttonState][IMAGE_STATE_MASK] = resourceMask;
@@ -48,8 +65,7 @@ void UIButton::createImage(int buttonState) {
 			Mat imageMask = ImageFilterMat::loadResourceAsMat(imageResources[buttonState][IMAGE_STATE_MASK]);
 			ImageFilterMat::addAlphaMask(&image, &imageMask);
 		}	
-
-
+		
 		if (edgeWidth < 0) {
 			images[buttonState][imageNr] = Mat(image);
 			continue;

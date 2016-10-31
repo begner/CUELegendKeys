@@ -6,15 +6,16 @@ FPSMeter::FPSMeter()
 {
 
 	// Performance measure
-	if (!QueryPerformanceFrequency((LARGE_INTEGER*)&g_Frequency))
-		std::cout << "Performance Counter nicht vorhanden" << std::endl;
+	if (!QueryPerformanceFrequency((LARGE_INTEGER*)&g_Frequency)) {
+		NuLogger::getInstance()->log("Performance Counter nicht vorhanden");
+	}
 
 	QueryPerformanceCounter((LARGE_INTEGER*)&g_CurrentFPS);
 }
 
 FPSMeter::~FPSMeter()
 {
-	NuLogger::getInstance()->log("FPSMeter Destructed!");
+	
 }
 
 void FPSMeter::PerformanceStart() {
@@ -30,8 +31,10 @@ void FPSMeter::PerformanceDraw(int x, int y) {
 	// add performance to UI
 	char fpsShowBuffer[2048];
 
+	double renderTime = (lastFrameRenderDuration > 0 ? 1000 / lastFrameRenderDuration : 0);
+
 	if (lastFrameRenderDuration > 0) {
-		sprintf_s(fpsShowBuffer, "FPS: %06.2f (%03i)", (lastFrameRenderDuration > 0 ? 1000 / lastFrameRenderDuration : 0), realFramesLastSecond);
+		sprintf_s(fpsShowBuffer, "FPS: %06.2f (%03i)", renderTime, realFramesLastSecond);
 		putText(drawUI, fpsShowBuffer, cv::Point(x, y), FONT_HERSHEY_PLAIN, 0.8, Scalar(164, 196, 215, 255));
 	}
 
