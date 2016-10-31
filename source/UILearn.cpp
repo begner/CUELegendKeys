@@ -320,14 +320,25 @@ void UILearn::onBeforeShow() {
 
 void UILearn::onShow() {
 	forceRefresh();
-	
+	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)UILearn::threadWorker, NULL, NULL, NULL);
+}
 
-	
-	
+
+
+void UILearn::setThreadStarted() {
+	workerIsRunning = true;
+}
+
+void UILearn::threadWorker() {
+	UILearn* mySelf = UILearn::getInstance();
+	mySelf->setThreadStarted();
+	while (mySelf->workerIsRunning) {
+		mySelf->processUI();
+	}
 }
 
 void UILearn::onHide() {
-	
+	workerIsRunning = false;
 }
 
 void UILearn::processUI() {

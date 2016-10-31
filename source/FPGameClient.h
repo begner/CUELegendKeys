@@ -1,6 +1,6 @@
 #pragma once
-#include "FrameProcessing.h"
-
+#include "FPSMeter.h"
+#include "FPBase.h"
 
 #include "Resource.h"
 #include "HotSpotGroup.h"
@@ -13,7 +13,7 @@
 
 
 class FPGameClient :
-	public FrameProcessing
+	public FPSMeter, public FPBase
 {
 private:
 	Mat4b loadingDetectionTemplate;

@@ -27,9 +27,6 @@
     <ClCompile Include="UIMessage.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="FrameProcessing.cpp">
-      <Filter>FrameProcessing</Filter>
-    </ClCompile>
     <ClCompile Include="FPIdle.cpp">
       <Filter>FrameProcessing</Filter>
     </ClCompile>
@@ -111,6 +108,12 @@
     <ClCompile Include="HSLRelativeItem.cpp">
       <Filter>Learn</Filter>
     </ClCompile>
+    <ClCompile Include="FPBase.cpp">
+      <Filter>FrameProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSMeter.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ProcessList.h">
@@ -149,9 +152,6 @@
     </ClInclude>
     <ClInclude Include="UIMessage.h">
       <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameProcessing.h">
-      <Filter>FrameProcessing</Filter>
     </ClInclude>
     <ClInclude Include="FPIdle.h">
       <Filter>FrameProcessing</Filter>
@@ -239,6 +239,12 @@
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="FPBase.h">
+      <Filter>FrameProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSMeter.h">
+      <Filter>Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -200,6 +200,7 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClCompile Include="convert.cpp" />
     <ClCompile Include="CUELegendKeys.cpp" />
     <ClCompile Include="DBScan.cpp" />
+    <ClCompile Include="FPBase.cpp" />
     <ClCompile Include="FPGameClient.cpp" />
     <ClCompile Include="FPIdle.cpp" />
     <ClCompile Include="FPPatchClient.cpp" />
@@ -216,7 +217,7 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClCompile Include="HSLSkill.cpp" />
     <ClCompile Include="HSPassive.cpp" />
     <ClCompile Include="ImageFilterMat.cpp" />
-    <ClCompile Include="FrameProcessing.cpp" />
+    <ClCompile Include="FPSMeter.cpp" />
     <ClCompile Include="LearnController.cpp" />
     <ClCompile Include="LEDController.cpp" />
     <ClCompile Include="Settings.cpp" />
@@ -244,6 +245,7 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClInclude Include="convert.h" />
     <ClInclude Include="CUELegendKeys.h" />
     <ClInclude Include="DBScan.h" />
+    <ClInclude Include="FPBase.h" />
     <ClInclude Include="FPGameClient.h" />
     <ClInclude Include="FPIdle.h" />
     <ClInclude Include="FPPatchClient.h" />
@@ -261,7 +263,7 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClInclude Include="HSPassive.h" />
     <ClInclude Include="ImageFilterMat.h" />
     <ClInclude Include="CUELegendKeysResources.h" />
-    <ClInclude Include="FrameProcessing.h" />
+    <ClInclude Include="FPSMeter.h" />
     <ClInclude Include="LearnController.h" />
     <ClInclude Include="LEDController.h" />
     <ClInclude Include="libs\SimpleIni.h" />

@@ -1,7 +1,7 @@
 #include "FPGameClient.h"
 #include "UILearn.h"
 
-FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
+FPGameClient::FPGameClient(HWND uiHWND) : FPSMeter(), FPBase(uiHWND)
 {
 	
 
@@ -162,7 +162,7 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 	// Champ
 	// ***********************************************************
 	
-	// hsChamp.setCaptureCoordinates(535+0, 925+0, 123, 123);
+	hsChamp.setCaptureCoordinates(535+0, 925+0, 123, 123);
 	hsChamp.setUiCoordinates(8, 12, 123, 123);
 	hotSpotGroup->addHotSpot(&hsChamp);
 	
@@ -179,7 +179,7 @@ FPGameClient::FPGameClient(HWND uiHWND) : FrameProcessing(uiHWND)
 
 loadHSSettings();
 
-loadingDetectionTemplate = ImageFilterMat::loadResourceAsMat(IDB_LOADING_DETECTION_TEMPLATE);
+// loadingDetectionTemplate = ImageFilterMat::loadResourceAsMat(IDB_LOADING_DETECTION_TEMPLATE);
 
 }
 
@@ -195,10 +195,12 @@ int FPGameClient::getWindowBackgroundResource() {
 
 void FPGameClient::setCaptureWindow(HWND currentProcess) {
 	if (currentProcess != currentProcessHWND) {
-		currentProcessHWND = currentProcess;
+		ReleaseDC(currentProcessHWND, gameClientHDC);
 		if (gameClientHDC != nullptr) {
 			DeleteObject(gameClientHDC);
 		}
+
+		currentProcessHWND = currentProcess;
 		gameClientHDC = GetDC(currentProcessHWND);
 	}
 }
@@ -244,7 +246,7 @@ bool FPGameClient::process() {
 	// copy background to UI
 	getBackgroundMat()->copyTo(drawUI);
 
-	PerformanceDraw();
+	PerformanceDraw(getBackgroundMat()->cols - 130, 20);
 	bool isLoading = false;
 
 
@@ -257,13 +259,8 @@ bool FPGameClient::process() {
 	}
 
 
-	// draw the UI
-	ImageFilterMat::DrawToHDC(drawHDC, drawUI, 0, 0, getBackgroundMat()->cols, getBackgroundMat()->rows);
-
-
-	// double buffer write
-	BitBlt(windowHDC, 0, 0, uiWidth, uiHeight, drawHDC, 0, 0, SRCCOPY);
-
+	drawToWindow(&drawUI);
+	
 	if (UILearn::getInstance()->isVisible()) {
 		UILearn::getInstance()->getLearnController()->setScreenShot(screenshotRaw);
 
@@ -300,7 +297,6 @@ void FPGameClient::loadHSSettings() {
 	loadMap["Item5"] = &hsItem5;
 	loadMap["Item6"] = &hsItem6;
 	loadMap["Item7"] = &hsItem7;
-
 	loadMap["BarHeal"] = &hsHealBar;
 	loadMap["BarMana"] = &hsManaBar;
 
@@ -337,11 +333,15 @@ cv::Rect FPGameClient::calcUiBarLocation(Mat4b* screenshotMat) {
 	vector<ScreenHotSpot*> hsg = hotSpotGroup->getHotSpots();
 	for (vector<ScreenHotSpot*>::iterator it = hsg.begin(); it != hsg.end(); ++it) {
 		ScreenHotSpot* hs = (*it);
-		topLeft.x = min(topLeft.x, hs->getCaptureX(true, true));
-		topLeft.y = min(topLeft.y, hs->getCaptureY(true, true));
+		if (!ImageFilterMat::isValidRect(cv::Rect(0, 0, hs->getCaptureWidth(false), hs->getCaptureHeight(false)))) {
+			continue;
+		}
+
+		topLeft.x = min(topLeft.x, hs->getCaptureX(false, true));
+		topLeft.y = min(topLeft.y, hs->getCaptureY(false, true));
 		
-		bottomRight.x = max(bottomRight.x, hs->getCaptureX(true, true) + hs->getCaptureWidth());
-		bottomRight.y = max(bottomRight.y, hs->getCaptureY(true, true) + hs->getCaptureHeight());
+		bottomRight.x = max(bottomRight.x, hs->getCaptureX(false, true) + hs->getCaptureWidth());
+		bottomRight.y = max(bottomRight.y, hs->getCaptureY(false, true) + hs->getCaptureHeight());
 
 		#ifdef _DEBUG
 			location = cv::Rect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
@@ -395,6 +395,7 @@ bool FPGameClient::processInGame(Mat4b screenshotMat) {
 
 			ScreenHotSpot* hs = (*it);
 
+			
 			Mat displayMat;
 
 			if (showFilteredMat) {
@@ -415,13 +416,7 @@ bool FPGameClient::processInGame(Mat4b screenshotMat) {
 
 			ImageFilterMat::overlayImage(&drawUI, &displayMat, cv::Point(hs->getUiX(), hs->getUiY()));
 			
-
-			vector<cv::Rect>* previewColors = hs->getPreviewColors();
-			int index = 0;
-			for (vector<cv::Rect>::iterator pC = previewColors->begin(); pC != previewColors->end(); ++pC, ++index) {
-				ImageFilterMat::overlayImage(&drawUI, hs->getPreviewColorMat(index), cv::Point(pC->x, pC->y));
-			}
-
+	
 			// increase tick
 			hs->tick();
 

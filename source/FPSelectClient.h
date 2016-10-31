@@ -1,7 +1,8 @@
 #pragma once
 #include "Resource.h"
-#include "FrameProcessing.h"
+#include "FPSMeter.h"
 #include "FPScreenMirror.h"
+#include "Settings.h"
 
 class FPSelectClient :
 	public FPScreenMirror

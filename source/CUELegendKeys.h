@@ -36,7 +36,7 @@ private:
 	bool running = true;
 	bool forceNextDraw = false;
 	
-	FrameProcessing* frameProcessing;
+	FPSMeter* FPSMeter;
 	INT currentClientType = 0;
 	HWND currentProcessHWND = NULL;
 	

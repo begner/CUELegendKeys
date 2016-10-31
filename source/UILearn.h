@@ -12,6 +12,7 @@ class UILearn :
 	public UIBaseWindowGUIHost
 {
 private:
+	bool workerIsRunning = false;
 	static UILearn * theInstance;
 	UILearn();
 	~UILearn();
@@ -135,7 +136,8 @@ public:
 	static UILearn * getInstance();
 	static void release();
 	
-
+	static void threadWorker();
+	void setThreadStarted();
 	void processUI();
 	void ShowIconMenu();
 	void updateLcUI();

@@ -359,7 +359,6 @@ bool ImageFilterMat::DrawToHDC(HDC drawHDC, Mat mat, int x, int y, int width, in
 
 	BitBlt(drawHDC, x, y, width, height, hDCMem, 0, 0, SRCCOPY);
 
-
 	DeleteObject(m_hBitmap);
 	DeleteDC(hDCMem);
 	
@@ -544,57 +543,20 @@ Mat4b* ImageFilterMat::MatToMat4b(Mat* inputMat) {
 
 Mat4b ImageFilterMat::loadResourceAsMat(int RESOURCEID) {
 
-	HINSTANCE hInstance = GetModuleHandle(NULL);
-	HBITMAP hBitmap = (HBITMAP)LoadImage(hInstance, MAKEINTRESOURCE(RESOURCEID), IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR);
+	HRSRC myResource = ::FindResource(NULL, MAKEINTRESOURCE(RESOURCEID), RT_RCDATA);
+	unsigned int myResourceSize = ::SizeofResource(NULL, myResource);
 
-	HDC drawHDC = GetDC(NULL);
-	HDC hdcMem = CreateCompatibleDC(drawHDC);
-
-	BITMAPINFO MyBMInfo = { 0 };
-	MyBMInfo.bmiHeader.biSize = sizeof(MyBMInfo.bmiHeader);
-
-	// Get the BITMAPINFO structure from the bitmap
-	if (0 == GetDIBits(hdcMem, hBitmap, 0, 0, NULL, &MyBMInfo, DIB_RGB_COLORS))
-	{
-		NuLogger::getInstance()->log("FAIL1");
-	}
-
-	// create the bitmap buffer
-	BYTE* lpPixels = new BYTE[MyBMInfo.bmiHeader.biSizeImage];
-
-	MyBMInfo.bmiHeader.biSize = sizeof(MyBMInfo.bmiHeader);
+	HGLOBAL myResourceData = ::LoadResource(NULL, myResource);
+	char* pMyBinaryData = (char*)::LockResource(myResourceData);
 	
-	MyBMInfo.bmiHeader.biBitCount = 24;
-	MyBMInfo.bmiHeader.biCompression = BI_RGB;
-	MyBMInfo.bmiHeader.biHeight = (MyBMInfo.bmiHeader.biHeight < 0) ? (-MyBMInfo.bmiHeader.biHeight) : (MyBMInfo.bmiHeader.biHeight);
-
-
+	std::vector<char> data(pMyBinaryData, pMyBinaryData + myResourceSize);
 	
-	// get the actual bitmap buffer
-	if (0 == GetDIBits(drawHDC, hBitmap, 0, MyBMInfo.bmiHeader.biHeight, (LPVOID)lpPixels, &MyBMInfo, DIB_RGB_COLORS))
-	{
-		NuLogger::getInstance()->log("FAIL2");
-		//::printToDebugWindow("FAIL\n");
-	}
-
-	// put data in temp bitmap (because deleteObject hdcMem will delete pixel info)
-	Mat referencedBitmap(MyBMInfo.bmiHeader.biHeight, MyBMInfo.bmiHeader.biWidth, CV_8UC3, lpPixels, 0);
-	cv::flip(referencedBitmap, referencedBitmap, 0);
-
-	// create output 
-	Mat4b matBitmap(MyBMInfo.bmiHeader.biHeight, MyBMInfo.bmiHeader.biWidth, CV_8UC4);
-	deepCopyPixel(&referencedBitmap, &matBitmap);
-	
-
-
-	// release
-	referencedBitmap.release();
-	DeleteObject(hBitmap);
-
-	
-
-	return matBitmap;
+	Mat3b matBitmap = imdecode(Mat(data, CV_8UC3), CV_LOAD_IMAGE_COLOR);
+	Mat4b matBitmap4;
+	cvtColor(matBitmap, matBitmap4, CV_BGR2BGRA);
+	return matBitmap4;
 }
+
 
 void ImageFilterMat::deepCopyPixel(Mat *src, Mat4b *dest) {
 	Mat_<Vec3b> _s = *src;

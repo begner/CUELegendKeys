@@ -6,8 +6,10 @@
 
 class UIBaseWindow
 {
-public:
+private:
+	bool visibilityCache;
 
+public:
 	HWND hwnd;
 	HINSTANCE hInstance;
 
@@ -22,7 +24,7 @@ public:
 	void setHandle(HWND h);
 	HWND getHandle();
 	
-	bool isVisible();
+	bool isVisible(bool dontUseCache = false);
 
 	void Hide();
 	virtual void onHide();

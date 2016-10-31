@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Resource.h"
-#include "FrameProcessing.h"
+#include "FPSMeter.h"
+#include "FPBase.h"
 #include "LEDController.h"
 
 using namespace std;
 
 class FPScreenMirror :
-	public FrameProcessing
+	public FPSMeter, public FPBase
 {
 private :
 	

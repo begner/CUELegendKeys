@@ -2,7 +2,7 @@
 
 
 
-FPScreenMirror::FPScreenMirror(HWND uiHWND, CorsairLedId keyTL, CorsairLedId keyBR) : FrameProcessing(uiHWND)
+FPScreenMirror::FPScreenMirror(HWND uiHWND, CorsairLedId keyTL, CorsairLedId keyBR) : FPSMeter(), FPBase(uiHWND)
 {
 	// get keyboard keys
 	allKeys = LEDController::getInstance()->getAllKeysByRect(keyTL, keyBR);
@@ -86,10 +86,11 @@ int FPScreenMirror::getWindowBackgroundResource() {
 
 void FPScreenMirror::setCaptureWindow(HWND currentProcess) {
 	if (currentProcess != currentProcessHWND) {
-		currentProcessHWND = currentProcess;
+		ReleaseDC(currentProcessHWND, captureWindowHDC);
 		if (captureWindowHDC != NULL) {
 			DeleteObject(captureWindowHDC);
 		}
+		currentProcessHWND = currentProcess;
 		captureWindowHDC = GetDC(currentProcessHWND);
 	}
 }
@@ -211,13 +212,8 @@ bool FPScreenMirror::process() {
 	ImageFilterMat::overlayImage(&drawUI, &keyboardMat, cv::Point(targetX, targetY));
 
 	
-	PerformanceDraw();
-
-	// draw the UI
-	ImageFilterMat::DrawToHDC(drawHDC, drawUI, 0, 0, getBackgroundMat()->cols, getBackgroundMat()->rows);
-
-	// double buffer write
-	BitBlt(windowHDC, 0, 0, uiWidth, uiHeight, drawHDC, 0, 0, SRCCOPY);
+	PerformanceDraw(getBackgroundMat()->cols - 130, 20);
+	drawToWindow(&drawUI);
 
 	// throwing away pointer, so opencv releases memory
 	delete screenshotRaw;

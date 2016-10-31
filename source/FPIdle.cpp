@@ -1,7 +1,7 @@
 #include "FPIdle.h"
 
 
-FPIdle::FPIdle(HWND uiHWND) : FPScreenMirror(uiHWND) 
+FPIdle::FPIdle(HWND uiHWND) : FPScreenMirror(uiHWND)
 {
 	
 	desktopWindow = GetDesktopWindow();
@@ -44,16 +44,8 @@ bool FPIdle::process() {
 		// copy background to UI
 		getBackgroundMat()->copyTo(drawUI);
 		
-		PerformanceDraw();
-
-		// draw the UI
-		ImageFilterMat::DrawToHDC(drawHDC, drawUI, 0, 0, getBackgroundMat()->cols, getBackgroundMat()->rows);
-	
-		
-		// double buffer write
-		BitBlt(windowHDC, 0, 0, uiWidth, uiHeight, drawHDC, 0, 0, SRCCOPY);
-
-		
+		PerformanceDraw(getBackgroundMat()->cols - 130, 20);
+		drawToWindow(&drawUI);
 
 		PerformanceStop();
 		

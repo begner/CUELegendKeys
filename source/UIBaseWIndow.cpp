@@ -28,13 +28,19 @@ HINSTANCE UIBaseWindow::getHInstance() {
 	return hInstance;
 }
 
-bool UIBaseWindow::isVisible() {
-	if (IsWindowVisible(getHandle())) {
-		return true;
+bool UIBaseWindow::isVisible(bool dontUseCache) {
+	if (!dontUseCache) {
+		return visibilityCache;
 	}
 	else {
-		return false;
+		if (IsWindowVisible(getHandle())) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
+	
 }
 
 void UIBaseWindow::createWindow()
@@ -53,13 +59,14 @@ void UIBaseWindow::Hide() {
 
 	// Shell_NotifyIcon(NIM_ADD, notificationData);
 	// notificationData->tooltip
+	visibilityCache = false;
 	ShowWindow(hwnd, SW_HIDE);
 	onHide();
 }
 
 
 void UIBaseWindow::onShow() {
-
+	
 }
 
 void UIBaseWindow::onBeforeShow() {
@@ -67,7 +74,9 @@ void UIBaseWindow::onBeforeShow() {
 }
 
 void UIBaseWindow::Show(bool doRestore) {
+	
 	onBeforeShow();
+	visibilityCache = true;
 	if (doRestore) {
 		ShowWindow(hwnd, SW_RESTORE);
 	}
