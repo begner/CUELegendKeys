@@ -344,7 +344,8 @@ INT_PTR CALLBACK UIMainWindow::MessageHandler(HWND _hwnd, UINT message, WPARAM w
 					return (INT_PTR)TRUE;
 					break;
 				case IDM_SHOW_ABOUT:
-					// DialogBox(ghInst, MAKEINTRESOURCE(IDD_ABOUTBOX), ghWnd, About);
+					UIMessage::getInstance()->DisplayInfo("CUELegendKeys", "Version: " + string(VER_FILE_VERSION_STR));
+
 					return (INT_PTR)TRUE;
 					break;
 				case IDM_SHOW_SETTINGS:

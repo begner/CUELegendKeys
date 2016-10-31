@@ -246,6 +246,10 @@
     <ClInclude Include="FPSMeter.h">
       <Filter>Tools</Filter>
     </ClInclude>
+    <ClInclude Include="version.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tools">
@@ -284,6 +288,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CUELegendKeysResources.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="version.rc">
       <Filter>Resources</Filter>
     </ResourceCompile>
   </ItemGroup>

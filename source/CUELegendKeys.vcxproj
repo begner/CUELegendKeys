@@ -239,6 +239,7 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CUELegendKeysResources.rc" />
+    <ResourceCompile Include="version.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -267,6 +268,8 @@ xcopy  /Y /I /S  "$(SolutionDir)Assets\*" "$(OutDir)"</Command>
     <ClInclude Include="LearnController.h" />
     <ClInclude Include="LEDController.h" />
     <ClInclude Include="libs\SimpleIni.h" />
+    <ClInclude Include="resource1.h" />
+    <ClInclude Include="version.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UIBaseWindow.h" />

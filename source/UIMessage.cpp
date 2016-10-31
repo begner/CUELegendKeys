@@ -23,6 +23,18 @@ UIMessage::UIMessage(void) {
 UIMessage::~UIMessage(void) {
 }
 
+
+int UIMessage::DisplayInfo(string title, string message, int uType ) {
+	int msgboxID = MessageBox(
+		NULL,
+		s2ws(message).c_str(),
+		s2ws(title).c_str(),
+		uType | MB_OK
+	);
+
+	return msgboxID;
+}
+
 int UIMessage::DisplayError(string title, string message, int uType)
 {
 	int msgboxID = MessageBox(

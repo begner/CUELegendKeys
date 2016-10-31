@@ -1,5 +1,6 @@
 #pragma once
 
+#include "version.h"
 #include "Constants.h"
 #include <Windows.h>
 #include <windowsx.h>

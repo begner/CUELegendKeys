@@ -14,6 +14,8 @@ public:
 		
 	int DisplayError(string title, string message, int uType = MB_ICONWARNING);
 	void DisplayErrorAndQuit(string title, string message, int uType = MB_ICONWARNING);
+
+	int DisplayInfo(string title, string message, int uType = MB_ICONINFORMATION);
 private:
 	UIMessage(void);
 	~UIMessage(void);
