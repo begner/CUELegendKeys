@@ -163,6 +163,8 @@ DWORD ProcessList::getPIDofProcess(string processName) {
 
 		} while (Process32Next(snapshot, &process));
 	}
+
+	DeleteObject(snapshot);
 	return NULL;
 }
 
