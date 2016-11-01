@@ -10,7 +10,7 @@ private:
 	Mat currentImage;
 public:
 	UIImage();
-	UIImage(int resourceNormal, int resourceMask);
+	UIImage(int resourceNormal, int resourceMask = -1);
 	~UIImage();
 	void processUI(Mat4b* drawUI);
 	void setImage(Mat* src);

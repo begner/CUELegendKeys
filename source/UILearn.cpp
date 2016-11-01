@@ -36,7 +36,7 @@ LearnController* UILearn::getLearnController() {
 
 
 
-UIButton* UILearn::createKeyButton(string label, int onClickId, int posX, int posY) {
+UIButton* UILearn::createKeyButton(string label, int onClickId, int posX, int posY, int iconResource) {
 	UIButton* keyBarButton;
 	keyBarButton = new UIButton(IDB_UI_KEY_N, IDB_UI_KEY_NH);
 	keyBarButton->addState(UIButton::BUTTON_STATE_EXTRA, IDB_UI_KEY_E, IDB_UI_KEY_EH);
@@ -46,6 +46,9 @@ UIButton* UILearn::createKeyButton(string label, int onClickId, int posX, int po
 	keyBarButton->setFontSize(0.35);
 	keyBarButton->setOnClickId(onClickId);
 	keyBarButton->setPos(posX, posY);
+	if (iconResource > -1) {
+		keyBarButton->addIcon(iconResource, 10, 10);
+	}
 	keyBar.push_back(keyBarButton);
 	addElement(keyBarButton);
 	return keyBarButton;
@@ -74,10 +77,13 @@ void UILearn::createWindow() {
 	int keyBarXDivider = 10;
 
 
-	UIButton* passiveKey = createKeyButton("", IDE_CLICK_KEY_PASSIVE, keyBarCurrentX, keyBarY); 
-	// passiveKey->addIcon()
-	keyBarCurrentX += keyBarXSpace + keyBarXDivider;
-
+	/*
+#define IDI_UI_KEY_PASSIVE					2250
+#define IDI_UI_KEY_CHAMP					2251
+#define IDI_UI_KEY_HEAL						2252
+#define IDI_UI_KEY_MANA						2253
+	*/
+	createKeyButton("", IDE_CLICK_KEY_PASSIVE, keyBarCurrentX, keyBarY, IDI_UI_KEY_PASSIVE); keyBarCurrentX += keyBarXSpace + keyBarXDivider;
 	createKeyButton("Q", IDE_CLICK_KEY_Q, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
 	createKeyButton("W", IDE_CLICK_KEY_W, keyBarCurrentX, keyBarY);	keyBarCurrentX += keyBarXSpace;
 	createKeyButton("E", IDE_CLICK_KEY_E, keyBarCurrentX, keyBarY);	keyBarCurrentX += keyBarXSpace;
@@ -92,8 +98,9 @@ void UILearn::createWindow() {
 	createKeyButton("5", IDE_CLICK_KEY_5, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
 	createKeyButton("6", IDE_CLICK_KEY_6, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
 	createKeyButton("7", IDE_CLICK_KEY_7, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace + keyBarXDivider;
-	createKeyButton("", IDE_CLICK_KEY_HEAL, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
-	createKeyButton("", IDE_CLICK_KEY_MANA, keyBarCurrentX, keyBarY); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("", IDE_CLICK_KEY_CHAMP, keyBarCurrentX, keyBarY, IDI_UI_KEY_CHAMP); keyBarCurrentX += keyBarXSpace + keyBarXDivider;
+	createKeyButton("", IDE_CLICK_KEY_HEAL, keyBarCurrentX, keyBarY, IDI_UI_KEY_HEAL); keyBarCurrentX += keyBarXSpace;
+	createKeyButton("", IDE_CLICK_KEY_MANA, keyBarCurrentX, keyBarY, IDI_UI_KEY_MANA); keyBarCurrentX += keyBarXSpace;
 
 	
 
@@ -118,8 +125,9 @@ void UILearn::createWindow() {
 	// #############################
 
 
-	eLearnButton = new UIButton(IDB_UI_BUTTON_TEXT_NORMAL, IDB_UI_BUTTON_TEXT_OVER, IDB_UI_BUTTON_TEXT_MASK);
-	eLearnButton->addState(UIButton::BUTTON_STATE_DISABLED, IDB_UI_BUTTON_TEXT_DISABLED, IDB_UI_BUTTON_TEXT_MASK);
+	eLearnButton = new UIButton(IDB_UI_BUTTON_TEXT_N, IDB_UI_BUTTON_TEXT_NH);
+	eLearnButton->addState(UIButton::BUTTON_STATE_DISABLED, IDB_UI_BUTTON_TEXT_D, IDB_UI_BUTTON_TEXT_D);
+	eLearnButton->addState(UIButton::BUTTON_STATE_ACTIVE, IDB_UI_BUTTON_TEXT_A, IDB_UI_BUTTON_TEXT_AH);
 	eLearnButton->setWidth(100);
 	eLearnButton->set9ScaleSize(7);
 	eLearnButton->setPos(10, 190);
@@ -261,8 +269,9 @@ void UILearn::createWindow() {
 	addElement(referenceInfoText);
 
 
-	eSaveButton = new UIButton(IDB_UI_BUTTON_TEXT_NORMAL, IDB_UI_BUTTON_TEXT_OVER, IDB_UI_BUTTON_TEXT_MASK);
-	eSaveButton->addState(UIButton::BUTTON_STATE_DISABLED, IDB_UI_BUTTON_TEXT_DISABLED, IDB_UI_BUTTON_TEXT_MASK);
+	eSaveButton = new UIButton(IDB_UI_BUTTON_TEXT_N, IDB_UI_BUTTON_TEXT_NH);
+	eSaveButton->addState(UIButton::BUTTON_STATE_DISABLED, IDB_UI_BUTTON_TEXT_D, IDB_UI_BUTTON_TEXT_D);
+	eSaveButton->addState(UIButton::BUTTON_STATE_ACTIVE, IDB_UI_BUTTON_TEXT_A, IDB_UI_BUTTON_TEXT_AH);
 	eSaveButton->setPos(10, 500);
 	eSaveButton->setLabel("SAVE");
 	eSaveButton->setState(UIButton::BUTTON_STATE_DISABLED);
@@ -270,8 +279,8 @@ void UILearn::createWindow() {
 	addElement(eSaveButton);
 
 
-	uiLearningProgressBlocker = new UIImage(IDB_UI_LEARNING_BLOCKER, IDB_UI_LEARNING_BLOCKER_MASK);
-	uiLearningProgressBlocker->setPos(20, 20);
+	uiLearningProgressBlocker = new UIImage(IDB_UI_LEARNING_BLOCKER);
+	uiLearningProgressBlocker->setPos(0, 0);
 	uiLearningProgressBlocker->hide();
 	// Todo: Capture over's and links...
 	addElement(uiLearningProgressBlocker);
@@ -553,8 +562,10 @@ void UILearn::handleClickEvents(int xPos, int yPos) {
 		case IDE_CLICK_KEY_5:				 getLearnController()->gotoSkill(12); break;
 		case IDE_CLICK_KEY_6:				 getLearnController()->gotoSkill(13); break;
 		case IDE_CLICK_KEY_7:				 getLearnController()->gotoSkill(14); break;
-		case IDE_CLICK_KEY_HEAL:			 getLearnController()->gotoSkill(15); break;
-		case IDE_CLICK_KEY_MANA:			 getLearnController()->gotoSkill(16); break;
+		case IDE_CLICK_KEY_CHAMP:			 getLearnController()->gotoSkill(15); break;
+		case IDE_CLICK_KEY_HEAL:			 getLearnController()->gotoSkill(16); break;
+		case IDE_CLICK_KEY_MANA:			 getLearnController()->gotoSkill(17); break;
+		
 		default: doUpdateLcUI = false; break;
 	}	
 

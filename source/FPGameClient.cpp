@@ -161,8 +161,6 @@ FPGameClient::FPGameClient(HWND uiHWND) : FPSMeter(), FPBase(uiHWND)
 	
 	// Champ
 	// ***********************************************************
-	
-	hsChamp.setCaptureCoordinates(535+0, 925+0, 123, 123);
 	hsChamp.setUiCoordinates(8, 12, 123, 123);
 	hotSpotGroup->addHotSpot(&hsChamp);
 	
@@ -358,6 +356,9 @@ bool FPGameClient::processInGame(Mat4b screenshotMat) {
 
 	// Grab UIBar from Screenshot
 	cv::Rect uiBarRect = calcUiBarLocation(&screenshotMat);
+	if (!ImageFilterMat::isValidRect(uiBarRect)) {
+		return false;
+	}
 	Mat4b uiBarMat = Mat(screenshotMat, uiBarRect);
 
 

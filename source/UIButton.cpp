@@ -17,6 +17,11 @@ UIButton::~UIButton()
 {
 }
 
+void UIButton::addIcon(int ICONRESOURCE, int posX, int posY) {
+	iconMat = ImageFilterMat::loadResourceAsMat(ICONRESOURCE);
+	iconX = posX;
+	iconY = posY;
+}
 
 void UIButton::addState(int buttonState, int resourceNormal) {
 	addState(buttonState, resourceNormal, resourceNormal);
@@ -151,7 +156,7 @@ void UIButton::processUI(Mat4b* drawUI) {
 		double paddingLeft = (double)(getWidth() - mySize.width) / (double)2;
 
 		int labelX = getX() + (int)paddingLeft;
-		int labelY = getY() + getHeight() - (int)((double)(getHeight() - mySize.height + baseLine)/(double)2 );
+		int labelY = getY() + getHeight() - (int)((double)(getHeight() - mySize.height + baseLine*1.5)/(double)2 );
 
 		for (int lineX = -1; lineX < 2; lineX++) {
 			for (int lineY = -1; lineY < 2; lineY++) {
@@ -161,8 +166,12 @@ void UIButton::processUI(Mat4b* drawUI) {
 		
 		putText(*drawUI, label, cv::Point(labelX+shadowOffset, labelY + shadowOffset), fontFace, fontSize, Scalar(0, 0, 0), fontWeight, fontLineType);
 		putText(*drawUI, label, cv::Point(labelX, labelY), fontFace, fontSize, Scalar(255, 255, 255), fontWeight, fontLineType);
+
+		
 	}
-	
+	if (iconX > -1 && iconY > -1) {
+		ImageFilterMat::overlayImage(drawUI, &iconMat, cv::Point(getX()+iconX, getY() + iconY));
+	}
 }
 
 bool UIButton::isDisabled() {

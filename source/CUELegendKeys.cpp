@@ -33,12 +33,14 @@ bool CUELegendKeys::AppStartupCheck() {
 	NuLogger::getInstance()->log("-------------------------------------------------------");
 	NuLogger::getInstance()->log("AppStartupCheck");
 	
+	/*
 	// detect active corsair CUE
-	if (!ProcessList::getInstance()->ProcessExists("CorsairHID.exe")) {
+	if (!ProcessList::getInstance()->ProcessExists("CorsairHID.exe") && 
+		!ProcessList::getInstance()->ProcessExists("CUE.exe")) {
 		UIMessage::getInstance()->DisplayErrorAndQuit("CUELegendKeys", "Corsair Cue not running!");
 		return FALSE;
 	};
-
+	*/
 	// detects itself... :(
 	if (ProcessList::getInstance()->ProcessExists("CUELegendKeys.exe", GetCurrentProcessId())) {
 		UIMessage::getInstance()->DisplayErrorAndQuit("CUELegendKeys", "CUELegendKeys is already running!");

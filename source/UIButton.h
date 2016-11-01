@@ -35,6 +35,11 @@ private:
 	static const int IMAGE_STATE_MOUSE_OVER = 1;
 	static const int IMAGE_STATE_MASK = 2;
 
+	Mat iconMat;
+	int iconX = -1;
+	int iconY = -1;
+
+
 public:
 		
 	static CONST int BUTTON_STATE_NORMAL = 0;
@@ -55,6 +60,7 @@ public:
 	void addStateMask(int buttonState, int resourceNormal, int resourceMask);
 	void addState(int buttonState, int resourceNormal, int resourceHover);
 	void addState(int buttonState, int resourceNormal);
+	void addIcon(int ICONRESOURCE, int posX, int posY);
 	void processUI(Mat4b* drawUI);
 	void setFontSize(double size);
 	bool onMouseOut();

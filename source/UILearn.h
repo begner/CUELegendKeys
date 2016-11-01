@@ -19,7 +19,7 @@ private:
 
 	bool oldLearningState = false;
 	bool oldInGameState = false;
-	UIButton* createKeyButton(string label, int onClickId, int posX, int posY);
+	UIButton* createKeyButton(string label, int onClickId, int posX, int posY, int iconResource = -1);
 	void setGroupVisibility(vector<UIBaseElement*> elementList, bool state);
 	void setGroupVisibility(vector<UIButton*> elementList, bool state);
 	void setGroupOffset(vector<UIBaseElement*> elementList, int offsetX, int offsetY);
@@ -131,8 +131,9 @@ public:
 	static CONST int IDE_CLICK_KEY_5 = 114;
 	static CONST int IDE_CLICK_KEY_6 = 115;
 	static CONST int IDE_CLICK_KEY_7 = 116;
-	static CONST int IDE_CLICK_KEY_HEAL = 117;
-	static CONST int IDE_CLICK_KEY_MANA = 118;
+	static CONST int IDE_CLICK_KEY_CHAMP = 117;
+	static CONST int IDE_CLICK_KEY_HEAL = 118;
+	static CONST int IDE_CLICK_KEY_MANA = 119;
 
 	static UILearn * getInstance();
 	static void release();

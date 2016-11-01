@@ -38,6 +38,8 @@ LearnController::LearnController()
 	allSkills.push_back(new HSLRelativeItem("Item 5", "Item5", IDB_AUTO_LEARN_ITEM_5, 5));
 	allSkills.push_back(new HSLRelativeItem("Item 6", "Item6", IDB_AUTO_LEARN_ITEM_6, 6));
 	allSkills.push_back(new HSLRelativeItem("Item 7", "Item7", IDB_AUTO_LEARN_ITEM_7, 7));
+
+	allSkills.push_back(new HSLItem("Champion Portrait", "Champ", IDB_AUTO_LEARN_CHAMP));
 	
 	allSkills.push_back(new HSLBar("Heal Bar", "BarHeal", IDB_AUTO_LEARN_BAR_HEAL, 120, 130));
 	allSkills.push_back(new HSLBar("Mana Bar", "BarMana", IDB_AUTO_LEARN_BAR_MANA, 208, 215));
