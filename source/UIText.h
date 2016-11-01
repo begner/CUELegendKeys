@@ -4,7 +4,6 @@
 #include <istream>
 #include <iterator>
 
-
 class UIText :
 	public UIBaseElement
 {

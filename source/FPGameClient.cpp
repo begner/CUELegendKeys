@@ -295,6 +295,7 @@ void FPGameClient::loadHSSettings() {
 	loadMap["Item5"] = &hsItem5;
 	loadMap["Item6"] = &hsItem6;
 	loadMap["Item7"] = &hsItem7;
+	// loadMap["Champ"] = &hsChamp;
 	loadMap["BarHeal"] = &hsHealBar;
 	loadMap["BarMana"] = &hsManaBar;
 

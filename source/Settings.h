@@ -2,9 +2,7 @@
 
 #include <string>
 #include <windows.h>
-
-#include <Shlobj.h>//for knownFolder 
-
+#include <Shlobj.h>//for knownFolder #include "libs\SimpleIni.h"
 #include "libs\SimpleIni.h"
 
 #include "convert.h"
@@ -15,6 +13,17 @@ using namespace std;
 
 class Settings
 {
+private:
+	string settingsFile = "settings.ini";
+	CSimpleIniA ini;
+	bool autoCommit = true;
+	string getFQFN();
+	Settings(void);
+	~Settings(void);
+
+	static Settings * theInstance;
+	bool checkOrCreateEmptyFile();
+	
 public:
 	static Settings * getInstance();
 	static void release();
@@ -28,20 +37,11 @@ public:
 	string getValue(string section, string keyName, string default = "");
 
 	void setAutoCommit(bool state);
+	string getFQNAppDataFile(string fileName);
+	string getAppDataPath();
 	void commit();
 	void removeValue(string section, string keyName);
-private:
-	string settingsPath = "";
-	string settingsFile = "settings.ini";
-	CSimpleIniA ini;
-	bool autoCommit = true;
-	string getFQFN();
-	Settings(void);
-	~Settings(void);
-
-	static Settings * theInstance;
-	bool checkOrCreateEmptyFile();
-	string getSettingsPath();
+	
 };
 
 

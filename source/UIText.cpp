@@ -1,7 +1,5 @@
 #include "UIText.h"
 
-
-
 UIText::UIText(string text)
 {
 	label = text;
@@ -59,39 +57,39 @@ void UIText::processUI(Mat4b* drawUI) {
 		vector<string> lines = {};
 
 
-		if (getWidth() - mySize.width > 0) {
-			lines.push_back(label);
-		}
-		else {
-			// multiline!
-			stringstream ss(label);
-			istream_iterator<string> begin(ss);
-			istream_iterator<string> end;
-			vector<string> vstrings(begin, end);
+		lines.push_back(label);
+		
+		
+		
+		// multiline!
+		stringstream ss(label);
+		istream_iterator<string> begin(ss);
+		istream_iterator<string> end;
+		vector<string> vstrings(begin, end);
 
-			string checkLine, line = "";
-			cv::Size lineSize;
-			bool lastWord = false;
+		string checkLine, line = "";
+		cv::Size lineSize;
+		bool lastWord = false;
 
-			for (vector<string>::iterator it = vstrings.begin(); it != vstrings.end(); ++it) {
+		for (vector<string>::iterator it = vstrings.begin(); it != vstrings.end(); ++it) {
 				
-				checkLine = line + *it;
-				lineSize = getTextSize(line, fontFace, fontSize, fontWeight, &baseLine);
+			checkLine = line + *it;
+			lineSize = getTextSize(line, fontFace, fontSize, fontWeight, &baseLine);
 
-				if (next(it) == vstrings.end()) {
-					line = checkLine;
-					lastWord = true;
-				}
+			if (next(it) == vstrings.end()) {
+				line = checkLine;
+				lastWord = true;
+			}
 
-				if (lineSize.width > getWidth() || lastWord) {
-					lines.push_back(line);
-					line = "";
-				}
-				else {
-					line = line + *it + " ";
-				}
+			if (lineSize.width > getWidth() || lastWord) {
+				lines.push_back(line);
+				line = "";
+			}
+			else {
+				line = line + *it + " ";
 			}
 		}
+		
 		
 		string currentLine = "";
 		int lineNr = 0;

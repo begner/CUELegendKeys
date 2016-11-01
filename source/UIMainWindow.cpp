@@ -214,7 +214,12 @@ void UIMainWindow::createMenuItems(HMENU hMenu) {
 
 	// -----------------------------------------------------------------------
 	createMenuDivider(hMenu, position++);
+/*
+	createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_OPEN_APPDATA, "Open AppData Dir");
 
+	// -----------------------------------------------------------------------
+	createMenuDivider(hMenu, position++);
+*/
 	// About
 	createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_SHOW_ABOUT, "About");
 
@@ -399,6 +404,11 @@ INT_PTR CALLBACK UIMainWindow::MessageHandler(HWND _hwnd, UINT message, WPARAM w
 
 				case IDM_QUIT:
 					CUELegendKeys::getInstance()->quit();
+					return (INT_PTR)TRUE;
+					break;
+
+				case IDM_OPEN_APPDATA:
+					// ShellExecute(NULL, _T("Open"), _T("C:\\"), NULL, NULL, SW_SHOWNORMAL);
 					return (INT_PTR)TRUE;
 					break;
 			}

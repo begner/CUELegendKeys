@@ -8,6 +8,7 @@
 #include "UIMainDialog.h"
 #include "UILearn.h"
 
+// #include <shellapi.h>
 #include <string>
 
 class UIMainWindow :

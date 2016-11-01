@@ -249,7 +249,6 @@
     <ClInclude Include="version.h">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="resource1.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tools">
