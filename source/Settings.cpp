@@ -1,5 +1,6 @@
 #include "Settings.h"
 
+
 Settings* Settings::theInstance = NULL;
 
 Settings* Settings::getInstance()
@@ -20,7 +21,7 @@ Settings::Settings(void) {
 	NuLogger::getInstance()->log("Settings Constructor called!");
 
 	ini.SetUnicode();
-	ini.LoadFile(getFQNAppDataFile(settingsFile).c_str());
+	ini.LoadFile(AppData::getFQNAppDataFile(settingsFile).c_str());
 }
 
 Settings::~Settings(void) {
@@ -32,14 +33,14 @@ bool Settings::checkSettings() {
 
 bool Settings::checkOrCreateEmptyFile() {
 	
-	string sPath = getAppDataPath();
+	string sPath = AppData::getAppDataPath();
 	if (sPath == "") {
 		NuLogger::getInstance()->log("Cant get Local App Folder");
 		return false;
 	}
-	SHCreateDirectoryEx(NULL, s2ws(sPath).c_str(), NULL);
+	AppData::createFolder();
 
-	string sFile = getFQNAppDataFile(settingsFile);
+	string sFile = AppData::getFQNAppDataFile(settingsFile);
 
 	// if file not exists
 	if (!ifstream(sFile))
@@ -105,14 +106,14 @@ void Settings::setValue(string section, string keyName, string data) {
 	rc = ini.SetValue(section.c_str(), keyName.c_str(), data.c_str());
 	
 	if (autoCommit) {
-		rc = ini.SaveFile(getFQNAppDataFile(settingsFile).c_str(), true);
+		rc = ini.SaveFile(AppData::getFQNAppDataFile(settingsFile).c_str(), true);
 		// NuLogger::getInstance()->log("SaveFile %s => %i", getFQFN().c_str(), rc);
 	}
 }
 
 void Settings::commit() {
 	if (!autoCommit) {
-		ini.SaveFile(getFQNAppDataFile(settingsFile).c_str(), true);
+		ini.SaveFile(AppData::getFQNAppDataFile(settingsFile).c_str(), true);
 		setAutoCommit(true);
 	}
 }
@@ -125,23 +126,4 @@ void Settings::removeValue(string section, string keyName) {
 
 void Settings::setAutoCommit(bool state) {
 	autoCommit = state;
-}
-
-
-string Settings::getFQNAppDataFile(string fileName) {
-	return getAppDataPath() + "\\" + settingsFile;
-}
-
-
-string Settings::getAppDataPath() {
-
-	string settingsPath = "";
-
-	wchar_t* localAppData = new wchar_t[128];
-	SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, &localAppData);
-
-	settingsPath = ws2s(localAppData);
-	settingsPath = settingsPath + "\\CUELegendKeys";
-
-	return settingsPath;
 }

@@ -9,6 +9,7 @@ FPBase::FPBase(HWND uiHWND)
 	// -> at end copy via BitBlt to windowHDC
 	RECT uiDimension;
 
+	windowHWND = uiHWND;
 	windowHDC = GetDC(uiHWND);
 	GetClientRect(uiHWND, &uiDimension);
 
@@ -42,5 +43,7 @@ void FPBase::drawToWindow(Mat* image) {
 
 	// double buffer write
 	BitBlt(windowHDC, 0, 0, uiWidth, uiHeight, drawHDC, 0, 0, SRCCOPY);
+
+	
 
 }

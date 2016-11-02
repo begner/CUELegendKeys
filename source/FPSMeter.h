@@ -16,7 +16,8 @@ protected:
 	
 	
 private:
-	LONGLONG g_Frequency, g_CurentCount, g_LastCount = 0;
+	LONGLONG g_Frequency;
+	LONGLONG g_CurentCount, g_LastCount = 0;
 	LONGLONG g_CurrentFPS, g_LastFPS = 0;
 	int currentFrames = 0;
 	int realFramesLastSecond = 0;
@@ -36,6 +37,5 @@ public:
 	void setFpsLimit(int fps);
 	void enableFpsLimit(bool state);
 	
-	void loadResources();
 };
 

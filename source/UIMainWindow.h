@@ -7,6 +7,7 @@
 #include "UIBaseWindow.h"
 #include "UIMainDialog.h"
 #include "UILearn.h"
+#include "AppData.h"
 
 // #include <shellapi.h>
 #include <string>

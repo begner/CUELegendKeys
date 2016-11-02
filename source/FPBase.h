@@ -11,6 +11,7 @@ protected:
 	HDC drawHDC;
 private:
 	HDC windowHDC;
+	HWND windowHWND;
 	int uiWidth = 0;
 	int uiHeight = 0;
 

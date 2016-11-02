@@ -20,15 +20,29 @@ void NuLogger::release()
 }
 
 NuLogger::NuLogger(void) {
-	logFileStream.open("log.txt", ios::app);
+	AppData::createFolder();
+	logFileStream.open(AppData::getFQNAppDataFile("log.txt"), ios::app);
 }
 
 NuLogger::~NuLogger(void) {
 	logFileStream.close();
 }
 
+bool NuLogger::getWriteLog() {
+	return writeLog;
+}
+
+void NuLogger::writeLogFile(bool state) {
+	writeLog = state;
+}
 
 void NuLogger::log(string msg, ...) {
+
+#ifndef _DEBUG
+	if (!writeLog) {
+		return;
+	}
+#endif
 	
 	msg += "\n";
 	
@@ -62,8 +76,15 @@ void NuLogger::log(string msg, ...) {
 	wstring wmsg = utf8_decode(smsg);
 	WCHAR * newText = (WCHAR*)wmsg.c_str();
 	
+	#ifdef _DEBUG
+		OutputDebugStringW(newText);
+	#endif // _DEBUG	
 	
-	OutputDebugStringW(newText);
+	#ifdef _DEBUG
+		if (!writeLog) {
+			return;
+		}
+	#endif
 	// save to file
 	logFileStream << smsg;
 	logFileStream.flush();

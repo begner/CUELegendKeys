@@ -4,14 +4,13 @@
 
 FPScreenMirror::FPScreenMirror(HWND uiHWND, CorsairLedId keyTL, CorsairLedId keyBR) : FPSMeter(), FPBase(uiHWND)
 {
+	NuLogger::getInstance()->log("Setup FrameProcessing ScreenMirror");
 	// get keyboard keys
 	allKeys = LEDController::getInstance()->getAllKeysByRect(keyTL, keyBR);
 	reinitialize();
 }
 
 void FPScreenMirror::reinitialize() {
-
-	NuLogger::getInstance()->log("FPScreenMirror reinitialize");
 
 	RECT keyDim = LEDController::getInstance()->getKeyBoardDimensions(allKeys);
 

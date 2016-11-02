@@ -3,6 +3,7 @@
 
 FPSelectClient::FPSelectClient(HWND uiHWND) : FPScreenMirror(uiHWND) 
 {
+	NuLogger::getInstance()->log("Setup FrameProcessing SelectClient");
 	setOffset(RECT {10, 80, 10, 10});
 	setOffsetScale(1, 1.17f);
 	setUIDimensions(209, 287, 363, 204);

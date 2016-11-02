@@ -114,6 +114,9 @@
     <ClCompile Include="FPSMeter.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
+    <ClCompile Include="AppData.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ProcessList.h">
@@ -247,6 +250,10 @@
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="version.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h" />
+    <ClInclude Include="AppData.h">
       <Filter>Resources</Filter>
     </ClInclude>
   </ItemGroup>

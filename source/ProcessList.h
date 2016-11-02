@@ -18,6 +18,7 @@ private:
 	string findWindowName;
 	DWORD activeProcessId = -1;
 	string getNameByProcessId(DWORD pid);
+	HANDLE snapshot;
 	HWND processHWND;
 	static BOOL CALLBACK EnumWindowsProcMy(HWND hwnd, LPARAM lParam);
 public:
@@ -27,7 +28,10 @@ public:
 	void setProcessWindowHandle(HWND hwnd);
 	DWORD getPIDofProcess(string processName);
 	
+	string getList(string prefix, DWORD curProcessId = 0);
+
 	bool ProcessExists(string processName, DWORD curProcessId = 0);
+	void makeSnapshot();
 	bool checkProcessChanged();
 	DWORD determineActiveProcessId();
 	string getActiveProcessName();

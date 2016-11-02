@@ -53,7 +53,7 @@ bool LEDController::checkCompatibleDevice() {
 	if (const auto error = CorsairGetLastError()) {
 		NuLogger::getInstance()->log("Handshake failed: " + getErrorString(error));
 		//		NuLogger::getInstance()->log(std::endl);
-		getchar();
+		// getchar();
 		return false;
 	}
 	return true;

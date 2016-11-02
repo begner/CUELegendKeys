@@ -94,14 +94,7 @@ INT_PTR CALLBACK UIMainDialog::MessageHandler(HWND hDlg, UINT message, WPARAM wP
 				return (INT_PTR)TRUE;
 			}
 			break;
-		case WM_PAINT:
-			{
-				PAINTSTRUCT ps;
-				BeginPaint(hDlg, &ps);
-				EndPaint(hDlg, &ps);
-				return (INT_PTR)TRUE;
-			}
-			break;
+		
 		case WM_WINDOWPOSCHANGED:
 			{
 				LPWINDOWPOS lpwp = (LPWINDOWPOS)lParam; // points to size and position data

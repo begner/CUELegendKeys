@@ -56,8 +56,8 @@ private:
 	int uiBarY = 0;
 
 	cv::Rect calcUiBarLocation(Mat4b* screenshotMat);
-	bool processLoading(Mat4b screenShot);
-	bool processInGame(Mat4b screenShot);
+	bool processLoading(Mat4b* screenShot);
+	bool processInGame(Mat4b* screenShot);
 	void loadHSSettings();
 public:
 	explicit FPGameClient(HWND uiHWND);

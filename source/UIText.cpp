@@ -57,9 +57,6 @@ void UIText::processUI(Mat4b* drawUI) {
 		vector<string> lines = {};
 
 
-		lines.push_back(label);
-		
-		
 		
 		// multiline!
 		stringstream ss(label);

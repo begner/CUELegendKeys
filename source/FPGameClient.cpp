@@ -3,7 +3,7 @@
 
 FPGameClient::FPGameClient(HWND uiHWND) : FPSMeter(), FPBase(uiHWND)
 {
-	
+	NuLogger::getInstance()->log("Setup FrameProcessing GameClient");
 
 	// ***********************************************************
 	// Creating HotSpotGroup... :)
@@ -225,19 +225,8 @@ bool FPGameClient::process() {
 	int clientWidth = targetRect.right - targetRect.left;
 	int clientHeight = targetRect.bottom - targetRect.top;
 
-	Mat* screenshotRaw = ImageFilterMat::hdc2mat(gameClientHDC, 0, 0, clientWidth, clientHeight);
+	Mat4b* screenshotRaw = static_cast<Mat4b*>(ImageFilterMat::hdc2mat(gameClientHDC, 0, 0, clientWidth, clientHeight));
 	if (screenshotRaw == nullptr) {
-		return false;
-	}
-	/*
-	Mat* screenshotRaw = ImageFilterMat::hdc2mat(desktopHDC, 0, 0, nScreenWidth, nScreenHeight);
-	if (screenshotRaw == NULL) {
-		return false;
-	}
-	*/
-	Mat4b screenshotMat = static_cast<Mat4b>(*screenshotRaw);
-	if (screenshotMat.cols < nScreenWidth && screenshotMat.rows < nScreenHeight) {
-		delete screenshotRaw;
 		return false;
 	}
 
@@ -250,10 +239,10 @@ bool FPGameClient::process() {
 
 	bool success = false;
 	if (isLoading) {
-		success = processLoading(screenshotMat);
+		success = processLoading(screenshotRaw);
 	}
 	else {
-		success = processInGame(screenshotMat);
+		success = processInGame(screenshotRaw);
 	}
 
 
@@ -318,7 +307,7 @@ void FPGameClient::loadHSSettings() {
 
 
 // ReSharper disable once CppMemberFunctionMayBeStatic
-bool FPGameClient::processLoading(Mat4b screenshotMat) {
+bool FPGameClient::processLoading(Mat4b* screenshotMat) {
 	
 	return true;
 }
@@ -352,15 +341,15 @@ cv::Rect FPGameClient::calcUiBarLocation(Mat4b* screenshotMat) {
 	return location;
 }
 
-bool FPGameClient::processInGame(Mat4b screenshotMat) {
+bool FPGameClient::processInGame(Mat4b* screenshotMat) {
 	
 
 	// Grab UIBar from Screenshot
-	cv::Rect uiBarRect = calcUiBarLocation(&screenshotMat);
+	cv::Rect uiBarRect = calcUiBarLocation(screenshotMat);
 	if (!ImageFilterMat::isValidRect(uiBarRect)) {
 		return false;
 	}
-	Mat4b uiBarMat = Mat(screenshotMat, uiBarRect);
+	Mat4b uiBarMat = Mat(*screenshotMat, uiBarRect);
 
 
 	// iterate all hotSpots	
@@ -370,7 +359,7 @@ bool FPGameClient::processInGame(Mat4b screenshotMat) {
 		ScreenHotSpot* hs = (*it);
 		hs->setUiMatOffset(uiBarRect.x, uiBarRect.y);
 		hs->setUIMat(&uiBarMat);
-		hs->setScreenshotMat(&screenshotMat);
+		hs->setScreenshotMat(screenshotMat);
 	}
 
 	bool exclusiveMode = false;

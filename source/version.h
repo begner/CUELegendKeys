@@ -11,7 +11,7 @@
 #define VERSION_REVISION            3
 #define VERSION_BUILD               0
 
-#define VER_FILE_DESCRIPTION_STR    "Description"
+#define VER_FILE_DESCRIPTION_STR    "CUE Legend Keys"
 #define VER_FILE_VERSION            VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_BUILD
 #define VER_FILE_VERSION_STR        STRINGIZE(VERSION_MAJOR)        \
                                     "." STRINGIZE(VERSION_MINOR)    \

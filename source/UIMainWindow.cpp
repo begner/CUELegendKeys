@@ -160,7 +160,9 @@ void UIMainWindow::createMenuItem(HMENU hMenu, int position,  UINT flags, UINT_P
 void UIMainWindow::createMenuItems(HMENU hMenu) {
 	
 	int position = 0; // position of menuitem
+	
 	string itemLabel = "";
+	int disabled = 0;
 
 	// Open Close Main Dlg
 	if (!IsWindowVisible(UIMainDialog::getInstance()->getHandle()))
@@ -207,19 +209,33 @@ void UIMainWindow::createMenuItems(HMENU hMenu) {
 
 	// Show filtered Mat
 	itemLabel = "Show filtered HotSpots";
+	disabled = 0; 
+	if (!CUELegendKeys::getInstance()->isIngameMode()) {
+		disabled = MF_DISABLED;
+	}
 	if (!CUELegendKeys::getInstance()->getShowFilteredMat())
-		createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_MODE_GAME_SHOW_FILTERED_MAT, itemLabel);
+		createMenuItem(hMenu, position++, disabled | MF_BYPOSITION | MF_STRING, IDM_MODE_GAME_SHOW_FILTERED_MAT, itemLabel);
 	else
-		createMenuItem(hMenu, position++, MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_MODE_GAME_SHOW_FILTERED_MAT_OFF, itemLabel);
+		createMenuItem(hMenu, position++, disabled | MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_MODE_GAME_SHOW_FILTERED_MAT_OFF, itemLabel);
 
 	// -----------------------------------------------------------------------
 	createMenuDivider(hMenu, position++);
-/*
+
 	createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_OPEN_APPDATA, "Open AppData Dir");
 
+
+	// Log
+	itemLabel = "Write Logfile";
+	if (!NuLogger::getInstance()->getWriteLog())
+		createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_START_LOG, itemLabel);
+	else
+		createMenuItem(hMenu, position++, MF_CHECKED | MF_BYPOSITION | MF_STRING, IDM_STOP_LOG, itemLabel);
+
+
+
 	// -----------------------------------------------------------------------
 	createMenuDivider(hMenu, position++);
-*/
+
 	// About
 	createMenuItem(hMenu, position++, MF_BYPOSITION | MF_STRING, IDM_SHOW_ABOUT, "About");
 
@@ -408,7 +424,22 @@ INT_PTR CALLBACK UIMainWindow::MessageHandler(HWND _hwnd, UINT message, WPARAM w
 					break;
 
 				case IDM_OPEN_APPDATA:
-					// ShellExecute(NULL, _T("Open"), _T("C:\\"), NULL, NULL, SW_SHOWNORMAL);
+					{
+						wchar_t *command = TEXT("Open");
+						wstring path = s2ws(AppData::getAppDataPath()).c_str();
+						ShellExecute(NULL, command, path.c_str(), NULL, NULL, SW_SHOWNORMAL);
+						return (INT_PTR)TRUE;
+					}
+					break;
+
+				case IDM_START_LOG: 
+					NuLogger::getInstance()->writeLogFile(true);
+					Settings::getInstance()->setValue("main", "WriteLog", 1);
+					return (INT_PTR)TRUE;
+					break;
+				case IDM_STOP_LOG:
+					NuLogger::getInstance()->writeLogFile(false);
+					Settings::getInstance()->setValue("main", "WriteLog", 0);
 					return (INT_PTR)TRUE;
 					break;
 			}

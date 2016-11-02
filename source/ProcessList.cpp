@@ -21,13 +21,13 @@ void ProcessList::release()
 
 ProcessList::ProcessList()
 {
+	makeSnapshot();
 }
 
 
 ProcessList::~ProcessList()
 {
 }
-
 
 DWORD ProcessList::getActiveProcessId() {
 	return activeProcessId;
@@ -123,7 +123,6 @@ DWORD ProcessList::determineActiveProcessId() {
 
 
 string ProcessList::getNameByProcessId(DWORD pid) {
-	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	PROCESSENTRY32 process;
 	ZeroMemory(&process, sizeof(process));
 	process.dwSize = sizeof(process);
@@ -142,12 +141,22 @@ string ProcessList::getNameByProcessId(DWORD pid) {
 		} while (Process32Next(snapshot, &process));
 	}
 
-	CloseHandle(snapshot);
 	return "";
 }
 
+void ProcessList::makeSnapshot() {
+	if (snapshot) {
+		CloseHandle(snapshot);
+	}
+	snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+}
+
+
 DWORD ProcessList::getPIDofProcess(string processName) {
-	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+	std::wstring wsProcessName = s2ws(processName);
+
 	PROCESSENTRY32 process;
 	ZeroMemory(&process, sizeof(process));
 	process.dwSize = sizeof(process);
@@ -157,21 +166,46 @@ DWORD ProcessList::getPIDofProcess(string processName) {
 	{
 		do
 		{
-			if (ws2s(process.szExeFile) == processName) {
+			if (process.szExeFile == wsProcessName) {
 				return process.th32ProcessID;
 			}
 
 		} while (Process32Next(snapshot, &process));
 	}
 
-	DeleteObject(snapshot);
 	return NULL;
 }
 
 
+string ProcessList::getList(string prefix, DWORD curProcessId) {
+	std::wstring ret = L"";
+	std::wstring wsPrefix = s2ws(prefix);
+
+	PROCESSENTRY32 process;
+	ZeroMemory(&process, sizeof(process));
+	process.dwSize = sizeof(process);
+
+	if (Process32First(snapshot, &process))
+	{
+		do {
+			if (process.th32ProcessID == curProcessId) {
+				ret += wsPrefix + process.szExeFile + L" << OWN PROCESS\n";
+			}
+			else {
+				ret += wsPrefix + process.szExeFile + L"\n";
+			}
+			
+		} 
+		while (Process32Next(snapshot, &process));
+	}
+
+	return ws2s(ret);
+}
+
 bool ProcessList::ProcessExists(string processName, DWORD curProcessId) {
-	// Create toolhelp snapshot.
-	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	
+	std::wstring wsProcessName = s2ws(processName);
+
 	PROCESSENTRY32 process;
 	ZeroMemory(&process, sizeof(process));
 	process.dwSize = sizeof(process);
@@ -184,13 +218,13 @@ bool ProcessList::ProcessExists(string processName, DWORD curProcessId) {
 			// Compare process.szExeFile based on format of name, i.e., trim file path
 			// trim .exe if necessary, etc.
 			// NuLogger::getInstance()->log("Process: '%s' found!", ws2s(process.szExeFile).c_str());
-			if (ws2s(process.szExeFile) == processName && (curProcessId == 0 || process.th32ProcessID != curProcessId)) {
+			if (process.szExeFile == wsProcessName && (curProcessId == 0 || process.th32ProcessID != curProcessId)) {
 				return true;
 			}
 		} while (Process32Next(snapshot, &process));
 	}
 
-	CloseHandle(snapshot);
+	
 
 	return false;
 }

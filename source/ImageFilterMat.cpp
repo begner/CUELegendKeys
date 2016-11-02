@@ -361,7 +361,8 @@ bool ImageFilterMat::DrawToHDC(HDC drawHDC, Mat mat, int x, int y, int width, in
 
 	DeleteObject(m_hBitmap);
 	DeleteDC(hDCMem);
-	
+
+
 	return TRUE;
 }
 

@@ -2,9 +2,9 @@
 
 #include <string>
 #include <windows.h>
-#include <Shlobj.h>//for knownFolder #include "libs\SimpleIni.h"
-#include "libs\SimpleIni.h"
 
+#include "libs\SimpleIni.h"
+#include "AppData.h"
 #include "convert.h"
 #include "NuLogger.h"
 

@@ -3,7 +3,7 @@
 
 FPIdle::FPIdle(HWND uiHWND) : FPScreenMirror(uiHWND)
 {
-	
+	NuLogger::getInstance()->log("Setup FrameProcessing Idle");
 	desktopWindow = GetDesktopWindow();
 	FPScreenMirror::setCaptureWindow(desktopWindow);
 	FPScreenMirror::setOffset(RECT{ 100, 200, 100, 0 });
@@ -36,7 +36,7 @@ bool FPIdle::process() {
 	if (mode == FP_IDLE_MODE_OFF) {
 		
 		// IDLE Mode does not need to be limitless
-		enableFpsLimit(true);
+		// enableFpsLimit(true);
 		setFpsLimit(Settings::getInstance()->getValue("IdleMode", "IdleFPSLimit", (int)2));
 
 		PerformanceStart();

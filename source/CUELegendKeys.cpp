@@ -20,6 +20,7 @@ void CUELegendKeys::release()
 CUELegendKeys::CUELegendKeys()
 {
 	procL = ProcessList::getInstance();
+	
 }
 
 CUELegendKeys::~CUELegendKeys()
@@ -33,16 +34,19 @@ bool CUELegendKeys::AppStartupCheck() {
 	NuLogger::getInstance()->log("-------------------------------------------------------");
 	NuLogger::getInstance()->log("AppStartupCheck");
 	
-	/*
+	procL->makeSnapshot();
+	
 	// detect active corsair CUE
-	if (!ProcessList::getInstance()->ProcessExists("CorsairHID.exe") && 
-		!ProcessList::getInstance()->ProcessExists("CUE.exe")) {
+	if (!procL->ProcessExists("CorsairHID.exe") && 
+		!procL->ProcessExists("CUE.exe")) {
+		NuLogger::getInstance()->log("Process i can see: \n" + procL->getList(" - ", GetCurrentProcessId()));
 		UIMessage::getInstance()->DisplayErrorAndQuit("CUELegendKeys", "Corsair Cue not running!");
 		return FALSE;
 	};
-	*/
+	
 	// detects itself... :(
-	if (ProcessList::getInstance()->ProcessExists("CUELegendKeys.exe", GetCurrentProcessId())) {
+	if (procL->ProcessExists("CUELegendKeys.exe", GetCurrentProcessId())) {
+		NuLogger::getInstance()->log("Process i can see: \n" + procL->getList(" - ", GetCurrentProcessId()));
 		UIMessage::getInstance()->DisplayErrorAndQuit("CUELegendKeys", "CUELegendKeys is already running!");
 		return FALSE;
 	};
@@ -52,12 +56,13 @@ bool CUELegendKeys::AppStartupCheck() {
 	// detect cue hardware
 
 	if (!LEDController::getInstance()->checkCompatibleDevice()) {
+		
 		UIMessage::getInstance()->DisplayErrorAndQuit("CUELegendKeys", "Can't detect compatible Hardware!");
 		return FALSE;
 	}
 
 	if (!Settings::getInstance()->checkSettings()) {
-		UIMessage::getInstance()->DisplayErrorAndQuit("CUELegendKeys", "Cant create registry keys for settings");
+		UIMessage::getInstance()->DisplayErrorAndQuit("CUELegendKeys", "Cant create init File");
 		return FALSE;
 	}
 	;
@@ -71,6 +76,7 @@ bool CUELegendKeys::AppStartupCheck() {
 	NuLogger::getInstance()->log("Number of Leds found:" + LedPositions.size());
 
 	NuLogger::getInstance()->log("AppStartupCheck Done!");
+	NuLogger::getInstance()->log("-------------------------------------------------------");
 	
 	
 
@@ -79,31 +85,31 @@ bool CUELegendKeys::AppStartupCheck() {
 
 void CUELegendKeys::AppInit()
 {
+	bool writeLog = (Settings::getInstance()->getValue("main", "WriteLog", (int)0) == 1);
+	if (!writeLog) {
+		NuLogger::getInstance()->log("Stop Logging cause of ini or default value...\nzzz....");
+	}
+	NuLogger::getInstance()->writeLogFile(writeLog);
+
 	NuLogger::getInstance()->log("-------------------------------------------------------");
-	NuLogger::getInstance()->log("AppInit Done");
+	NuLogger::getInstance()->log("AppInit");
 	
 	fpIdle = new FPIdle(UIMainDialog::getInstance()->getHandle());
-	fpIdle->loadResources();
-	
 	fpSelectClient = new FPSelectClient(UIMainDialog::getInstance()->getHandle());
-	fpSelectClient->loadResources();
-	
 	fpGameClient = new FPGameClient(UIMainDialog::getInstance()->getHandle());
-	fpGameClient->loadResources();
-
 	fpPatchClient = new FPPatchClient(UIMainDialog::getInstance()->getHandle());
-	fpPatchClient->loadResources();
 
-	NuLogger::getInstance()->log("AppInit Done!");
-	
-	Settings::getInstance()->setValue("main", "appinit", "test");
-	Settings::getInstance()->removeValue("main", "appinit");
-	
-		
+	NuLogger::getInstance()->log("Load Settings");
+
 	setScreenMirrorOnIdleMode(Settings::getInstance()->getValue("IdleMode", "screenMirror", (int)0) == 1);
 	setLimitFPS(Settings::getInstance()->getValue("Main", "limitFPS", (int)0) == 1);
 	setShowFilteredMat(Settings::getInstance()->getValue("GameClientMode", "showFilteredMat", (int)0) == 1);
 	setForceInGameClient(Settings::getInstance()->getValue("Main", "forceInGameClient", (int)0) == 1);
+
+	NuLogger::getInstance()->log("AppInit Done!");
+	NuLogger::getInstance()->log("-------------------------------------------------------");
+
+
 }
 
 void CUELegendKeys::AppStart() {
@@ -121,7 +127,7 @@ void CUELegendKeys::AppStart() {
 }
 
 void CUELegendKeys::AppStop() {
-	NuLogger::getInstance()->log("AppStop.");
+	NuLogger::getInstance()->log("AppStop");
 	running = false;
 }
 
@@ -134,32 +140,7 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 		return;
 	}
 
-	// patchClient
-	DWORD patchClientPID = procL->getPIDofProcess("LoLPatcherUx.exe");
-	HWND patchClientHWND = NULL;
-	BOOL patchClientVisibility = false;
-	if (patchClientPID) {
-		patchClientHWND = procL->getProcessWindowHandle(patchClientPID, "LoL Patcher");
-		if (!IsWindow(patchClientHWND)) {
-			patchClientHWND = NULL;
-		}
-		patchClientVisibility = IsWindowVisible(patchClientHWND);
-	}
-	
-	// selectClient
-	DWORD selectClientPID = procL->getPIDofProcess("LolClient.exe");
-	HWND selectClientHWND = NULL;
-	BOOL selectClientVisibility = false;
-	if (selectClientPID) {
-		selectClientHWND = procL->getProcessWindowHandle(selectClientPID, "PVP.net Client");
-		if (!selectClientHWND) {
-			selectClientHWND = procL->getProcessWindowHandle(selectClientPID, "PvP.net-Client");
-		}
-		if (!IsWindow(selectClientHWND)) {
-			selectClientHWND = NULL;
-		}
-		selectClientVisibility = IsWindowVisible(selectClientHWND);
-	}
+	procL->makeSnapshot();
 
 	// Game Client
 	DWORD gameClientPID = procL->getPIDofProcess("League of Legends.exe");
@@ -170,7 +151,40 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 		if (!IsWindow(gameClientHWND)) {
 			gameClientHWND = NULL;
 		}
-		gameClientVisibility = true; // IsWindowVisible(gameClientHWND);
+		gameClientVisibility = IsWindowVisible(gameClientHWND);
+	}
+
+	HWND selectClientHWND = NULL;
+	BOOL selectClientVisibility = false;
+	if (!gameClientVisibility) {
+		// selectClient
+		DWORD selectClientPID = procL->getPIDofProcess("LolClient.exe");
+		
+		if (selectClientPID) {
+			selectClientHWND = procL->getProcessWindowHandle(selectClientPID, "PVP.net Client");
+			if (!selectClientHWND) {
+				selectClientHWND = procL->getProcessWindowHandle(selectClientPID, "PvP.net-Client");
+			}
+			if (!IsWindow(selectClientHWND)) {
+				selectClientHWND = NULL;
+			}
+			selectClientVisibility = IsWindowVisible(selectClientHWND);
+		}
+	}
+
+	HWND patchClientHWND = NULL;
+	BOOL patchClientVisibility = false;
+	if (!gameClientVisibility && !selectClientVisibility) {
+		// patchClient
+		DWORD patchClientPID = procL->getPIDofProcess("LoLPatcherUx.exe");
+		
+		if (patchClientPID) {
+			patchClientHWND = procL->getProcessWindowHandle(patchClientPID, "LoL Patcher");
+			if (!IsWindow(patchClientHWND)) {
+				patchClientHWND = NULL;
+			}
+			patchClientVisibility = IsWindowVisible(patchClientHWND);
+		}
 	}
 
 

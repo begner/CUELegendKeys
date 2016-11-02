@@ -44,6 +44,7 @@ int UIMessage::DisplayError(string title, string message, int uType)
 		uType | MB_OK
 	);
 
+	NuLogger::getInstance()->log("ERROR: " + message);
 	return msgboxID;
 }
 
@@ -51,6 +52,7 @@ void UIMessage::DisplayErrorAndQuit(string title, string message, int uType)
 {
 	// HideMainDialog();
 	DisplayError(title, message, uType);
+	NuLogger::getInstance()->log("SHUTDOWN - cause of error");
 
 	SendMessage(UIMainWindow::getInstance()->getHandle() , WM_COMMAND, IDM_QUIT, NULL);
 }
