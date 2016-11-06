@@ -78,7 +78,11 @@ void UIText::processUI(Mat4b* drawUI) {
 				lastWord = true;
 			}
 
-			if (lineSize.width > getWidth() || lastWord) {
+			if (lineSize.width > getWidth()) {
+				lines.push_back(line + *it);
+				line = "";
+			}
+			else if(lastWord) {
 				lines.push_back(line);
 				line = "";
 			}
@@ -86,8 +90,9 @@ void UIText::processUI(Mat4b* drawUI) {
 				line = line + *it + " ";
 			}
 		}
-		
-		
+
+		int ls = (int)lines.size();
+
 		string currentLine = "";
 		int lineNr = 0;
 		int lineY = 0;
