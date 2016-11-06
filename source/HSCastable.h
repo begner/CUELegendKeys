@@ -9,6 +9,7 @@ private:
 	Vec4b getColorByTick(int offset = 0);
 	Vec4b currentColorCache;
 	bool isCastableCache;
+	cv::Point getCoordsByTick(int offset);
 public:
 	HSCastable();
 	~HSCastable();
@@ -17,6 +18,7 @@ public:
 	virtual bool isCastable();
 	void filterMat();
 	Vec4b getCurrentColor(int index = 0);
+	
 	int getMaxTick();
 };
 

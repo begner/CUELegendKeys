@@ -31,7 +31,8 @@ bool HSCastable::isCastable() {
 
 	ImageFilterMat::colorReduce(castDetectionMat, 64);
 	isCastable = ImageFilterMat::colorIsPresent(castDetectionMat, 96, 224, 224) ||
-				ImageFilterMat::colorIsPresent(castDetectionMat, 96, 160, 224);
+				ImageFilterMat::colorIsPresent(castDetectionMat, 96, 160, 224) || 
+				ImageFilterMat::colorIsPresent(castDetectionMat, 96, 160, 160);
 	castDetectionMat.release();
 	
 	isCastableCache = isCastable;
@@ -47,6 +48,8 @@ void HSCastable::filterMat() {
 	blur(*getFilteredMat(), *getFilteredMat(), cv::Size(5, 5), cv::Point(-1, -1));
 	ImageFilterMat::saturation(*getFilteredMat(), 0, 255, 1.5);
 }
+
+
 
 Vec4b HSCastable::getCurrentColor(int index) {
 	if (!isCacheDirty()) {
@@ -69,7 +72,13 @@ Vec4b HSCastable::getCurrentColor(int index) {
 			b = color[0];
 			
 			if (r > brightnessTreshold || g > brightnessTreshold || b > brightnessTreshold) {
+				
+				cv::Point curPoint = getCoordsByTick(count);
+				setCurrentColorCoord(curPoint.x, curPoint.y);
 				break;
+			}
+			else {
+				tick();
 			}
 			count++;
 		}
@@ -80,28 +89,35 @@ Vec4b HSCastable::getCurrentColor(int index) {
 	return color;
 }
 
+cv::Point HSCastable::getCoordsByTick(int offset) {
+	Mat4b *fMat = getFilteredMat();
+	int pos = getCurrentTick() + offset;
+
+	// overflow...
+	int max = getMaxTick();
+	if (pos > max - 1) {
+		pos = pos - max;
+	}
+
+	int x = (pos % fMat->cols);
+	int y = (int)floor(pos / (fMat->cols));
+	
+	return cv::Point(x, y);
+}
+
+
 int HSCastable::getMaxTick() {
 	return getFilteredMat()->cols*getFilteredMat()->rows;
 }
 
 
 Vec4b HSCastable::getColorByTick(int offset) {
-
 	Mat4b *fMat = getFilteredMat();
-	int pos = getCurrentTick() + offset;
-	
-	// overflow...
-	int max = getMaxTick();
-	if (pos > max-1) {
-		pos = pos - max;
-	}
 
-
-	int x = (pos % fMat->cols);
-	int y = (int)floor(pos / (fMat->cols));
+	cv::Point curPoint = getCoordsByTick(offset);
 
 	// TODO: if y , x is out of range...
-	Vec4b color = fMat->at<Vec4b>(y, x);
+	Vec4b color = fMat->at<Vec4b>(curPoint.y, curPoint.x);
 	return color;
 }
 
