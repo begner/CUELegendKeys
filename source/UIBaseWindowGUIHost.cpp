@@ -86,6 +86,10 @@ int UIBaseWindowGUIHost::getCurrentBackgroundResource() {
 	return currentBackgroundRes;
 }
 
+void UIBaseWindowGUIHost::freeBackgroundResources() {
+	windowBackgrounds.clear();
+}
+
 bool UIBaseWindowGUIHost::setBackgroundResource(int resource) {
 	if (currentBackgroundRes != resource) {
 		if (windowBackgrounds.find(resource) == windowBackgrounds.end()) {

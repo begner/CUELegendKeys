@@ -32,6 +32,7 @@ public:
 	bool processUI(bool forceDraw = false);
 	void initHost();
 	int getCurrentBackgroundResource();
+	void freeBackgroundResources();
 	bool setBackgroundResource(int resouce);
 	void forceRefresh();
 	void onMouseMove(int mouseX, int mouseY);
