@@ -359,7 +359,9 @@ void UILearn::threadWorker() {
 }
 
 void UILearn::onHide() {
+	freeBackgroundResources();
 	workerIsRunning = false;
+	
 }
 
 void UILearn::processUI() {
@@ -441,13 +443,25 @@ void UILearn::updateLcUI() {
 
 		skillNameText->show();
 		needlePreviewUI->show();
-
+		
+		
 		zoomedPreviewUI->show();
 
 		setGroupVisibility(borderPosControl, true);
 		setGroupVisibility(borderSizeControl, cHSL->needsBorder());
 
 		keyBar[getLearnController()->getCurrentSkillIDX()]->setState(UIButton::BUTTON_STATE_ACTIVE);
+
+
+		cv::Rect* bl = getLearnController()->getCurrentLocation();
+		if (bl != nullptr) {
+			referenceInfoText->setLabel("%ix%i / %ix%i", bl->x, bl->y, bl->width, bl->height);
+			referenceInfoText->show();
+		}
+		else{
+			referenceInfoText->hide();
+		}
+		
 
 		eLearnButton->show();
 		if (cHSL->isLearningPossible()) {
@@ -517,7 +531,7 @@ void UILearn::updateLcUI() {
 			ePrevReference->show();
 			eNextReference->show();
 			referenceNumberText->show();
-			referenceInfoText->show();
+			
 			Rect foundLocation = cHSL->getLocationRectByLocationIndex(getLearnController()->getCurrentHSLfoundIDX());
 			int currentItem = getLearnController()->getCurrentHSLfoundIDX() + 1;
 
