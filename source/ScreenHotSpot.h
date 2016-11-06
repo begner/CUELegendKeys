@@ -29,6 +29,9 @@ private:
 	int deleteFMW = 0;
 	int deleteFMH = 0;
 
+	int currentColorCoordX = -1;
+	int currentColorCoordY = -1;
+
 	bool cacheIsDirty = true;
 
 	vector<cv::Rect> previewColors;
@@ -110,6 +113,12 @@ public:
 
 	bool isCacheDirty();
 	void setCacheDirtyState(bool state);
+
+	void setCurrentColorCoord(int x, int y);
+
+	Mat getFilterdMatForUI();
+
+	Mat getOriginalMatForUI();
 
 };
 

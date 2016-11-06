@@ -274,3 +274,31 @@ bool ScreenHotSpot::isCacheDirty() {
 void ScreenHotSpot::setCacheDirtyState(bool state) {
 	cacheIsDirty = state;
 }
+
+void ScreenHotSpot::setCurrentColorCoord(int x, int y) {
+	currentColorCoordX = x;
+	currentColorCoordY = y;
+}
+
+Mat ScreenHotSpot::getFilterdMatForUI() {
+	Mat fMat;
+	getFilteredMat()->copyTo(fMat);
+	
+	#ifdef _DEBUG
+		cv::Rect curRect(currentColorCoordX - 1, currentColorCoordY - 1, 3, 3);
+		if (!ImageFilterMat::isValidRect(&fMat, curRect)) {
+			return fMat;
+		}
+		cv::rectangle(fMat, curRect, Scalar(255, 255, 255, 255), 1, 1, 0);
+	#endif // _DEBUG
+	
+
+	
+	return fMat;
+}
+
+Mat ScreenHotSpot::getOriginalMatForUI() {
+	return *getOriginalMatRespectBorders();
+}
+
+		
