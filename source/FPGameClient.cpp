@@ -333,7 +333,9 @@ cv::Rect FPGameClient::calcUiBarLocation(Mat4b* screenshotMat) {
 
 		#ifdef _DEBUG
 			location = cv::Rect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
-			Mat4b locationTest = Mat(*screenshotMat, location);
+			if (ImageFilterMat::isValidRect(screenshotMat, location)) {
+				Mat4b locationTest = Mat(*screenshotMat, location);
+			}
 		#endif // _DEBUG
 	}
 
@@ -346,9 +348,10 @@ bool FPGameClient::processInGame(Mat4b* screenshotMat) {
 
 	// Grab UIBar from Screenshot
 	cv::Rect uiBarRect = calcUiBarLocation(screenshotMat);
-	if (!ImageFilterMat::isValidRect(uiBarRect)) {
+	if (!ImageFilterMat::isValidRect(screenshotMat, uiBarRect)) {
 		return false;
 	}
+
 	Mat4b uiBarMat = Mat(*screenshotMat, uiBarRect);
 
 
@@ -360,24 +363,24 @@ bool FPGameClient::processInGame(Mat4b* screenshotMat) {
 		hs->setUiMatOffset(uiBarRect.x, uiBarRect.y);
 		hs->setUIMat(&uiBarMat);
 		hs->setScreenshotMat(screenshotMat);
+		hs->initializeFrame();
 	}
 
 	bool exclusiveMode = false;
 
+
 	// add current screenshot data to hotSpots
 	// and execute exclusive Effects
+	/*
 	for (vector<ScreenHotSpot*>::iterator it = hsg.begin(); it != hsg.end(); ++it) {
 		ScreenHotSpot* hs = (*it);
-
-	
-		hs->initializeFrame();
 
 		if (!exclusiveMode && hs->hasExclusiveEffect()) {
 			hs->doExclusiveEffect();
 			exclusiveMode = true;
 		}
 	}
-
+	*/
 
 
 	if (!exclusiveMode) {
@@ -385,15 +388,14 @@ bool FPGameClient::processInGame(Mat4b* screenshotMat) {
 		for (vector<ScreenHotSpot*>::iterator it = hsg.begin(); it != hsg.end(); ++it) {
 
 			ScreenHotSpot* hs = (*it);
-
 			
 			Mat displayMat;
 
 			if (showFilteredMat) {
-				hs->getFilteredMat()->copyTo(displayMat);
+				hs->getFilterdMatForUI().copyTo(displayMat);
 			}
 			else {
-				hs->getOriginalMatRespectBorders()->copyTo(displayMat);
+				hs->getOriginalMatForUI().copyTo(displayMat);
 			}
 
 			cv::Size uiElementSize(hs->getUiWidth(), hs->getUiHeight());
@@ -406,6 +408,15 @@ bool FPGameClient::processInGame(Mat4b* screenshotMat) {
 			}
 
 			ImageFilterMat::overlayImage(&drawUI, &displayMat, cv::Point(hs->getUiX(), hs->getUiY()));
+
+
+			vector<cv::Rect>* previewColors = hs->getPreviewColors();
+			int index = 0;
+			for (vector<cv::Rect>::iterator pC = previewColors->begin(); pC != previewColors->end(); ++pC, ++index) {
+				ImageFilterMat::overlayImage(&drawUI, hs->getPreviewColorMat(index), cv::Point(pC->x, pC->y));
+			}
+
+			
 			
 	
 			// increase tick
