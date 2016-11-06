@@ -59,6 +59,8 @@ cv::Rect ImageFilterMat::findBox(Mat &image, int threshold) {
 	return cv::Rect(0, 0, image.cols, image.rows);
 }
 
+
+
 bool ImageFilterMat::hasPixelBorder(Mat &image, int top, int right, int bot, int left, Vec3b allowedColor1, Vec3b allowedColor2) {
 
 	Mat_<Vec4b> _I = image;
@@ -87,55 +89,33 @@ void ImageFilterMat::colorReduce(Mat &image, int div, bool ignoreAlpha)
 {
 	Mat_<Vec4b> _I = image;
 
+	// _D_iv*_D_iv_A_dd_D_H_alf :D
+	uint divHalf = (uint)floor(div / 2);
+
 	for (int j = image.cols - 1; j > -1; --j) {
-		bool completeFilledCol = true;
-
 		for (int i = 0; i < image.rows; ++i) {
-			_I(i, j)[0] = _I(i, j)[0] / div * div + div / 2;
-			_I(i, j)[1] = _I(i, j)[1] / div * div + div / 2;
-			_I(i, j)[2] = _I(i, j)[2] / div * div + div / 2;
+			_I(i, j)[0] = _I(i, j)[0] / div * div + divHalf;
+			_I(i, j)[1] = _I(i, j)[1] / div * div + divHalf;
+			_I(i, j)[2] = _I(i, j)[2] / div * div + divHalf;
 		}
 	}
 
-	/*
-	int nl = image.rows;                    // number of lines
-	int nc = image.cols*image.channels();					// number of elements per line
-
-	for (int j = 0; j < nl; j++)
-	{
-		// get the address of row j
-		uchar* data = image.ptr<uchar>(j);
-		
-		for (int i = 0; i < nc; i++)
-		{
-			if (ignoreAlpha && image.channels() == 4 && i-1 % 4 != 0) {
-				data[i] = data[i] / div * div + div / 2;
-			}
-			
-		}
-	}
-	*/
 }
 
-/// Do the operation new_image(i,j) = alpha*image(i,j) + beta
-
 void ImageFilterMat::brightnessContrast(Mat srcImage, Mat* destImage, double contrast, double brightness) {
+	bool withAlpha = false;
 
-	cv::cvtColor(srcImage, *destImage, CV_BGRA2BGR);
-
-	for (int y = 0; y < srcImage.rows; y++)
-	{
-		for (int x = 0; x < srcImage.cols; x++)
-		{
-			for (int c = 0; c < 3; c++)
-			{
-				destImage->at<Vec3b>(y, x)[c] =
-					saturate_cast<uchar>(contrast*(destImage->at<Vec3b>(y, x)[c]) + brightness);
-			}
-		}
+	if (srcImage.channels() == 4) {
+		cv::cvtColor(srcImage, *destImage, CV_BGRA2BGR);
+		withAlpha = true;
 	}
+	
+	srcImage.convertTo(srcImage, -1, contrast, brightness);
 
-	cv::cvtColor(*destImage, *destImage, CV_BGR2BGRA);
+	if (withAlpha) {
+		cv::cvtColor(*destImage, *destImage, CV_BGR2BGRA);
+	}
+	
 }
 
 int ImageFilterMat::getBarPercentage(Mat srcImage) {
@@ -191,10 +171,27 @@ void ImageFilterMat::whiteToDarkPixel(Mat srcImage, int threshold) {
 }
 
 void ImageFilterMat::killGrayPixel(Mat srcImage, int threshold) {
-	Mat_<Vec4b> _I = srcImage;
+
+	Mat hsv;
+	srcImage.copyTo(hsv);
+
+	cv::cvtColor(hsv, hsv, CV_BGR2HSV);
+	Mat hsvChannels[3];
+	cv::split(hsv, hsvChannels);
+	
+	Mat satChannel = hsvChannels[1];
+	cv::threshold(satChannel, satChannel, threshold, 255, CV_THRESH_BINARY);
+	cv::bitwise_not(satChannel, satChannel);
+
+	Mat bg = Mat(cv::Size(srcImage.cols, srcImage.rows), CV_8UC4, Scalar(0, 0, 0, 255));
+	
+	cv::bitwise_and(bg, srcImage, srcImage, satChannel);
+
+	/*
+	Mat_<Vec4b> _I = *srcImage;
 	int diffRG, diffRB, diffGB;
-	for (int i = 0; i < srcImage.rows; ++i)
-		for (int j = 0; j < srcImage.cols; ++j)
+	for (int i = 0; i < srcImage->rows; ++i)
+		for (int j = 0; j < srcImage->cols; ++j)
 		{
 			diffRG = abs(_I(i, j)[2] - _I(i, j)[1]);
 			diffRB = abs(_I(i, j)[2] - _I(i, j)[0]);
@@ -206,12 +203,28 @@ void ImageFilterMat::killGrayPixel(Mat srcImage, int threshold) {
 				_I(i, j)[2] = 0;
 			}
 		}
+		*/
 }
 
 
 void ImageFilterMat::killDarkPixel(Mat srcImage, int threshold) {
-	Mat_<Vec4b> _I = srcImage;
 
+	// this solution seams to be much faster...
+
+	Mat mask, bg;
+
+	cv::inRange(srcImage, 
+				cv::Scalar(0, 0, 0, 0),
+				cv::Scalar(threshold, threshold, threshold, 255),
+				mask);
+	// cv::bitwise_not(mask, mask);
+
+	bg = Mat(cv::Size(srcImage.cols, srcImage.rows), CV_8UC4, Scalar(0, 0, 0, 255));
+
+	cv::bitwise_and(bg, srcImage, srcImage, mask);
+	
+	/*
+	Mat_<Vec4b> _I = srcImage;
 	for (int i = 0; i < srcImage.rows; ++i)
 		for (int j = 0; j < srcImage.cols; ++j)
 		{
@@ -220,7 +233,7 @@ void ImageFilterMat::killDarkPixel(Mat srcImage, int threshold) {
 				_I(i, j)[1] = 0;
 				_I(i, j)[2] = 0;
 			}
-		}
+		}*/
 }
 
 bool ImageFilterMat::colorIsPresent(Mat srcImage, int r, int g, int b) {
@@ -275,11 +288,37 @@ map<Vec4b, int, lessVec4b> ImageFilterMat::getPalette(Mat srcImage)
 // i think this one isnt working anymore...
 void ImageFilterMat::saturation(Mat srcImage, int trashhold, int satValue, float brightnessFactor) {
 
+
 	Mat satImage(srcImage);
 
-	cvtColor(satImage, satImage, CV_RGBA2RGB);
-	cvtColor(satImage, satImage, CV_RGB2HSV);
+	cvtColor(satImage, satImage, CV_BGRA2BGR);
+	cvtColor(satImage, satImage, CV_BGR2HSV);
+	
+	Mat hsvChannels[3];
+	cv::split(satImage, hsvChannels);
 
+	Mat satChannel = hsvChannels[1];
+	/*
+	Mat bg = Mat(satChannel.cols, satChannel.rows, CV_8UC1, Scalar(0));
+	Mat mask = Mat(satChannel.cols, satChannel.rows, CV_8UC1, Scalar(satValue));
+	cv::threshold(satChannel, satChannel, trashhold, 255, CV_THRESH_BINARY);
+	// cv::bitwise(satChannel, satChannel);
+	
+	cv::bitwise_and(satChannel, mask, mask, satChannel);
+*/
+
+	brightnessContrast(satChannel, &satChannel, satValue/100, brightnessFactor);
+	hsvChannels[1] = satChannel;
+
+
+
+	cv::merge(hsvChannels, 3, satImage);
+
+	cvtColor(satImage, satImage, CV_HSV2BGR);
+	cvtColor(satImage, srcImage, CV_BGR2BGRA);
+
+
+/*	Mat satImage(srcImage);
 	Mat_<Vec3b> _I = satImage;
 
 	for (int i = 0; i < satImage.rows; ++i)
@@ -303,11 +342,9 @@ void ImageFilterMat::saturation(Mat srcImage, int trashhold, int satValue, float
 
 		}
 	satImage = _I;
+	*/
 
-
-	cvtColor(satImage, satImage, CV_HSV2RGB);
-	cvtColor(satImage, srcImage, CV_RGB2RGBA);
-
+	
 }
 
 void ImageFilterMat::incSaturation(Mat srcImage, int incValue, float brightnessFactor) {
@@ -485,31 +522,32 @@ Mat* ImageFilterMat::hdc2mat(HDC drawHDC, int x, int y, int width, int height) {
 
 void ImageFilterMat::overlayImage(Mat* src, Mat* layer, const Point& location)
 {
-	Mat overlay;
-	layer->copyTo(overlay);
+	int layerChannels = layer->channels();
+	int srcChannels = src->channels();
+
 
 	for (int y = max(location.y, 0); y < src->rows; ++y)
 	{
 		int fY = y - location.y;
 
-		if (fY >= overlay.rows)
+		if (fY >= layer->rows)
 			break;
 
 		for (int x = max(location.x, 0); x < src->cols; ++x)
 		{
 			int fX = x - location.x;
 
-			if (fX >= overlay.cols)
+			if (fX >= layer->cols)
 				break;
 
-			double opacity = ((double)overlay.data[fY * overlay.step + fX * overlay.channels() + 3]) / 255;
+			double opacity = ((double)layer->data[fY * layer->step + fX * layerChannels + 3]) / 255;
 
 			// c<3 (dont copy alpha - only bgr channels)
 			for (int c = 0; opacity > 0 && c < 3; ++c)
 			{
-				unsigned char overlayPx = overlay.data[fY * overlay.step + fX * overlay.channels() + c];
-				unsigned char srcPx = src->data[y * src->step + x * src->channels() + c];
-				src->data[y * src->step + src->channels() * x + c] = (uchar)(srcPx * (1. - opacity) + overlayPx * opacity);
+				unsigned char overlayPx = layer->data[fY * layer->step + fX * layerChannels + c];
+				unsigned char srcPx = src->data[y * src->step + x * srcChannels + c];
+				src->data[y * src->step + srcChannels * x + c] = (uchar)(srcPx * (1. - opacity) + overlayPx * opacity);
 
 			}
 		}

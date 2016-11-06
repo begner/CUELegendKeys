@@ -36,9 +36,9 @@ public:
 	static cv::Rect findBox(Mat &image, int threshold);
 	static int getBarPercentage(Mat hotspotMat);
 	static void whiteToDarkPixel(Mat srcImage, int threshold);
+	static void killGrayPixel(Mat srcImage, int threshold);
 	static void brightnessContrast(Mat srcImage, Mat* destImage, double contrast = 1.0, double brightness = 0);
 	static void killDarkPixel(Mat srcImage, int threshold);
-	static void killGrayPixel(Mat srcImage, int threshold);
 	static void saturation(Mat srcImage, int trashhold, int satValue, float brightnessFactor);
 	static void incSaturation(Mat srcImage, int incValue, float brightnessFactor);
 	static bool DrawToHDC(HDC drawHDC, Mat mat, int x, int y, int width, int height);
