@@ -69,11 +69,7 @@ bool LearnController::areThereSavedChanges() {
 
 void LearnController::save() {
 
-	cv::Rect resultRect = *currentLocation;
-	int coordX = resultRect.x + borderPosL-overScan;
-	int coordY = resultRect.y + borderPosT - overScan;
-	int width = borderPosR - borderPosL;
-	int height = borderPosB - borderPosT;
+
 	int borderWidth = borderSize;
 	if (!currentHsl->needsBorder()) {
 		borderWidth = 0;
@@ -81,10 +77,10 @@ void LearnController::save() {
 
 	string saveId = currentHsl->getSaveId();
 
-	Settings::getInstance()->setValue("HotSpots", saveId + "PosX", coordX);
-	Settings::getInstance()->setValue("HotSpots", saveId + "PosY", coordY);
-	Settings::getInstance()->setValue("HotSpots", saveId + "Width", width);
-	Settings::getInstance()->setValue("HotSpots", saveId + "Height", height);
+	Settings::getInstance()->setValue("HotSpots", saveId + "PosX", currentLocation->x);
+	Settings::getInstance()->setValue("HotSpots", saveId + "PosY", currentLocation->y);
+	Settings::getInstance()->setValue("HotSpots", saveId + "Width", currentLocation->width);
+	Settings::getInstance()->setValue("HotSpots", saveId + "Height", currentLocation->height);
 	Settings::getInstance()->setValue("HotSpots", saveId + "Border", borderWidth);
 
 	thereAreSavedChanges = true;
@@ -141,14 +137,9 @@ void LearnController::load() {
 			currentHsl->setHaystack(*screenShot);
 
 			currentLocation = new cv::Rect(getSavedLocation(currentHsl->getSaveId()));
-
 			borderSize = getBorderSize(currentHsl->getSaveId());
-			borderPosB = currentLocation->height + overScan;
-			borderPosT = overScan;
-			borderPosL = overScan;
-			borderPosR = currentLocation->width + overScan;
-			
-			dataChanged = false;
+
+			dataChanged = true;
 
 		}
 		currentHSLfoundIDX = 0;
@@ -197,7 +188,6 @@ bool LearnController::threadLearn() {
 	mySelf->currentHSLfoundIDX = 0;
 	if ((int)mySelf->currentHsl->getFoundLocations().size() > 0) {
 		mySelf->currentLocation = new cv::Rect(mySelf->currentHsl->getLocationRectByLocationIndex(mySelf->currentHSLfoundIDX));
-		mySelf->resetBorders();
 		mySelf->dataChanged = true;
 	}
 	
@@ -243,7 +233,6 @@ void LearnController::nextReference() {
 	}
 
 	currentLocation = new cv::Rect(currentHsl->getLocationRectByLocationIndex(currentHSLfoundIDX));
-	resetBorders();
 }
 
 void LearnController::prevReference() {
@@ -256,8 +245,6 @@ void LearnController::prevReference() {
 	}
 
 	currentLocation = new cv::Rect(currentHsl->getLocationRectByLocationIndex(currentHSLfoundIDX));
-	resetBorders();
-	
 }
 
 Mat LearnController::getUINeedle(int width, int height) {
@@ -273,7 +260,8 @@ Mat LearnController::getUINeedle(int width, int height) {
 	return needleImage;
 }
 
-Mat LearnController::getPreviewMatForCurrentLocation() {
+Mat LearnController::getPreviewMatForCurrentLocation(cv::Rect* overlapLocation) {
+	
 	Mat preview;
 	preview = Mat(1, 1, CV_8UC4);
 
@@ -281,7 +269,7 @@ Mat LearnController::getPreviewMatForCurrentLocation() {
 		return preview;
 	}
 
-	if (currentLocation->x < 0 || currentLocation->y < 0 || currentLocation->width < 0 || currentLocation->height < 0) {
+	if (!ImageFilterMat::isValidRect(*currentLocation)) {
 		return preview;
 	}
 
@@ -290,32 +278,44 @@ Mat LearnController::getPreviewMatForCurrentLocation() {
 		return preview;
 	}
 
-	cv::Rect overlapLocation;
-	overlapLocation = *currentLocation;
-	overlapLocation.x -= overScan;
-	overlapLocation.y -= overScan;
-	overlapLocation.width += overScan * 2;
-	overlapLocation.height += overScan * 2;
+	int test = currentLocation->x % overScan;
 
-	if (overlapLocation.width + overlapLocation.x > screenShot->cols) {
-		overlapLocation.width = screenShot->cols - overlapLocation.x;
-	}
-	if (overlapLocation.height + overlapLocation.y > screenShot->rows) {
-		overlapLocation.height = screenShot->rows - overlapLocation.y;
-	}
+	overlapLocation->x -= overScan - (currentLocation->x % overScan);
+	overlapLocation->y -= overScan - (currentLocation->y % overScan);
+	overlapLocation->width += overlapLocation->x*-1 + (currentLocation->width % overScan) + overScan;
+	overlapLocation->height += overlapLocation->y*-1 + (currentLocation->height % overScan) + overScan;
+	 
+	cv::Rect MatLocation;
+	MatLocation.x = currentLocation->x + overlapLocation->x;
+	MatLocation.y = currentLocation->y + overlapLocation->y;
+	MatLocation.width = currentLocation->width + overlapLocation->width;
+	MatLocation.height = currentLocation->height + overlapLocation->height;
 
-	if (overlapLocation.width < 1 || overlapLocation.height < 1 || overlapLocation.x < 1 || overlapLocation.y < 1) {
+	/*
+
+	if (overlapLocation->width + overlapLocation->x > screenShot->cols) {
+		overlapLocation->width = screenShot->cols - overlapLocation->x;
+	}
+	if (overlapLocation->height + overlapLocation->y > screenShot->rows) {
+		overlapLocation->height = screenShot->rows - overlapLocation->y;
+	}
+	if (overlapLocation->width < 1 || overlapLocation->height < 1 || overlapLocation->x < 1 || overlapLocation->y < 1) {
 		return preview;
 	}
+	*/
 
 
- 	preview = Mat(*screenShot, overlapLocation);
+ 	preview = Mat(*screenShot, MatLocation);
 	
 	return preview;
 }
 
 void LearnController::moveCurrentLocation(int dir, int diff) {
 
+}
+
+cv::Rect* LearnController::getCurrentLocation() {
+	return currentLocation;
 }
 
 Mat LearnController::getUIPreview(int width, int height, bool wideMode) {
@@ -326,7 +326,8 @@ Mat LearnController::getUIPreview(int width, int height, bool wideMode) {
 		// Mat uiPreview(width, height, CV_8UC4, Scalar(0, 255, 128, 255));
 
 		Mat previewImage;
-		getPreviewMatForCurrentLocation().copyTo(previewImage);
+		cv::Rect overlapCorrection;
+		getPreviewMatForCurrentLocation(&overlapCorrection).copyTo(previewImage);
 
 
 		int originalWidth = previewImage.cols;
@@ -349,7 +350,10 @@ Mat LearnController::getUIPreview(int width, int height, bool wideMode) {
 		Scalar gridColor = Scalar(0, 0, 0, 255);
 		Scalar borderColor = Scalar(0, 255, 255, 255);
 
-
+		int borderPosL = overlapCorrection.x*-1;
+		int borderPosR = borderPosL+currentLocation->width;
+		int borderPosT = overlapCorrection.y*-1;
+		int borderPosB = borderPosT+currentLocation->height;
 
 
 		for (int x = 0; x < originalWidth + 1; x++) {
@@ -418,44 +422,34 @@ Mat LearnController::getUIPreview(int width, int height, bool wideMode) {
 }
 
 
-void LearnController::resetBorders() {
-	Mat previewImage = getPreviewMatForCurrentLocation();
-
-	borderPosT = overScan;
-	borderPosR = previewImage.cols - overScan * 2;
-	borderPosB = previewImage.rows - overScan * 2;
-	borderPosL = overScan;
-	borderSize = 1;
-
-	dataChanged = true;
-}
-
-
 void LearnController::setBorderPosDelta(int position, int diff) {
-	int dummy = 0;
-	int* posVar;
-	posVar = &dummy;
+	int* posVar = nullptr;
+	int* posVar2nd = nullptr;
 
 	switch (position) {
 		case BORDER_POS_T:
-			posVar = &borderPosT;
+			posVar = &currentLocation->y;
+			posVar2nd = &currentLocation->height;
 			break;
 		case BORDER_POS_R:
-			posVar = &borderPosR;
+			posVar = &currentLocation->width;
+			posVar2nd = nullptr;
 			break;
 		case BORDER_POS_B:
-			posVar = &borderPosB;
+			posVar = &currentLocation->height;
+			posVar2nd = nullptr;
 			break;
 		case BORDER_POS_L:
-			posVar = &borderPosL;
+			posVar = &currentLocation->x;
+			posVar2nd = &currentLocation->width;
 			break;
 	}
 
+	// change value
 	*posVar = *posVar + diff;
-	if (posVar < 0) {
-		*posVar = 0;
+	if (posVar2nd != nullptr) {
+		*posVar2nd = *posVar2nd + diff*-1;
 	}
-
 	dataChanged = true;
 }
 

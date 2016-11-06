@@ -26,11 +26,6 @@ private:
 	int currentHSLfoundIDX = 0;
 	HSLBase* currentHsl;
 	Mat* getScreenshot();
-	int borderPosL = 0;
-	int borderPosT = 0;
-	int borderPosR = 0;
-	int borderPosB = 0;
-	
 
 	bool dataChanged = false;
 	bool thereAreSavedChanges = false;
@@ -43,8 +38,8 @@ private:
 	static bool threadLearn();
 
 	int overScan = 5;
-	void resetBorders();
 	cv::Rect* currentLocation;
+
 	Mat getPreviewMatForCurrentLocation();
 public:
 	static LearnController * getInstance();
@@ -74,7 +69,10 @@ public:
 	bool isLearningInProgress();
 
 	Mat getUIPreview(int width, int height, bool wideMode = false);
+	
 	Mat getUINeedle(int width, int height);
+
+	Mat getPreviewMatForCurrentLocation(cv::Rect * overlapCorrection);
 	
 	void LearnController::moveCurrentLocation(int dir, int diff);
 	
@@ -86,5 +84,6 @@ public:
 	void setBorderPosDelta(int position, int diff);
 	void setBorderSizeDelta(int diff);
 
+	cv::Rect* getCurrentLocation();
 };
 
