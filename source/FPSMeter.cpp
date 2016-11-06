@@ -41,10 +41,6 @@ void FPSMeter::PerformanceDraw(int x, int y) {
 
 void FPSMeter::PerformanceStop() {
 	
-	// counting real frames
-	currentFrames++;
-	lastFrameRenderDuration = 1000 * getElapsedTime();
-	
 	if (useFpsLimit) {
 
 		// FPS Limiter
@@ -52,30 +48,32 @@ void FPSMeter::PerformanceStop() {
 			return;
 		}
 
-		double waitTime = 1000 / fpsLimit - lastFrameRenderDuration;
+		double waitTime = 1000 / fpsLimit - getElapsedTime() * 1000;
 
-		if (waitTime< 0) {
+		if (waitTime < 0) {
 			return;
 		}
 
-
-		Sleep(DWORD(floor(waitTime)));
-		lastFrameRenderDuration = lastFrameRenderDuration + 1000 * getElapsedTime();
+		Sleep(DWORD(waitTime));
 	}
-	
 
-	double fps = (lastFrameRenderDuration > 0 ? 1000 / lastFrameRenderDuration : 0);
 
+	// NuLogger::getInstance()->log("Render Frame: %f ms", floor(1000*dTimeDiff));
+	lastFrameRenderDuration = 1000 * getElapsedTime();
+
+	// counting real frames
+	currentFrames++;
 
 	// reset real frames when a second passed
 	QueryPerformanceCounter((LARGE_INTEGER*)&g_LastFPS);
-	double dTimeDiffFPS = 1000 * (((double)(g_LastFPS - g_CurrentFPS)) / ((double)g_Frequency));
-	if (dTimeDiffFPS > 1000) {
+	double dTimeDiffFPS = (((double)(g_LastFPS - g_CurrentFPS)) / ((double)g_Frequency));
+	if (1000 * dTimeDiffFPS > 1000) {
 		// NuLogger::getInstance()->log("FPS: %i", currentFrames);
-		QueryPerformanceCounter((LARGE_INTEGER*)&g_CurrentFPS);
 		realFramesLastSecond = currentFrames;
 		currentFrames = 0;
+		QueryPerformanceCounter((LARGE_INTEGER*)&g_CurrentFPS);
 	}
+
 
 
 }
