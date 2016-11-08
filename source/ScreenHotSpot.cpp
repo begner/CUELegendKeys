@@ -283,16 +283,18 @@ void ScreenHotSpot::setCurrentColorCoord(int x, int y) {
 Mat ScreenHotSpot::getFilterdMatForUI() {
 	Mat fMat;
 	getFilteredMat()->copyTo(fMat);
-	
-	#ifdef _DEBUG
-		cv::Rect curRect(currentColorCoordX - 1, currentColorCoordY - 1, 3, 3);
-		if (!ImageFilterMat::isValidRect(&fMat, curRect)) {
-			return fMat;
-		}
-		cv::rectangle(fMat, curRect, Scalar(255, 255, 255, 255), 1, 1, 0);
-	#endif // _DEBUG
-	
 
+
+	cv::Rect curRect;
+	curRect = cv::Rect(currentColorCoordX - 1, currentColorCoordY - 1, 3, 3);
+
+
+	cv::Vec4b cc = getCurrentColor(0);
+	Scalar color = Scalar(cc[0], cc[1], cc[2], 255);
+	cv::rectangle(fMat, curRect, color);
+	
+	curRect = cv::Rect(currentColorCoordX - 2, currentColorCoordY - 2, 5, 5);
+	cv::rectangle(fMat, curRect, Scalar(255, 255, 255, 255));
 	
 	return fMat;
 }
@@ -300,5 +302,3 @@ Mat ScreenHotSpot::getFilterdMatForUI() {
 Mat ScreenHotSpot::getOriginalMatForUI() {
 	return *getOriginalMatRespectBorders();
 }
-
-		

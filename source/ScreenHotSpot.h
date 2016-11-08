@@ -116,9 +116,8 @@ public:
 
 	void setCurrentColorCoord(int x, int y);
 
-	Mat getFilterdMatForUI();
-
-	Mat getOriginalMatForUI();
+	virtual Mat getFilterdMatForUI();
+	virtual Mat getOriginalMatForUI();
 
 };
 
