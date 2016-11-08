@@ -161,7 +161,7 @@ FPGameClient::FPGameClient(HWND uiHWND) : FPSMeter(), FPBase(uiHWND)
 	
 	// Champ
 	// ***********************************************************
-	hsChamp.setUiCoordinates(8, 12, 123, 123);
+	hsChamp.setUiCoordinates(22, 23, 97, 97);
 	hotSpotGroup->addHotSpot(&hsChamp);
 	
 	// Passive
@@ -284,7 +284,7 @@ void FPGameClient::loadHSSettings() {
 	loadMap["Item5"] = &hsItem5;
 	loadMap["Item6"] = &hsItem6;
 	loadMap["Item7"] = &hsItem7;
-	// loadMap["Champ"] = &hsChamp;
+	loadMap["Champ"] = &hsChamp;
 	loadMap["BarHeal"] = &hsHealBar;
 	loadMap["BarMana"] = &hsManaBar;
 
@@ -295,7 +295,7 @@ void FPGameClient::loadHSSettings() {
 	for (auto iterator = loadMap.begin(); iterator != loadMap.end(); iterator++) {
 		string saveId = iterator->first;
 		ScreenHotSpot* currentSkill = iterator->second;
-		
+
 		if (lc->loadDataExists(saveId)) {
 			cv::Rect loadRect = lc->getSavedLocation(saveId);
 			currentSkill->setCaptureCoordinates(loadRect.x, loadRect.y, loadRect.width, loadRect.height);

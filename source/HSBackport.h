@@ -26,12 +26,14 @@ public:
 	void filterMat();
 	void initialize();
 	bool isCastable();
-	void initializeFrame();
+	
 	bool isBackportActive();
 	int getBackportProgress();
+	Mat getFilterdMatForUI();
+	Mat getOriginalMatForUI();
 	bool hasExclusiveEffect();
 	void doExclusiveEffect();
 	void setBackportDetectionCaptureCoordinates(int x, int y, int width, int height);
-	void resetResources();
+	
 };
 

@@ -18,10 +18,15 @@
 
 class LEDController
 {
+private:
+		bool SDKstarted = false;
 public:
 	static LEDController * getInstance();
 	static void release();
 	bool checkCompatibleDevice();
+
+	bool start();
+	bool stop();
 
 	vector<CorsairLedPosition> getKeyPositions();
 	vector<CorsairLedColor> getAvailableKeys();

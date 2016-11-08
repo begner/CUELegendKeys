@@ -252,3 +252,4 @@ paket-files/
 *.sln.iml
 /CUESDK/doc
 /source/log.txt
+/CUESDK/examples

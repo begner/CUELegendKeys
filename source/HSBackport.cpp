@@ -37,20 +37,18 @@ void HSBackport::initialize() {
 		
 }
 
-void HSBackport::resetResources() {
-	createMask();
-}
 
 void HSBackport::createMask() {
 	// create mask
-
 	int cW = getCaptureWidth(true);
 	int cH = getCaptureHeight(true);
-	int radius = cW - iconRadius;
+	if (cW != mask.cols || cH != mask.rows) {
+		int radius = cW - iconRadius;
 
-	mask = Mat4b(cW, cH, CV_8UC4);
-	cv::rectangle(mask, cv::Point(0, 0), cv::Point(cW, cH), Scalar(0, 0, 0, 255), CV_FILLED, 8, 0);
-	cv::circle(mask, cv::Point((int)floor(cW / 2), (int)floor(cH / 2)), (int)floor(radius / 2), Scalar(255, 255, 255, 255), CV_FILLED, CV_AA, 0);
+		mask = Mat4b(cH, cW, CV_8UC4);
+		cv::rectangle(mask, cv::Point(0, 0), cv::Point(cW, cH), Scalar(0, 0, 0, 255), CV_FILLED, 8, 0);
+		cv::circle(mask, cv::Point((int)floor(cW / 2), (int)floor(cH / 2)), (int)floor(radius / 2), Scalar(255, 255, 255, 255), CV_FILLED, CV_AA, 0);
+	}
 }
 
 void HSBackport::setBackportDetectionCaptureCoordinates(int x, int y, int width, int height) {
@@ -68,24 +66,15 @@ bool HSBackport::isCastable() {
 	return true;
 }
 
-
-void HSBackport::initializeFrame() {
-	createMask();
-	HSCastable::copyMats();
-	HSCastable::filterMat();
-	if (ImageFilterMat::isValidRect(cv::Rect(0, 0, mask.cols, mask.rows))) {
-		ImageFilterMat::addAlphaMask(getOriginalMatRespectBorders(), &mask);
-	}
-	
-}
-
-
 void HSBackport::filterMat() {
-	
-	ImageFilterMat::killGrayPixel(*getFilteredMat(), 127);
+	Mat* fm = getFilteredMat();
+	ImageFilterMat::killGrayPixel(*fm, 127);
 
-	blur(*getFilteredMat(), *getFilteredMat(), cv::Size(5, 5), cv::Point(-1, -1));
-	ImageFilterMat::saturation(*getFilteredMat(), 0, 255, 1.5);
+	blur(*fm, *fm, cv::Size(5, 5), cv::Point(-1, -1));
+	ImageFilterMat::saturation(*fm, 0, 255, 1.5);
+	
+	// Special - dimm left bottom corner, because of the yellow "B"
+	cv::rectangle(*fm, cv::Point(0, fm->rows*2/3), cv::Point(fm->cols/4, fm->rows), Scalar(0, 0, 0, 255), CV_FILLED, 8, 0);
 	
 }
 
@@ -180,7 +169,21 @@ int HSBackport::getBackportProgress() {
 
 	int percent = ImageFilterMat::getBarPercentage(backPortMeasureMat);
 	return percent;
-	
+}
 
+Mat HSBackport::getFilterdMatForUI() {
+	createMask();
+	Mat ret;
+	ret = ScreenHotSpot::getFilterdMatForUI();
+	ImageFilterMat::addAlphaMask(&ret, &mask);
+	return ret;
+}
+
+Mat HSBackport::getOriginalMatForUI() {
+	createMask();
+	Mat ret;
+	ret = ScreenHotSpot::getOriginalMatForUI();
+	ImageFilterMat::addAlphaMask(&ret, &mask);
+	return ret;
 }
 

@@ -228,11 +228,13 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 	if (showIdle) {
 		currentMode = CLIENT_TYPE_NONE;
 		if (screenMirrorOnIdleMode) {
+			LEDController::getInstance()->start();
 			fpIdle->enableFpsLimit(limitFPS);
 			fpIdle->setMode(FPIdle::FP_IDLE_MODE_SCREEN_MIRROR);
 		}
 		else {
 			fpIdle->setMode(FPIdle::FP_IDLE_MODE_OFF);
+			LEDController::getInstance()->stop();
 		}
 
 		fpIdle->process();

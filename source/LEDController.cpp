@@ -51,13 +51,43 @@ string LEDController::getKeyNameById(CorsairLedId id) {
 bool LEDController::checkCompatibleDevice() {
 	CorsairPerformProtocolHandshake();
 	if (const auto error = CorsairGetLastError()) {
-		NuLogger::getInstance()->log("Handshake failed: " + getErrorString(error));
+		NuLogger::getInstance()->log("CorsairSDK: " + getErrorString(error));
 		//		NuLogger::getInstance()->log(std::endl);
 		// getchar();
 		return false;
 	}
 	return true;
 }
+
+
+bool LEDController::start() {
+	if (!SDKstarted) {
+		bool state = CorsairRequestControl(CAM_ExclusiveLightingControl);
+		if (state) {
+			SDKstarted = true;
+			return true;
+		}
+		const auto error = CorsairGetLastError();
+		NuLogger::getInstance()->log("CorsairSDK: " + getErrorString(error));
+		return false;
+	}
+	return false;
+}
+
+bool LEDController::stop() {
+	if (SDKstarted) {
+		bool state = CorsairReleaseControl(CAM_ExclusiveLightingControl);
+		if (state) {
+			SDKstarted = false;
+			return true;
+		}
+		const auto error = CorsairGetLastError();
+		NuLogger::getInstance()->log("CorsairSDK: " + getErrorString(error));
+		return false;
+	}
+	return false;
+}
+
 
 CorsairDeviceInfo * LEDController::getDeviceInfo() {
 	CorsairDeviceInfo * info = CorsairGetDeviceInfo(0);

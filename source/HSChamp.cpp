@@ -2,24 +2,7 @@
 
 void HSChamp::initialize() {
 
-	champKeys = LEDController::getInstance()->getAllKeysByRect(CLK_Insert, CLK_KeypadEnter);
-	RECT keyDim = LEDController::getInstance()->getKeyBoardDimensions(champKeys);
-
-	champKeyWidth = keyDim.right;
-	champKeyHeight = keyDim.bottom;
-
-	srand((int)time(0));
-
-	// Mask for UI
-	int cW = getCaptureWidth(true);
-	int cH = getCaptureHeight(true);
-	int radius = cW - champRadius;// min(cW, cH);
-
-	if (ImageFilterMat::isValidRect(cv::Rect(0, 0, cW, cH))) {
-		mask = new Mat(cW, cH, CV_8UC1);
-		cv::rectangle(*mask, cv::Point(0, 0), cv::Point(cW, cH), Scalar(0), CV_FILLED, 8, 0);
-		cv::circle(*mask, cv::Point((int)floor(cW / 2) + champOffsetX, (int)floor(cH / 2) + champOffsetY), (int)floor(radius / 2), Scalar(255), CV_FILLED, CV_AA, 0);
-	}
+	createMask();
 }
 
 HSChamp::HSChamp()
@@ -32,40 +15,30 @@ HSChamp::~HSChamp()
 {
 }
 
+void HSChamp::createMask() {
+	// create mask
+	int cW = getCaptureWidth(true);
+	int cH = getCaptureHeight(true);
+	if (cW != mask.cols || cH != mask.rows) { 
+		int radius = cW - 8;
+		mask = Mat(cH, cW, CV_8UC4);
+		cv::rectangle(mask, cv::Point(0, 0), cv::Point(cW, cH), Scalar(0, 0, 0, 255), CV_FILLED, 8, 0);
+		cv::circle(mask, cv::Point((int)floor(cW / 2), (int)floor(cH / 2)), (int)floor(radius / 2), Scalar(255, 255, 255, 255), CV_FILLED, CV_AA, 0);
+	}
+}
+
 int HSChamp::getType() {
 	return ScreenHotSpot::TYPE_CHAMP;
 }
 
 void HSChamp::filterMat() {
 
-	int maxDiff = 2;
-
-	int diffL = (int)((double)rand() / (RAND_MAX + 1) * maxDiff);
-	int diffT = (int)((double)rand() / (RAND_MAX + 1) * maxDiff);
-
-
-	if (mask == nullptr) {
-		return;
-	}
-
-	ImageFilterMat::addAlphaMask(getOriginalMatRespectBorders(), mask);
-
 	champImageColorTable = Mat4b(getCaptureWidth(true), getCaptureHeight(true), CV_8UC4);
 	getOriginalMatRespectBorders()->copyTo(champImageColorTable);
-
-	cv::Rect curRect(champRadius + diffL, champRadius + diffT, champImageColorTable.cols - champRadius * 2 + diffL, champImageColorTable.rows - champRadius * 2 + diffT);
-
-	if (!ImageFilterMat::isValidRect(&champImageColorTable, curRect)) {
-		return;
-	}
-	champImageColorTable = Mat4b(champImageColorTable, curRect);
-
-	ImageFilterMat::saturation(champImageColorTable, 0, 255, 1);
-	resize(champImageColorTable, champImageColorTable, cv::Size(champKeyWidth, champKeyHeight), 0, 0, INTER_CUBIC);
 	
-	
+	ImageFilterMat::saturation(champImageColorTable, 0, 255, 150);
 
-	// ImageFilterMat::killGrayPixel(champImageColorTable, 25);
+	resize(champImageColorTable, champImageColorTable, cv::Size(getUiWidth(), getUiHeight()), 0, 0, INTER_CUBIC);
 }
 
 Vec4b HSChamp::getCurrentColor(int index) {
@@ -96,5 +69,22 @@ int HSChamp::getUpdateFrame() {
 
 int HSChamp::getMaxTick() {
 	return 1;
+}
+
+
+Mat HSChamp::getFilterdMatForUI() {
+	createMask();
+	Mat ret;
+	ret = ScreenHotSpot::getFilterdMatForUI();
+	ImageFilterMat::addAlphaMask(&ret, &mask);
+	return ret;
+}
+
+Mat HSChamp::getOriginalMatForUI() {
+	createMask();
+	Mat ret;
+	ret = ScreenHotSpot::getOriginalMatForUI();
+	ImageFilterMat::addAlphaMask(&ret, &mask);
+	return ret;
 }
 

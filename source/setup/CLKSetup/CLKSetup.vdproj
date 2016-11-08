@@ -28,13 +28,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D295539C2E5C44298AD9309DB5B6D88F"
+        "MsmKey" = "8:_83ECB3DCA0FD4ACBB9A47D4F12457DFD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_D33DA60D619441C78058E4887526653F"
+        "MsmKey" = "8:_D295539C2E5C44298AD9309DB5B6D88F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -171,14 +171,14 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D33DA60D619441C78058E4887526653F"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_83ECB3DCA0FD4ACBB9A47D4F12457DFD"
             {
-            "SourcePath" = "8:..\\..\\..\\build\\x64\\Release\\CUESDK.x64_2013.dll"
-            "TargetName" = "8:CUESDK.x64_2013.dll"
+            "SourcePath" = "8:..\\..\\..\\CUESDK\\bin\\x64\\CUESDK.x64_2015.dll"
+            "TargetName" = "8:CUESDK.x64_2015.dll"
             "Tag" = "8:"
             "Folder" = "8:_6F9C3405E8804CE1939C1A69B78D30E1"
             "Condition" = "8:"
-            "Transitive" = "11:TRUE"
+            "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
             "ReadOnly" = "11:FALSE"
             "Hidden" = "11:FALSE"
@@ -267,15 +267,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CUELegendKeys"
-        "ProductCode" = "8:{C560405B-38B6-40D0-8432-14F002873307}"
-        "PackageCode" = "8:{84C76146-BD91-4060-B5C7-9C1ABB32AB4B}"
+        "ProductCode" = "8:{BA701A5D-ADE9-47F4-B6E6-1D86FD5338E4}"
+        "PackageCode" = "8:{534845CB-C243-4B11-9A6C-C49B63AE3FDE}"
         "UpgradeCode" = "8:{8EC42709-F2EE-4CD2-961D-C6B8D8C4FB25}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.4.6"
+        "ProductVersion" = "8:0.4.7"
         "Manufacturer" = "8:Benjamin Egner"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -757,7 +757,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D295539C2E5C44298AD9309DB5B6D88F"
             {
-            "SourcePath" = "8:..\\..\\..\\build\\x64\\Release\\CueLegendKeys.exe"
+            "SourcePath" = "8:..\\..\\..\\build\\x64\\Debug\\CueLegendKeys.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6F9C3405E8804CE1939C1A69B78D30E1"

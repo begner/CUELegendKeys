@@ -280,10 +280,10 @@ Mat LearnController::getPreviewMatForCurrentLocation(cv::Rect* overlapLocation) 
 
 	int test = currentLocation->x % overScan;
 
-	overlapLocation->x -= overScan - (currentLocation->x % overScan);
-	overlapLocation->y -= overScan - (currentLocation->y % overScan);
-	overlapLocation->width += overlapLocation->x*-1 + (currentLocation->width % overScan) + overScan;
-	overlapLocation->height += overlapLocation->y*-1 + (currentLocation->height % overScan) + overScan;
+	overlapLocation->x = -2;
+	overlapLocation->y = -2;
+	overlapLocation->width = 4;
+	overlapLocation->height = 4;
 	 
 	cv::Rect MatLocation;
 	MatLocation.x = currentLocation->x + overlapLocation->x;
