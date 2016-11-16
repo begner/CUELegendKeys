@@ -142,8 +142,9 @@ bool FPScreenMirror::process() {
 	cv::Rect cropRect(cutLeft, cutTop, screenshotMat.cols - cutLeft - cutRight, screenshotMat.rows - cutTop - cutBottom);
 	screenshotMat = Mat(screenshotMat, cropRect);
 	
+	blur(screenshotMat, screenshotMat, cv::Size(20, 20));
 	resize(screenshotMat, screenshotMat, cv::Size(targetWidth, targetHeight), 2, 2, INTER_CUBIC);
-
+	
 	// ImageFilterMat::incSaturation(screenshotMat, 50, (float)0.7);
 
 

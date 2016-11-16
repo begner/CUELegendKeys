@@ -139,8 +139,7 @@ void LearnController::load() {
 			currentLocation = new cv::Rect(getSavedLocation(currentHsl->getSaveId()));
 			borderSize = getBorderSize(currentHsl->getSaveId());
 
-			dataChanged = true;
-
+			dataChanged = false;
 		}
 		currentHSLfoundIDX = 0;
 		

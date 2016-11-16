@@ -20,7 +20,7 @@ void UIBaseElement::setOnClickId(int id) {
 	onClickId = id;
 }
 
-int UIBaseElement::getOnClickId() {
+int UIBaseElement::getOnClickId(int mouseX, int mouseY) {
 	return onClickId;
 }
 
@@ -77,4 +77,12 @@ bool UIBaseElement::needsUpdate() {
 }
 void UIBaseElement::needsUpdate(bool state) {
 	needUpdate = state;
+}
+
+void UIBaseElement::setCaptureMouseEvents(bool state) {
+	captureMouseEvents = state;
+}
+
+bool UIBaseElement::getCaptureMouseEvents() {
+	return captureMouseEvents;
 }

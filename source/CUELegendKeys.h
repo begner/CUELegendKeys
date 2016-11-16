@@ -49,6 +49,7 @@ private:
 
 	ProcessList* procL;
 
+	int lastMode = -1;
 public:
 	static CUELegendKeys * getInstance();
 	static void release();

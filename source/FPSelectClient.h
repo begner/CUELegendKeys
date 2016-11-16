@@ -9,7 +9,7 @@ class FPSelectClient :
 {
 private:
 	int mode = 0;
-
+	bool isNewClient = false;
 
 	
 	FPScreenMirror* fpMirror;
@@ -20,8 +20,10 @@ public:
 	~FPSelectClient();
 	
 	bool process();
+	void setNewClient(bool state, bool forceSet = false);
 	int getWindowBackgroundResource() override;
 	// void setMode(int setMode);
 	void setCaptureWindow(HWND currentProcess) override;
+	
 };
 

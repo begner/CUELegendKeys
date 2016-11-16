@@ -8,7 +8,7 @@
 
 #define VERSION_MAJOR               0
 #define VERSION_MINOR               4
-#define VERSION_REVISION            7
+#define VERSION_REVISION            9
 #define VERSION_BUILD               0
 
 #define VER_FILE_DESCRIPTION_STR    "CUE Legend Keys"

@@ -68,14 +68,15 @@ bool HSBackport::isCastable() {
 
 void HSBackport::filterMat() {
 	Mat* fm = getFilteredMat();
-	ImageFilterMat::killGrayPixel(*fm, 127);
+	if (!fm->empty()) {
+		ImageFilterMat::killGrayPixel(*fm, 127);
 
-	blur(*fm, *fm, cv::Size(5, 5), cv::Point(-1, -1));
-	ImageFilterMat::saturation(*fm, 0, 255, 1.5);
-	
-	// Special - dimm left bottom corner, because of the yellow "B"
-	cv::rectangle(*fm, cv::Point(0, fm->rows*2/3), cv::Point(fm->cols/4, fm->rows), Scalar(0, 0, 0, 255), CV_FILLED, 8, 0);
-	
+		blur(*fm, *fm, cv::Size(5, 5), cv::Point(-1, -1));
+		ImageFilterMat::saturation(*fm, 0, 255, 1.5);
+
+		// Special - dimm left bottom corner, because of the yellow "B"
+		cv::rectangle(*fm, cv::Point(0, fm->rows * 2 / 3), cv::Point(fm->cols / 4, fm->rows), Scalar(0, 0, 0, 255), CV_FILLED, 8, 0);
+	}
 }
 
 bool HSBackport::hasExclusiveEffect() {
@@ -175,7 +176,9 @@ Mat HSBackport::getFilterdMatForUI() {
 	createMask();
 	Mat ret;
 	ret = ScreenHotSpot::getFilterdMatForUI();
-	ImageFilterMat::addAlphaMask(&ret, &mask);
+	if (!ret.empty()) {
+		ImageFilterMat::addAlphaMask(&ret, &mask);
+	}
 	return ret;
 }
 
@@ -183,7 +186,9 @@ Mat HSBackport::getOriginalMatForUI() {
 	createMask();
 	Mat ret;
 	ret = ScreenHotSpot::getOriginalMatForUI();
-	ImageFilterMat::addAlphaMask(&ret, &mask);
+	if (!ret.empty()) {
+		ImageFilterMat::addAlphaMask(&ret, &mask);
+	}
 	return ret;
 }
 

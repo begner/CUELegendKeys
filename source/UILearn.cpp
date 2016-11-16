@@ -282,6 +282,7 @@ void UILearn::createWindow() {
 	uiLearningProgressBlocker = new UIImage(IDB_UI_LEARNING_BLOCKER);
 	uiLearningProgressBlocker->setPos(0, 0);
 	uiLearningProgressBlocker->hide();
+	uiLearningProgressBlocker->setCaptureMouseEvents(true);
 	// Todo: Capture over's and links...
 	addElement(uiLearningProgressBlocker);
 
@@ -390,10 +391,8 @@ void UILearn::processUI() {
 
 void UILearn::updateLcUI() {
 	
-
 	bool inGameMode = CUELegendKeys::getInstance()->isIngameMode();
 	HSLBase* cHSL = getLearnController()->getCurrentHSL();
-
 	
 	// if no item selected or not gamemode - hide almost everything!
 	if (!inGameMode || cHSL == nullptr) {
@@ -409,6 +408,7 @@ void UILearn::updateLcUI() {
 		zoomedPreviewUI->hide();
 		setGroupVisibility(borderPosControl, false);
 		setGroupVisibility(borderSizeControl, false);
+		setGroupVisibility(referenceControl, false);
 	}
 
 	// in not gamemode - keybar is also hidden
@@ -435,15 +435,8 @@ void UILearn::updateLcUI() {
 		setBackgroundResource(IDB_WINDOW_BACKGROUND_LEARNEDITOR);
  	}
 	else {
-
-	
-		// eSaveButton->setState(UIButton::BUTTON_STATE_DISABLED);
-		// eLearnButton->setState(UIButton::BUTTON_STATE_DISABLED);
-
-
 		skillNameText->show();
 		needlePreviewUI->show();
-		
 		
 		zoomedPreviewUI->show();
 
@@ -482,6 +475,12 @@ void UILearn::updateLcUI() {
 			eSaveButton->setState(UIButton::BUTTON_STATE_DISABLED);
 		}
 
+		if (getLearnController()->getCurrentHSL()->getFoundLocations().size() > 1) {
+			setGroupVisibility(referenceControl, true);
+		}
+		else {
+			setGroupVisibility(referenceControl, false);
+		}
 
 
 		if (cHSL->isWide()) {
@@ -546,6 +545,9 @@ void UILearn::updateLcUI() {
 void UILearn::handleClickEvents(int xPos, int yPos) {
 	bool doUpdateLcUI = true;
 	int eventId = onClick(xPos, yPos);
+	if (eventId == -1) {
+		return;
+	}
 	switch (eventId) {
 		case IDE_CLICK_PREV_REFERENCE:	 getLearnController()->prevReference();	break;
 		case IDE_CLICK_NEXT_REFERENCE:	 getLearnController()->nextReference();	break;

@@ -45,7 +45,8 @@ bool CUELegendKeys::AppStartupCheck() {
 	};
 	
 	// detects itself... :(
-	if (procL->ProcessExists("CUELegendKeys.exe", GetCurrentProcessId())) {
+	if (procL->ProcessExists("CUELegendKeys.exe", GetCurrentProcessId()) ||
+		procL->ProcessExists("CueLegendKeys.exe", GetCurrentProcessId())) {
 		NuLogger::getInstance()->log("Process i can see: \n" + procL->getList(" - ", GetCurrentProcessId()));
 		UIMessage::getInstance()->DisplayErrorAndQuit("CUELegendKeys", "CUELegendKeys is already running!");
 		return FALSE;
@@ -56,8 +57,12 @@ bool CUELegendKeys::AppStartupCheck() {
 	// detect cue hardware
 
 	if (!LEDController::getInstance()->checkCompatibleDevice()) {
-		
 		UIMessage::getInstance()->DisplayErrorAndQuit("CUELegendKeys", "Can't detect compatible Hardware!");
+		return FALSE;
+	}
+
+	if (!LEDController::getInstance()->start()) {
+		UIMessage::getInstance()->DisplayErrorAndQuit("CUELegendKeys", "Can't request controll via SDK!");
 		return FALSE;
 	}
 
@@ -117,7 +122,7 @@ void CUELegendKeys::AppStart() {
 	NuLogger::getInstance()->log("-------------------------------------------------------");
 	NuLogger::getInstance()->log("AppStart");
 	UIMainDialog::getInstance()->Show(true);
-	fpIdle->process();
+//	fpIdle->process();
 	
 	appStarted = true;
 	
@@ -136,6 +141,7 @@ void CUELegendKeys::forceRefresh() {
 }
 
 void CUELegendKeys::processFrame(bool forceRecheckProcess) {
+	// NuLogger::getInstance()->log("processFrame");
 	if (!appStarted) {
 		return;
 	}
@@ -143,52 +149,37 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 	procL->makeSnapshot();
 
 	// Game Client
-	DWORD gameClientPID = procL->getPIDofProcess("League of Legends.exe");
 	HWND gameClientHWND = NULL;
 	BOOL gameClientVisibility = false;
-	if (gameClientPID) {
-		gameClientHWND = procL->getProcessWindowHandle(gameClientPID, "League of Legends (TM) Client");
-		if (!IsWindow(gameClientHWND)) {
-			gameClientHWND = NULL;
-		}
-		gameClientVisibility = IsWindowVisible(gameClientHWND);
-	}
+	gameClientHWND = procL->getWindowsByProcessName("League of Legends.exe", "League of Legends (TM) Client");
+	gameClientVisibility = IsWindowVisible(gameClientHWND);
 
 	HWND selectClientHWND = NULL;
 	BOOL selectClientVisibility = false;
+	BOOL isNewSelectClient = false;
 	if (!gameClientVisibility) {
-		// selectClient
-		DWORD selectClientPID = procL->getPIDofProcess("LolClient.exe");
-		
-		if (selectClientPID) {
-			selectClientHWND = procL->getProcessWindowHandle(selectClientPID, "PVP.net Client");
-			if (!selectClientHWND) {
-				selectClientHWND = procL->getProcessWindowHandle(selectClientPID, "PvP.net-Client");
-			}
-			if (!IsWindow(selectClientHWND)) {
-				selectClientHWND = NULL;
-			}
-			selectClientVisibility = IsWindowVisible(selectClientHWND);
+		// old client...
+		selectClientHWND = procL->getWindowsByProcessName("LolClient.exe", "PVP.net Client");
+		if (!selectClientHWND) {
+			selectClientHWND = procL->getWindowsByProcessName("LolClient.exe", "PvP.net-Client");
 		}
+		// new client...
+		if (!selectClientHWND) {
+			selectClientHWND = procL->getWindowsByProcessName("LeagueClientUx.exe", "Chrome Legacy Window", "Chrome_RenderWidgetHostHWND");
+			if (selectClientHWND) {
+				isNewSelectClient = true;
+			}
+		}
+		selectClientVisibility = IsWindowVisible(selectClientHWND);
 	}
 
 	HWND patchClientHWND = NULL;
 	BOOL patchClientVisibility = false;
 	if (!gameClientVisibility && !selectClientVisibility) {
-		// patchClient
-		DWORD patchClientPID = procL->getPIDofProcess("LoLPatcherUx.exe");
-		
-		if (patchClientPID) {
-			patchClientHWND = procL->getProcessWindowHandle(patchClientPID, "LoL Patcher");
-			if (!IsWindow(patchClientHWND)) {
-				patchClientHWND = NULL;
-			}
-			patchClientVisibility = IsWindowVisible(patchClientHWND);
-		}
+		patchClientHWND = procL->getWindowsByProcessName("LoLPatcherUx.exe", "LoL Patcher");
+		patchClientVisibility = IsWindowVisible(patchClientHWND);
 	}
-
-
-
+		
 
 	if (forceInGameClient) {
 		gameClientHWND = GetDesktopWindow();
@@ -199,25 +190,33 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 	bool showIdle = true;
 
 	
+	
 	// if game client
 	if (gameClientHWND != NULL && gameClientVisibility) {
+		// NuLogger::getInstance()->log("frame: Game Client");
 		currentMode = CLIENT_TYPE_LOL_INGAME;
 		fpGameClient->enableFpsLimit(limitFPS);
 		fpGameClient->setCaptureWindow(gameClientHWND);
 		drawStatus = fpGameClient->process();
+		if (lastMode != CLIENT_TYPE_LOL_INGAME) {
+			UILearn::getInstance()->forceRefresh();
+		}
 		showIdle = false;
 	}
 
 	// if selectClient
 	else if (selectClientHWND != NULL && selectClientVisibility) {
+		// NuLogger::getInstance()->log("frame: Select Client");
 		currentMode = CLIENT_TYPE_LOL_SELECT;
 		fpSelectClient->enableFpsLimit(limitFPS);
+		fpSelectClient->setNewClient(isNewSelectClient);
 		fpSelectClient->setCaptureWindow(selectClientHWND);
 		drawStatus = fpSelectClient->process();
 		if (drawStatus) showIdle = false;
 	}
 	// if patchClient
 	else if (patchClientHWND != NULL && patchClientVisibility) {
+		// NuLogger::getInstance()->log("frame: Patch Client");
 		currentMode = CLIENT_TYPE_LOL_PATCH;
 		fpPatchClient->enableFpsLimit(limitFPS);
 		fpPatchClient->setCaptureWindow(patchClientHWND);
@@ -226,19 +225,24 @@ void CUELegendKeys::processFrame(bool forceRecheckProcess) {
 	}
 
 	if (showIdle) {
+		// NuLogger::getInstance()->log("frame: Idle");
 		currentMode = CLIENT_TYPE_NONE;
 		if (screenMirrorOnIdleMode) {
+			// NuLogger::getInstance()->log("frame: Mirror");
 			LEDController::getInstance()->start();
 			fpIdle->enableFpsLimit(limitFPS);
 			fpIdle->setMode(FPIdle::FP_IDLE_MODE_SCREEN_MIRROR);
 		}
 		else {
+			// NuLogger::getInstance()->log("frame: Idle");
 			fpIdle->setMode(FPIdle::FP_IDLE_MODE_OFF);
 			LEDController::getInstance()->stop();
 		}
 
 		fpIdle->process();
 	}
+
+	lastMode = currentMode;
 }
 
 bool CUELegendKeys::getForceInGameClient() {

@@ -196,6 +196,19 @@ bool UIButton::onMouseOut() {
 	return false;
 }
 
+bool UIButton::isOverAlpha(int x, int y) {
+
+	Mat* cI = &images[currentImage][0];
+
+	// check alpha channel, if in visible area
+	Vec4b color = cI->at<Vec4b>(cv::Point(x, y));
+	if (color.val[3] < 64) {
+		return false;
+	}
+	
+	return true;
+}
+
 bool UIButton::onMouseOn(int x, int y) {
 	// check alpha
 	Mat* cI = &images[currentImage][0];
@@ -212,9 +225,8 @@ bool UIButton::onMouseOn(int x, int y) {
 	if (currentMouseState != MOUSE_STATE_OVER) {
 
 		// check alpha channel, if in visible area
-		Vec4b color = cI->at<Vec4b>(cv::Point(x, y));
-		if (color.val[3] < 64) {
-			return onMouseOut();
+		if (!isOverAlpha(x, y)) {
+			return false;
 		}
 
 		currentMouseState = MOUSE_STATE_OVER;
@@ -222,6 +234,19 @@ bool UIButton::onMouseOn(int x, int y) {
 		return true;
 	}
 	return false;
+}
+
+int UIButton::getOnClickId(int mouseX, int mouseY ) {
+	
+	if (isDisabled()) {
+		return -1;
+	}
+
+	if (!isOverAlpha(mouseX, mouseY)) {
+		return -1;
+	}
+
+	return UIBaseElement::getOnClickId();
 }
 
 int UIButton::getWidth() {

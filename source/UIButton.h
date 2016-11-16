@@ -39,6 +39,7 @@ private:
 	int iconX = -1;
 	int iconY = -1;
 
+	bool isOverAlpha(int x, int y);
 
 public:
 		
@@ -65,6 +66,7 @@ public:
 	void setFontSize(double size);
 	bool onMouseOut();
 	bool onMouseOn(int uiX, int uiY);
+	int getOnClickId(int mouseX = 0, int mouseY = 0);
 	void setLabel(string text);
 	int getWidth();
 	int getHeight();

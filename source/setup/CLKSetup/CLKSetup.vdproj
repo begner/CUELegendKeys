@@ -267,15 +267,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CUELegendKeys"
-        "ProductCode" = "8:{BA701A5D-ADE9-47F4-B6E6-1D86FD5338E4}"
-        "PackageCode" = "8:{534845CB-C243-4B11-9A6C-C49B63AE3FDE}"
+        "ProductCode" = "8:{676D4ABD-AFCA-4511-ACDC-58C89F31C036}"
+        "PackageCode" = "8:{6FDB9E40-DE70-44AB-A48D-7C6E30B6FC4F}"
         "UpgradeCode" = "8:{8EC42709-F2EE-4CD2-961D-C6B8D8C4FB25}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.4.7"
+        "ProductVersion" = "8:0.4.9"
         "Manufacturer" = "8:Benjamin Egner"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -757,7 +757,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D295539C2E5C44298AD9309DB5B6D88F"
             {
-            "SourcePath" = "8:..\\..\\..\\build\\x64\\Debug\\CueLegendKeys.exe"
+            "SourcePath" = "8:..\\..\\..\\build\\x64\\Release\\CueLegendKeys.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6F9C3405E8804CE1939C1A69B78D30E1"

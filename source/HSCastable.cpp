@@ -41,12 +41,14 @@ bool HSCastable::isCastable() {
 
 void HSCastable::filterMat() {
 	// getFilteredMat();
-	ImageFilterMat::killDarkPixel(*getFilteredMat(), 60);
-	ImageFilterMat::killGrayPixel(*getFilteredMat(), 60);
+	if (!getFilteredMat()->empty()) {
+		ImageFilterMat::killDarkPixel(*getFilteredMat(), 60);
+		ImageFilterMat::killGrayPixel(*getFilteredMat(), 60);
 
-	// ImageFilterMat::colorReduce(*filteredMat, 64);
-	blur(*getFilteredMat(), *getFilteredMat(), cv::Size(5, 5), cv::Point(-1, -1));
-	ImageFilterMat::saturation(*getFilteredMat(), 0, 255, 1.5);
+		// ImageFilterMat::colorReduce(*filteredMat, 64);
+		blur(*getFilteredMat(), *getFilteredMat(), cv::Size(5, 5), cv::Point(-1, -1));
+		ImageFilterMat::saturation(*getFilteredMat(), 0, 255, 1.5);
+	}
 }
 
 

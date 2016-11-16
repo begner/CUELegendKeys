@@ -34,11 +34,13 @@ int HSChamp::getType() {
 void HSChamp::filterMat() {
 
 	champImageColorTable = Mat4b(getCaptureWidth(true), getCaptureHeight(true), CV_8UC4);
-	getOriginalMatRespectBorders()->copyTo(champImageColorTable);
-	
-	ImageFilterMat::saturation(champImageColorTable, 0, 255, 150);
+	if (!champImageColorTable.empty()) {
+		getOriginalMatRespectBorders()->copyTo(champImageColorTable);
 
-	resize(champImageColorTable, champImageColorTable, cv::Size(getUiWidth(), getUiHeight()), 0, 0, INTER_CUBIC);
+		ImageFilterMat::saturation(champImageColorTable, 0, 255, 150);
+
+		resize(champImageColorTable, champImageColorTable, cv::Size(getUiWidth(), getUiHeight()), 0, 0, INTER_CUBIC);
+	}
 }
 
 Vec4b HSChamp::getCurrentColor(int index) {
@@ -76,7 +78,9 @@ Mat HSChamp::getFilterdMatForUI() {
 	createMask();
 	Mat ret;
 	ret = ScreenHotSpot::getFilterdMatForUI();
-	ImageFilterMat::addAlphaMask(&ret, &mask);
+	if (!ret.empty()) {
+		ImageFilterMat::addAlphaMask(&ret, &mask);
+	}
 	return ret;
 }
 
@@ -84,7 +88,9 @@ Mat HSChamp::getOriginalMatForUI() {
 	createMask();
 	Mat ret;
 	ret = ScreenHotSpot::getOriginalMatForUI();
-	ImageFilterMat::addAlphaMask(&ret, &mask);
+	if (!ret.empty()) {
+		ImageFilterMat::addAlphaMask(&ret, &mask);
+	}
 	return ret;
 }
 

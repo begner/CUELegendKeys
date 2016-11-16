@@ -16,17 +16,19 @@ int HSBar::getType() {
 }
 
 void HSBar::filterMat() {
-	ImageFilterMat::whiteToDarkPixel(*getFilteredMat(), 150);
-	ImageFilterMat::killDarkPixel(*getFilteredMat(), 40);
-	ImageFilterMat::saturation(*getFilteredMat(), 50, 255, 2);
+	if (!getFilteredMat()->empty()) {
+		ImageFilterMat::whiteToDarkPixel(*getFilteredMat(), 150);
+		ImageFilterMat::killDarkPixel(*getFilteredMat(), 40);
+		ImageFilterMat::saturation(*getFilteredMat(), 50, 255, 2);
 
-	cv::Rect colorDetectionRect(0, (int)floor(getOriginalMatRespectBorders()->rows / 2), (int)getKeys()->size(), 1);
+		cv::Rect colorDetectionRect(0, (int)floor(getOriginalMatRespectBorders()->rows / 2), (int)getKeys()->size(), 1);
 
-	if (!ImageFilterMat::isValidRect(getOriginalMatRespectBorders(), colorDetectionRect)) {
-		return;
+		if (!ImageFilterMat::isValidRect(getOriginalMatRespectBorders(), colorDetectionRect)) {
+			return;
+		}
+		colorBarMat = Mat4b(*getOriginalMatRespectBorders(), colorDetectionRect);
+		ImageFilterMat::saturation(colorBarMat, 0, 255, 1);
 	}
-	colorBarMat = Mat4b(*getOriginalMatRespectBorders(), colorDetectionRect);
-	ImageFilterMat::saturation(colorBarMat, 0, 255, 1);
 }
 
 Vec4b HSBar::getCurrentColor(int index) {

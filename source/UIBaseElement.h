@@ -13,7 +13,7 @@ private:
 	bool needUpdate = false;
 	bool visibility = true;
 	bool disabled = false;
-
+	bool captureMouseEvents = false;
 public:
 	UIBaseElement();
 	~UIBaseElement();
@@ -43,9 +43,11 @@ public:
 	virtual bool onMouseOut();
 	virtual bool needsUpdate();
 	
-	
+	void setCaptureMouseEvents(bool state);
+	bool getCaptureMouseEvents();
+
 	void setOnClickId(int id);
-	int getOnClickId();
+	virtual int getOnClickId(int mouseX = 0, int mouseY = 0);
 
 };
 

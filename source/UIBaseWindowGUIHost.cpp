@@ -19,21 +19,33 @@ void UIBaseWindowGUIHost::addElement(UIBaseElement* element) {
 int UIBaseWindowGUIHost::onClick(int mouseX, int mouseY) {
 
 	vector<UIBaseElement*>::iterator it = uiElements.end();
+	
+	int currentClickId = -1;
+	int elementMinX, elementMaxX, elementMinY, elementMaxY = 0;
+	UIBaseElement* element;
+
 	while (it != uiElements.begin())
 	{
 		--it;
 		
-		UIBaseElement* element = *it;
-		int elementMinX = element->getX();
-		int elementMaxX = elementMinX + element->getWidth();
-		int elementMinY = element->getY();
-		int elementMaxY = elementMinY + element->getHeight();
+		element = *it;
+		elementMinX = element->getX();
+		elementMaxX = elementMinX + element->getWidth();
+		elementMinY = element->getY();
+		elementMaxY = elementMinY + element->getHeight();
 
 		if (elementMinX <= mouseX && elementMaxX >= mouseX &&
 			elementMinY <= mouseY && elementMaxY >= mouseY) {
-			if (element->getVisibility() && !element->isDisabled() && element->getOnClickId() != -1) {
-				return element->getOnClickId();
+			
+			if (element->getVisibility() && element->getCaptureMouseEvents()) {
+				return -1;
 			}
+			
+			currentClickId = element->getOnClickId(mouseX - elementMinX, mouseY - elementMinY);
+			if (element->getVisibility() && !element->isDisabled() && currentClickId != -1) {
+				return currentClickId;
+			}
+			
 		}
 	}
 	return -1;
@@ -41,12 +53,20 @@ int UIBaseWindowGUIHost::onClick(int mouseX, int mouseY) {
 
 void UIBaseWindowGUIHost::onMouseMove(int mouseX, int mouseY) {
 
+	int elementMinX, elementMaxX, elementMinY, elementMaxY = 0;
+	UIBaseElement* element;
+
 	for (vector<UIBaseElement*>::iterator it = uiElements.begin(); it != uiElements.end(); ++it) {
-		UIBaseElement* element = *it;
-		int elementMinX = element->getX();
-		int elementMaxX = elementMinX + element->getWidth();
-		int elementMinY = element->getY();
-		int elementMaxY = elementMinY + element->getHeight();
+
+		element = *it;
+		elementMinX = element->getX();
+		elementMaxX = elementMinX + element->getWidth();
+		elementMinY = element->getY();
+		elementMaxY = elementMinY + element->getHeight();
+
+		if (element->getVisibility() && element->getCaptureMouseEvents()) {
+			return;
+		}
 
 		if (element->getVisibility() && 
 			elementMinX <= mouseX && elementMaxX >= mouseX &&
