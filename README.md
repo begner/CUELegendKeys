@@ -1,7 +1,7 @@
 # Documentation
 
 ## What is CUELegendKey
-CUELegendKey
+CUELegendKey is a special LED Keyboard controller software for [League of Legends](http://www.leagueoflegends.com)
 
 ## Features
 
@@ -27,8 +27,7 @@ CUELegendKey
 - Corsair Cue Software 1.x or 2.x (CUE SDK needs to be activated)
 
 ## Installation
-Simply download the latest installer:
-[[https://github.com/begner/CUELegendKeys/blob/master/Release/CLKSetup.msi]]
+Simply download the [latest installer](https://github.com/begner/CUELegendKeys/blob/master/Release/CLKSetup.msi)
 Double click the .msi File and follow instruction on the screen.
 
 ## Prerequisite
