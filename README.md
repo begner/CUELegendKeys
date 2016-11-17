@@ -1,11 +1,11 @@
-* Documentation
+# Documentation
 
-** What is CUELegendKey
+## What is CUELegendKey
 CUELegendKey
 
-** Features
+## Features
 
-*** Ingame
+### Ingame
 - Animated and active/cooldown aware Keys for
   - Abilities (Q, W, E, R)
   - Summoner Skills (D, F)
@@ -16,17 +16,17 @@ CUELegendKey
   - Mana/Resource (F9 - PAUSE)
 - Animated Passive Icon on Numblock, if present
 
-*** Client
+### Client
 - Displays the visible content of the Client as "ScreenMirror"-Effect on the Keyboard
   (Supports new and old League of Legends Client)
 
-** System Requirements
+## System Requirements
 - Windows 8 - 10 (tested on Windows 10) - 64bit OS only
 - Corsair Gaming and Vengeance K65/70/K95 RGB, K65/K70 LUX RGB, K65/K70 RGB RAPIDFIRE, K70 RAPIDFIRE, K70 LUX, STRAFE, and STRAFE RGB
   (basically every Corsair CUE compatible device)
 - Corsair Cue Software 1.x or 2.x (CUE SDK needs to be activated)
 
-** Installation
+## Installation
 Simply download the latest installer:
 [[https://github.com/begner/CUELegendKeys/blob/master/Release/CLKSetup.msi]]
 Double click the .msi File and follow instruction on the screen.
@@ -36,7 +36,7 @@ Double click the .msi File and follow instruction on the screen.
   Once in Game, press ESC, choose "Video" and set "Windowed Mode" to "Borderless"
 - Adjust your League of Legends Interface HUD-Scale to your favorite size.
 
-** First Start
+## First Start
 - Start CUELegendKeys and League of Legends
 - Rightclick on CUELegendKeys Window and Select "Learn"
   a new window (that is always on top) will open with the learn interface.
@@ -70,11 +70,11 @@ Double click the .msi File and follow instruction on the screen.
 
 Now you can play as you like!
 
-** How does it work
+## How does it work
 CUELegendKey detects if League of Legends is running and constantly makes "Screenshots" of the Game.
 It analyzes the HUD Interface and lighten specific keys on you keyboard in correct colors.
 That's it!
 
-** Is it ok for Riot, or is it cheating?
+## Is it ok for Riot, or is it cheating?
 I don't know - i don't ask them yet. Use it on your own risk.
 
